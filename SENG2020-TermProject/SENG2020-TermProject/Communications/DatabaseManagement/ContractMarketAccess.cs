@@ -19,11 +19,20 @@ namespace SENG2020_TermProject.DatabaseManagement
     /**
      * \brief       The ContractMarketAccess manages all database access logic for the TMS accessing the Contract Marketplace.
      * 
-     * \details     ContractMarketAccess inherits its members from the DatabaseAccess abstract class.
+     * \details     ContractMarketAccess inherits its members from the DatabaseAccess abstract class. ContractMarketAcces includes
+     *              custom methods to access the Contract Market, as well as a constructor that applies default values for Contract
+     *              Market connection.
      */
     class ContractMarketAccess : DatabaseAccess
     {
-        public ContractMarketAccess(String nserver, String nport, String nusrnm, String npwd, String ntable)
+        /**
+         * \brief       Expanded ContractMarketAccess constructor.
+         * 
+         * \details     This extended ContractMarketAccess constructor accets parameters to copy into the respective
+         *              fields of the ContractMarketAccess instance. if none of the values passed are invalid (ie null)
+         *              the values are copied.
+         */
+        public ContractMarketAccess(String nserver, String nport, String nusrnm, String npwd, String ntable) : this()
         {
             if (nserver != null && nport != null && nusrnm != null && npwd != null && ntable != null)
             {
@@ -35,6 +44,12 @@ namespace SENG2020_TermProject.DatabaseManagement
             }
         }
 
+        /**
+         * \brief       Default ContractMarketAccess constructor.
+         * 
+         * \details     The default ContractMarketAccess constructor specifies the default values given to access
+         *              the Contract Marketplace database. We have these values hardcoded.
+         */
         public ContractMarketAccess()
         {
             //default contract market access values!
@@ -46,29 +61,14 @@ namespace SENG2020_TermProject.DatabaseManagement
             initConnection(server, port, usrnm, pwd, table, "0");
         }
 
-        private void initConnection(String server, String port, String user, String password, String database, String sslM)
-        {
-            String connString = String.Format("server={0};port={1};user id={2}; password={3}; database={4}; SslMode={5}", server, port, user, password, database, sslM);
-
-            try
-            {
-                cn = new MySqlConnection(connString);
-                cn.Open();
-
-                cn.Close();
-            }
-            catch(MySqlException e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-        }
-
         /**
          * \brief   Makes an SQL request for all available contracts in the Contract Marketplace. 
          *
          * \details This function makes an SQL query to the Contract Marketplace for all available
          *          contracts. Once the query has been satisfied, the fuction creates an array of
-         *          MarketplaceRequest objects to return to for further processing.
+         *          MarketplaceRequest objects to return to for further processing. If the local
+         *          MySqlConnection instance is not instantiated, null is returned. If a MySqlException
+         *          is caught, null is returned.
          *
          * \note    This function will be easily broken by a change in the Contract Marketplace database
          *          format. We are assuming that the format of (ClientName),(JobType),(Quantity),(Origins),(Destination),(VanType)
@@ -123,7 +123,7 @@ namespace SENG2020_TermProject.DatabaseManagement
                 }
                 catch(MySqlException e)
                 {
-
+                    return null;
                 }
             }
 

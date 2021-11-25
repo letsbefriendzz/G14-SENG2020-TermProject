@@ -24,7 +24,17 @@ namespace SENG2020_TermProject
      */
     class Order
     {
-        private MarketplaceRequest mr;
+        /**
+         * \brief       mr represents the MarketplaceRequest object that this Order was created from.
+         * 
+         * \details     As specified in the technical requirements of this software, Orders are created by
+         *              Buyers. The Buyer requests contracts from the Contract Marketplace - the back end
+         *              of which is specified under Communications/DatabaseManagement/ContractMarketAccess.
+         *              The buyer can then process this contract into an order. Thus the cornerstone of the
+         *              order is a MarketplaceRequest. The Order class has a private MarketplaceRequest
+         *              member to represent the MarketplaceRequest from which the Order was derived.
+         */
+        private MarketplaceRequest mr = null;
 
         public Order()
         {
