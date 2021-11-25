@@ -19,7 +19,11 @@ namespace SENG2020_TermProject.DatabaseManagement
      * 
      * \details     //
      */
-    class TMSDatabaseAccess
+    class TMSDatabaseAccess : DatabaseAccess
     {
+        public TMSDatabaseAccess()
+        {
+
+        }
     }
 }

@@ -21,6 +21,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
+using SENG2020_TermProject.DatabaseManagement;
 
 namespace SENG2020_TermProject
 {

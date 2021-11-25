@@ -14,24 +14,15 @@ using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 
-namespace SENG2020_TermProject
+namespace SENG2020_TermProject.DatabaseManagement
 {
     /**
      * \brief       The ContractMarketAccess manages all database access logic for the TMS accessing the Contract Marketplace.
      * 
-     * \details     //
+     * \details     ContractMarketAccess inherits its members from the DatabaseAccess abstract class.
      */
-    class ContractMarketAccess
+    class ContractMarketAccess : DatabaseAccess
     {
-        private MySqlConnection cn;
-        //hardcoding defaults because it's not gonna change
-        //but you can change them using a nice special constructor! :)
-        private String server = "159.89.117.198";
-        private String port = "3306";
-        private String usrnm = "DevOSHT";
-        private String pwd = "Snodgr4ss!";
-        private String table = "cmp";
-
         public ContractMarketAccess(String nserver, String nport, String nusrnm, String npwd, String ntable)
         {
             if (nserver != null && nport != null && nusrnm != null && npwd != null && ntable != null)
@@ -46,6 +37,12 @@ namespace SENG2020_TermProject
 
         public ContractMarketAccess()
         {
+            //default contract market access values!
+            this.server = "159.89.117.198";
+            this.port = "3306";
+            this.usrnm = "DevOSHT";
+            this.pwd = "Snodgr4ss!";
+            this.table = "cmp";
             initConnection(server, port, usrnm, pwd, table, "0");
         }
 
