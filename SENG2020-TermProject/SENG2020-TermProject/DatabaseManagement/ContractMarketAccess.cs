@@ -1,9 +1,10 @@
-﻿///<summary>
-/// This is a test of the Summary meme in doxygen.
-/// </summary>
-/// <remarks>
-/// mememememememem
-/// </remarks>
+﻿/*
+ * FILE             : ContractMarketAccess.cs
+ * PROJECT          : SENG2020 - Term Project
+ * PROGRAMMER(s)    : Ryan Enns
+ * FIRST VERSION    : 2021-11-25
+ * DESCRIPTION      :
+ */
 
 using System;
 using System.Collections.Generic;

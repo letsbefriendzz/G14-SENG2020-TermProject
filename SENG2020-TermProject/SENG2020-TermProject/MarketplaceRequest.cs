@@ -1,9 +1,10 @@
-﻿///<summary>
-/// This is a test of the Summary meme in doxygen.
-/// </summary>
-/// <remarks>
-/// idk what this does!
-/// </remarks>
+﻿/*
+ * FILE             : MarketplaceRequest.cs
+ * PROJECT          : SENG2020 - Term Project
+ * PROGRAMMER(s)    : Ryan Enns
+ * FIRST VERSION    : 2021-11-25
+ * DESCRIPTION      :
+ */
 
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,16 @@ using System.Threading.Tasks;
 
 namespace SENG2020_TermProject
 {
+    /**
+     * \brief       The MarketplaceRequest class is a data container for Contract Marketplace requests received from the Marketplace database.
+     * 
+     * \details     In the Contract Marketplace database, six fields are present and returned to the end users. This includes the name of the
+     *              client, the type of job, the quantity of items in their order, the city of origin of the shipment, the shipment's destination,
+     *              and the type of van required to get the job done.
+     *              
+     *              The MarketplaceRequest class groups all of this data together for an easy to use interface for our future code. This makes
+     *              interfacing with the Contract Marketplace easier than having to parse the individual strings returned in DataTables.
+     */
     class MarketplaceRequest
     {
         public String ClientName { get; set; }

@@ -87,6 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DatabaseManagement\ContractMarketAccess.cs" />
+    <Compile Include="DatabaseManagement\TMSDatabaseAccess.cs" />
     <Compile Include="MainProgram.cs" />
     <Compile Include="MarketplaceRequest.cs" />
     <Compile Include="Order.cs" />
