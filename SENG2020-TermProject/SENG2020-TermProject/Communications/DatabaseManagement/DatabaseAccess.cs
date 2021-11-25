@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * FILE             :
+ * PROJECT          :
+ * PROGRAMMER       :
+ * FIRST VERSION    :
+ * DESCRIPTION      :
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
