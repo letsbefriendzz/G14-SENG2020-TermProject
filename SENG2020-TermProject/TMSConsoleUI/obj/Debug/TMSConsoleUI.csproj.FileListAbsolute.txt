@@ -29,3 +29,4 @@ F:\SENG2020-TermProject\G14-SENG2020-TermProject\SENG2020-TermProject\TMSConsole
 F:\SENG2020-TermProject\G14-SENG2020-TermProject\SENG2020-TermProject\TMSConsoleUI\bin\Debug\System.Numerics.Vectors.xml
 F:\SENG2020-TermProject\G14-SENG2020-TermProject\SENG2020-TermProject\TMSConsoleUI\obj\Debug\TMSConsoleUI.exe
 F:\SENG2020-TermProject\G14-SENG2020-TermProject\SENG2020-TermProject\TMSConsoleUI\obj\Debug\TMSConsoleUI.pdb
+F:\SENG2020-TermProject\G14-SENG2020-TermProject\SENG2020-TermProject\TMSConsoleUI\obj\Debug\TMSConsoleUI.csproj.CopyComplete

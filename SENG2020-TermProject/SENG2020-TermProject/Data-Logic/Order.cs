@@ -9,13 +9,7 @@
 //reference this fucker like crazy!
 //https://conestoga.desire2learn.com/d2l/le/content/482677/viewContent/9959524/View
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SENG2020_TermProject
+namespace SENG2020_TermProject.Data_Logic
 {
     /**
      * \brief       The Order class represents an order that can be created by a Buyer's request.

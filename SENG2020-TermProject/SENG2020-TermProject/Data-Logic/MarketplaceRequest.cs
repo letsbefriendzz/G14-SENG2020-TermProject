@@ -7,12 +7,8 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace SENG2020_TermProject
+namespace SENG2020_TermProject.Data_Logic
 {
     /**
      * \brief       The MarketplaceRequest class is a data container for Contract Marketplace requests received from the Marketplace database.

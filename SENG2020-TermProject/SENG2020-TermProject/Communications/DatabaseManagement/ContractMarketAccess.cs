@@ -6,13 +6,10 @@
  * DESCRIPTION      :
  */
 
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
+using SENG2020_TermProject.Data_Logic;
+using System;
+using System.Data;
 
 namespace SENG2020_TermProject.DatabaseManagement
 {
@@ -111,17 +108,17 @@ namespace SENG2020_TermProject.DatabaseManagement
 
                             mr = new MarketplaceRequest[dt.Rows.Count];
                             int MarketplaceIterator = 0;
-                            foreach(DataRow dr in dt.Rows)
+                            foreach (DataRow dr in dt.Rows)
                             {
                                 MarketplaceRequest temp = new MarketplaceRequest();
                                 //what a complete fucking hodgepodge this mess is
                                 //magic numbers bad! but hey! i do not care!
-                                temp.ClientName  = dr[0].ToString();
-                                temp.JobType     = int.Parse(dr[1].ToString());
-                                temp.Quantity    = int.Parse(dr[2].ToString());
-                                temp.CityOrigin  = dr[3].ToString();
-                                temp.CityDestin  = dr[4].ToString();
-                                temp.VanType     = int.Parse(dr[5].ToString());
+                                temp.ClientName = dr[0].ToString();
+                                temp.JobType = int.Parse(dr[1].ToString());
+                                temp.Quantity = int.Parse(dr[2].ToString());
+                                temp.CityOrigin = dr[3].ToString();
+                                temp.CityDestin = dr[4].ToString();
+                                temp.VanType = int.Parse(dr[5].ToString());
 
                                 mr[MarketplaceIterator] = temp;
                                 MarketplaceIterator++;
@@ -130,7 +127,7 @@ namespace SENG2020_TermProject.DatabaseManagement
                     }
                     cn.Close();
                 }
-                catch(MySqlException)
+                catch (MySqlException)
                 {
                     return null;
                 }

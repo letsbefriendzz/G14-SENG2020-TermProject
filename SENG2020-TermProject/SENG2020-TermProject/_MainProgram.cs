@@ -15,13 +15,9 @@
  * DESCRIPTION      :
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
 using SENG2020_TermProject.DatabaseManagement;
+using SENG2020_TermProject.Data_Logic;
+using System;
 
 namespace SENG2020_TermProject
 {
@@ -42,7 +38,7 @@ namespace SENG2020_TermProject
             ContractMarketAccess cma = new ContractMarketAccess();
             MarketplaceRequest[] mpr = cma.GetAllMarketplaceRequests();
             //and for each one we receive, we dump out the contents
-            foreach(MarketplaceRequest mr in mpr)
+            foreach (MarketplaceRequest mr in mpr)
                 mr.Display();
 
             //then we get any key to continue
