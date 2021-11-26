@@ -11,6 +11,14 @@ using System.Collections.Generic;
 //reference this fucker like crazy!
 //https://conestoga.desire2learn.com/d2l/le/content/482677/viewContent/9959524/View
 
+/*
+    
+GOALS FOR THIS CLASS
+
+The order class needs to represent an order. Shocker, thanks Ryan, you're a genius. What does that mean?
+
+*/
+
 namespace SENG2020_TermProject.Data_Logic
 {
     /**
@@ -23,6 +31,10 @@ namespace SENG2020_TermProject.Data_Logic
      */
     class Order
     {
+        /// \brief      This macro defines the time requried to load and unload at the origin and destination.
+        ///             baically, just add this twice to the total time.
+        const int LOAD_UNLOAD_TIME = 2;
+
         /**
          * \brief       mr represents the MarketplaceRequest object that this Order was created from.
          * 

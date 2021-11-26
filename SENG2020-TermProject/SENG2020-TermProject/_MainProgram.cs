@@ -33,6 +33,19 @@ namespace SENG2020_TermProject
         //what is this doing?
         static void Main(string[] args)
         {
+            String c1 = "Windsor";
+            String c2 = "Hamilton";
+            Console.WriteLine("Getting distance between {0} and {1}.\nDistance:\t{2}", c1, c2, CityList.DrivingDistance(c1,c2));
+            Console.WriteLine("Getting driving  time between {0} and {1}.\nTime:\t\t{2}", c1, c2, CityList.DrivingTime(c1, c2));
+
+            AnyKeyToContinue();
+            
+            return; //and then return!
+        }
+    }
+}
+
+/*
             //good question!
             //we're making a new cma object and getting all available requests from the marketplace database.
             ContractMarketAccess cma = new ContractMarketAccess();
@@ -50,8 +63,4 @@ namespace SENG2020_TermProject
             CityList.DisplayList();
 
             AnyKeyToContinue();
-
-            return; //and then return!
-        }
-    }
-}
+ */

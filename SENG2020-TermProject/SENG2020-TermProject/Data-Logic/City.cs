@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * FILE             : City.cs
+ * PROJECT          : SENG2020 Term Project
+ * PROGRAMMER       : Ryan Enns
+ * FIRST VERSION    : 2021-11-26
+ * DESCRIPTION      :
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -112,6 +120,13 @@ namespace SENG2020_TermProject.Data_Logic
             }
         }
 
+        /**
+         * \brief       Returns the City object stored in the CitySequence at index i.
+         * 
+         * \details     Accesses the list via square bracket notation.
+         * 
+         * \retval      Returns a City object.
+         */
         public static City CityAt(int i)
         {
             if (i >= 0 && i <= 7)
@@ -119,6 +134,13 @@ namespace SENG2020_TermProject.Data_Logic
             else return null;
         }
 
+        /**
+         * \brief       Checks if there is a City with the name passecd as an argument to the function.
+         * 
+         * \details     Iterates through each City object, comparing the city name passed to it to the respective City.CityName value.
+         * 
+         * \retval      Returns a boolean; true if the city is found, false if not.
+         */
         private static bool ContainsCity(String cn)
         {
             foreach (City c in CitySequence)
@@ -126,6 +148,12 @@ namespace SENG2020_TermProject.Data_Logic
             return false;
         }
 
+        /**
+         * \brief       Returns the index of a given city based on the city name passed to the function.
+         * \details     Iterates through the CitySequence via generic for loop; compares CitySequence[i].CityName with the passed city name.
+         * 
+         * \retval      Returns an integer; either the index that the city name is found at in the CitySequence, or -1 if it doesn't exist.
+         */
         private static int GetCityIndex(String cn)
         {
             for(int i = 0; i < CitySequence.Count; i++)
@@ -136,7 +164,18 @@ namespace SENG2020_TermProject.Data_Logic
             return -1;
         }
 
-        public static int DistanceBetween(String c1, String c2)
+        /**
+         * \brief       Calculates the <b>driving distance</b> between two cities.
+         * 
+         * \details     The DrivingDistance function accumulates the total distance
+         *              between two given cities. It iterates through the CitySequence,
+         *              accumulating the distance between the cities, and returns the
+         *              total distance between them.
+         * 
+         * \retval      Returns an integer; if the cities passed do not exist, <b>-1</b>
+         *              is returned as an error value.
+         */
+        public static int DrivingDistance(String c1, String c2)
         {
             //if both cities passed exist, continue. otherwise return -1
             if(ContainsCity(c1) && ContainsCity(c2))
@@ -144,27 +183,61 @@ namespace SENG2020_TermProject.Data_Logic
                 //get the indices of both cities in the array
                 int StartIndex = GetCityIndex(c1);
                 int EndIndex = GetCityIndex(c2);
-                //if the starting index is less than the ending index
-                //or, if we're traversing left to right, west to east.
-                //upwards in array indices, use a regular for loop.
-                if(StartIndex < EndIndex)
-                {   //moving east!
-                    int Distance = 0;
-                    for (int i = StartIndex; i < EndIndex; i++)
-                        Distance += CitySequence[i].EastCityDistance;
-                    return Distance;
+
+                if(StartIndex > EndIndex)
+                {
+                    int inter = StartIndex;
+                    StartIndex = EndIndex;
+                    EndIndex = inter;
                 }
-                //otherwise, we're moving east to west, or backwards,
-                //or downwards in array indices.
-                else
-                {   //moving west!
-                    int Distance = 0;
-                    for (int i = StartIndex; i > EndIndex; i--)
-                        Distance += CitySequence[i].WestCityDistance;
-                    return Distance;
-                }
+
+                int Distance = 0;
+                for (int i = StartIndex; i <= EndIndex; i++)
+                    Distance += CitySequence[i].EastCityDistance;
+                return Distance;
             }
             return -1;
+        }
+
+        /**
+         * \brief       Calculates the <b>driving time</b> between two cities.
+         * 
+         * \details     The DrivingTime function accumulates the total distance
+         *              between two given cities, assuming they exist.
+         *              <br></br>
+         *              
+         *              <b>IMPORTANT TO NOTE :</b> <br></br>
+         *              
+         *              The DrivingTime function <b>only</b> calculates the time
+         *              it takes to drive between two locations. This means that
+         *              it <b>does not account for the 2 hour loading times at start
+         *              and finish,</b> and it <b>does not account for LTL stops.</b>
+         * 
+         * \retval      Returns a double. If one of the cities
+         *              passed to the function doesn't exist, it returns <b>-1.0</b> as
+         *              an error code.
+         */
+        public static double DrivingTime(String c1, String c2)
+        {
+            if(ContainsCity(c1) && ContainsCity(c2))
+            {
+                //get the indices of both cities in the array
+                int StartIndex = GetCityIndex(c1);
+                int EndIndex = GetCityIndex(c2);
+
+                if (StartIndex > EndIndex)
+                {
+                    int inter = StartIndex;
+                    StartIndex = EndIndex;
+                    EndIndex = inter;
+                }
+
+                double TimeToTravel = 0;
+                for (int i = StartIndex; i <= EndIndex; i++)
+                    TimeToTravel += CitySequence[i].TimeToEastCity;
+                return TimeToTravel;
+            }
+            return -1.0;
         }
     }
 }
