@@ -38,11 +38,19 @@ namespace SENG2020_TermProject
             ContractMarketAccess cma = new ContractMarketAccess();
             MarketplaceRequest[] mpr = cma.GetAllMarketplaceRequests();
             //and for each one we receive, we dump out the contents
-            foreach (MarketplaceRequest mr in mpr)
-                mr.Display();
+            if(mpr != null)
+            {
+                foreach (MarketplaceRequest mr in mpr)
+                    mr.Display();
+            }
 
             //then we get any key to continue
             AnyKeyToContinue();
+
+            CityList.DisplayList();
+
+            AnyKeyToContinue();
+
             return; //and then return!
         }
     }

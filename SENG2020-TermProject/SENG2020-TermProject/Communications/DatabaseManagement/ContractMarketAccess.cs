@@ -13,6 +13,9 @@ using System.Data;
 
 namespace SENG2020_TermProject.DatabaseManagement
 {
+    /**
+     * \brief       A static class that stores the default values for connection to the Contract Database.
+     */
     static class CMDatabaseValues
     {
         public static String server = "159.89.117.198";
@@ -47,6 +50,7 @@ namespace SENG2020_TermProject.DatabaseManagement
                 this.usrnm = nusrnm;
                 this.pwd = npwd;
                 this.table = ntable;
+                this.ValidConnection = initConnection(server, port, usrnm, pwd, table, "0");
             }
         }
 
@@ -64,7 +68,7 @@ namespace SENG2020_TermProject.DatabaseManagement
             this.usrnm = CMDatabaseValues.usrnm;
             this.pwd = CMDatabaseValues.pwd;
             this.table = CMDatabaseValues.table;
-            initConnection(server, port, usrnm, pwd, table, "0");
+            this.ValidConnection = initConnection(server, port, usrnm, pwd, table, "0");
         }
 
         /**
@@ -88,7 +92,7 @@ namespace SENG2020_TermProject.DatabaseManagement
         public MarketplaceRequest[] GetAllMarketplaceRequests()
         {
             MarketplaceRequest[] mr = null;
-            if (this.cn != null)
+            if (this.cn != null && this.ValidConnection)
             {
                 try
                 {
@@ -133,7 +137,7 @@ namespace SENG2020_TermProject.DatabaseManagement
                 }
             }
 
-            return null;
+            return mr;
         }
     }
 }

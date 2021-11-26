@@ -34,8 +34,7 @@ namespace SENG2020_TermProject.UserStructure
 
         public MarketplaceRequest[] GetContracts()
         {
-            ContractMarketAccess cma = new ContractMarketAccess();
-            return cma.GetAllMarketplaceRequests();
+            return new ContractMarketAccess().GetAllMarketplaceRequests();
         }
     }
 }

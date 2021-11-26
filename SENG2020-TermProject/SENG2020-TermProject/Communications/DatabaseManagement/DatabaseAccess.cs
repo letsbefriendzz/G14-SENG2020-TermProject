@@ -22,9 +22,9 @@ namespace SENG2020_TermProject.DatabaseManagement
     {
         /// \brief      The object that actually connects us to an SQL database.
         protected MySqlConnection cn;
-        /// \brief      Represnets the IP address of the SQL server we're connecting to.
+        /// \brief      Represents the IP address of the SQL server we're connecting to.
         protected String server;
-        /// \brief      Represnets the port of the SQL server we're conencting to.
+        /// \brief      Represents the port of the SQL server we're conencting to.
         protected String port;
         /// \brief      Represents the username of the account we're signing into on the SQL server.
         protected String usrnm;
@@ -32,6 +32,8 @@ namespace SENG2020_TermProject.DatabaseManagement
         protected String pwd;
         /// \brief      Represents the schema in which we want access to in the database.
         protected String table;
+
+        protected bool ValidConnection = false;
 
         public DatabaseAccess()
         {
@@ -50,7 +52,7 @@ namespace SENG2020_TermProject.DatabaseManagement
          *              It then test the connection to the server specified; if an exception occurs, we dump the information
          *              to the console and revert the MySqlConnection instance to null.
          */
-        protected void initConnection(String server, String port, String user, String password, String database, String sslM)
+        protected bool initConnection(String server, String port, String user, String password, String database, String sslM)
         {
             String connString = String.Format("server={0};port={1};user id={2}; password={3}; database={4}; SslMode={5}", server, port, user, password, database, sslM);
 
@@ -59,11 +61,13 @@ namespace SENG2020_TermProject.DatabaseManagement
                 cn = new MySqlConnection(connString);
                 cn.Open();
                 cn.Close();
+                return true;
             }
             catch (MySqlException e)
             {
                 Console.WriteLine(e.ToString());
                 cn = null;
+                return false;
             }
         }
     }
