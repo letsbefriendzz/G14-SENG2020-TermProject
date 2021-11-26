@@ -1,4 +1,4 @@
-﻿/*
+﻿    /*
  * FILE             : Order.cs
  * PROJECT          : SENG2020 - Term Project
  * PROGRAMMER(s)    : Ryan Enns
@@ -35,6 +35,9 @@ namespace SENG2020_TermProject
          *              member to represent the MarketplaceRequest from which the Order was derived.
          */
         private MarketplaceRequest mr = null;
+
+        /// \brief      A boolean that indicates if this order has been fulfilled or not.
+        public bool IsComplete;
 
         public Order()
         {

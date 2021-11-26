@@ -86,11 +86,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Carriers.cs" />
     <Compile Include="Communications\DatabaseManagement\ContractMarketAccess.cs" />
     <Compile Include="Communications\DatabaseManagement\DatabaseAccess.cs" />
     <Compile Include="Communications\DatabaseManagement\TMSDatabaseAccess.cs" />
-    <Compile Include="MainProgram.cs" />
+    <Compile Include="_MainProgram.cs" />
     <Compile Include="MarketplaceRequest.cs" />
     <Compile Include="Order.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

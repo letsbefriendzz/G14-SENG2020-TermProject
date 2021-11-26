@@ -14,7 +14,17 @@ using System.Threading.Tasks;
 
 namespace SENG2020_TermProject.UserStructure
 {
+    /**
+     * \brief       Defines the permissions and abilities of the Buyer user type.
+     * 
+     * \details     The Buyer is an OSHT employee who is responsible for retrieving
+     *              contracts from the marketplace and generating unfilled orders for
+     *              the Planner to further process. The Buyer, once an order has been
+     *              fulfilled, will generate an invoice for the customer and the TMS
+     *              database.
+     */
     class Buyer : User
     {
+
     }
 }

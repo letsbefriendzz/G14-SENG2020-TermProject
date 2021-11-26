@@ -36,13 +36,18 @@ namespace SENG2020_TermProject
 
         /**
          * \brief       JobType
-         * \details     //
+         * 
+         * \details     JobType is an integer with two acceptable values. 0 indicates that the shipping
+         *              is a full truck load, or FTL order. If the JobType integer is 1, this means that
+         *              the order is a less than truck load order, or LTL order.
          */
         public int JobType { get; set; }
 
         /**
          * \brief       Quantity
-         * \details     //
+         * 
+         * \details     A quantity value of 0 indicates use of a full truck load.
+         *              Any positive integer indicates LTL shipping of Quantity number of pallettes.
          */
         public int Quantity { get; set; }
 
@@ -65,8 +70,8 @@ namespace SENG2020_TermProject
         /**
          * \brief       VanType represents the type of shipment vehicle required for this request.
          * 
-         * \details     VanType is an integer that represents the type of vehicle that is requried to
-         *              transport this shipment from its origin to its destination.
+         * \details     VanType has two acceptable values; 0 or 1. If a MarketplaceRequest's VanType
+         *              is 0, it requires a dry van. If the VanType value is 1, it requries a Reefer.
          */
         public int VanType { get; set; }
 

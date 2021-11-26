@@ -14,7 +14,15 @@ using System.Threading.Tasks;
 
 namespace SENG2020_TermProject.UserStructure
 {
+    /**
+     * \brief       Defines the permissions and abilities of the user type "Planner".
+     * 
+     * \details     The Planner is responsible for furthering created orders by selecting
+     *              a carrier or carriers to fulfill it. The planner also keeps track of
+     *              order progress.
+     */
     class Planner : User
     {
+
     }
 }

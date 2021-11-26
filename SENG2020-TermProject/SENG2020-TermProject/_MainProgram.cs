@@ -25,7 +25,7 @@ using SENG2020_TermProject.DatabaseManagement;
 
 namespace SENG2020_TermProject
 {
-    class MainProgram
+    class _MainProgram
     {
         private static void AnyKeyToContinue()
         {
@@ -43,9 +43,8 @@ namespace SENG2020_TermProject
             MarketplaceRequest[] mpr = cma.GetAllMarketplaceRequests();
             //and for each one we receive, we dump out the contents
             foreach(MarketplaceRequest mr in mpr)
-            {
                 mr.Display();
-            }
+
             //then we get any key to continue
             AnyKeyToContinue();
             return; //and then return!

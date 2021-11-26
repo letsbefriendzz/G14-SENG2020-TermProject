@@ -62,7 +62,6 @@ namespace SENG2020_TermProject.DatabaseManagement
             {
                 cn = new MySqlConnection(connString);
                 cn.Open();
-
                 cn.Close();
             }
             catch (MySqlException e)

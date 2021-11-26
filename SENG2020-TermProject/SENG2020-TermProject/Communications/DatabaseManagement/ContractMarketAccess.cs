@@ -121,7 +121,7 @@ namespace SENG2020_TermProject.DatabaseManagement
                     }
                     cn.Close();
                 }
-                catch(MySqlException e)
+                catch(MySqlException)
                 {
                     return null;
                 }
