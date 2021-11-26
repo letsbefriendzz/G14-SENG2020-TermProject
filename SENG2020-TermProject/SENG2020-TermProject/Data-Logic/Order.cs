@@ -1,10 +1,13 @@
-﻿    /*
- * FILE             : Order.cs
- * PROJECT          : SENG2020 - Term Project
- * PROGRAMMER(s)    : Ryan Enns
- * FIRST VERSION    : 2021-11-25
- * DESCRIPTION      :
- */
+﻿/*
+* FILE             : Order.cs
+* PROJECT          : SENG2020 - Term Project
+* PROGRAMMER(s)    : Ryan Enns
+* FIRST VERSION    : 2021-11-25
+* DESCRIPTION      :
+*/
+
+//reference this fucker like crazy!
+//https://conestoga.desire2learn.com/d2l/le/content/482677/viewContent/9959524/View
 
 using System;
 using System.Collections.Generic;
@@ -38,6 +41,8 @@ namespace SENG2020_TermProject
 
         /// \brief      A boolean that indicates if this order has been fulfilled or not.
         public bool IsComplete;
+        /// \brief      A float that represents how many hours the selected shipping sequence will take
+        public float TimeToComplete;
 
         public Order()
         {

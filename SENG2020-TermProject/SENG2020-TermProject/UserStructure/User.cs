@@ -23,7 +23,7 @@ namespace SENG2020_TermProject.UserStructure
      *              defines common fields and methods that each of its subclasses
      *              uses.
      */
-    abstract class User
+    public class User
     {
 
     }

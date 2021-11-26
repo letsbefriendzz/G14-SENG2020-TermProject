@@ -6,6 +6,7 @@
  * DESCRIPTION      :
  */
 
+using SENG2020_TermProject.DatabaseManagement;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +24,17 @@ namespace SENG2020_TermProject.UserStructure
      *              fulfilled, will generate an invoice for the customer and the TMS
      *              database.
      */
-    class Buyer : User
+    public class Buyer : User
     {
+        public Buyer()
+        {
 
+        }
+
+        public MarketplaceRequest[] GetContracts()
+        {
+            ContractMarketAccess cma = new ContractMarketAccess();
+            return cma.GetAllMarketplaceRequests();
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace SENG2020_TermProject
      *              The MarketplaceRequest class groups all of this data together for an easy to use interface for our future code. This makes
      *              interfacing with the Contract Marketplace easier than having to parse the individual strings returned in DataTables.
      */
-    class MarketplaceRequest
+    public class MarketplaceRequest
     {
         /**
          * \brief       ClientName represents a request's parent company.

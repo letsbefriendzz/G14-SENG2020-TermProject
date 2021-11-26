@@ -90,8 +90,8 @@
     <Compile Include="Communications\DatabaseManagement\DatabaseAccess.cs" />
     <Compile Include="Communications\DatabaseManagement\TMSDatabaseAccess.cs" />
     <Compile Include="_MainProgram.cs" />
-    <Compile Include="MarketplaceRequest.cs" />
-    <Compile Include="Order.cs" />
+    <Compile Include="Data-Logic\MarketplaceRequest.cs" />
+    <Compile Include="Data-Logic\Order.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserStructure\Admin.cs" />
     <Compile Include="UserStructure\Buyer.cs" />
@@ -102,6 +102,5 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

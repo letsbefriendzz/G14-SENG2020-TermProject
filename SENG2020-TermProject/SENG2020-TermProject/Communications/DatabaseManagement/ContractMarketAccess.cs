@@ -16,6 +16,15 @@ using MySql.Data.MySqlClient;
 
 namespace SENG2020_TermProject.DatabaseManagement
 {
+    static class CMDatabaseValues
+    {
+        public static String server = "159.89.117.198";
+        public static String port = "3306";
+        public static String usrnm = "DevOSHT";
+        public static String pwd = "Snodgr4ss!";
+        public static String table = "cmp";
+        public static String ssl = "0";
+    }
     /**
      * \brief       The ContractMarketAccess manages all database access logic for the TMS accessing the Contract Marketplace.
      * 
@@ -53,11 +62,11 @@ namespace SENG2020_TermProject.DatabaseManagement
         public ContractMarketAccess()
         {
             //default contract market access values!
-            this.server = "159.89.117.198";
-            this.port = "3306";
-            this.usrnm = "DevOSHT";
-            this.pwd = "Snodgr4ss!";
-            this.table = "cmp";
+            this.server = CMDatabaseValues.server;
+            this.port = CMDatabaseValues.port;
+            this.usrnm = CMDatabaseValues.usrnm;
+            this.pwd = CMDatabaseValues.pwd;
+            this.table = CMDatabaseValues.table;
             initConnection(server, port, usrnm, pwd, table, "0");
         }
 
@@ -127,7 +136,7 @@ namespace SENG2020_TermProject.DatabaseManagement
                 }
             }
 
-            return mr;
+            return null;
         }
     }
 }
