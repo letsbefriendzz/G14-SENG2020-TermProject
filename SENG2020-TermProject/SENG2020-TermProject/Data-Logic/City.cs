@@ -225,6 +225,8 @@ namespace SENG2020_TermProject.Data_Logic
                 int StartIndex = GetCityIndex(c1);
                 int EndIndex = GetCityIndex(c2);
 
+                //if the we need to traverse backwards, well, we won't!
+                //just swap the values and be done with it
                 if (StartIndex > EndIndex)
                 {
                     int inter = StartIndex;
@@ -238,6 +240,30 @@ namespace SENG2020_TermProject.Data_Logic
                 return TimeToTravel;
             }
             return -1.0;
+        }
+
+        /**
+         * \brief       Calculates the number of stops on a given route if the order is LTL.
+         * 
+         * \details     This function calculates the number of stops between two cities. It subtracts the
+         *              lesser city index from the greater city index, and then subtracts one. That's it.
+         * 
+         * \retval      Returns an integer, the number of stops between a two cities. If a city
+         *              passed doesn't exist, -1 is returned.
+         */
+        public static int LTLStops(String c1, String c2)
+        {
+            if(ContainsCity(c1) && ContainsCity(c2))
+            {
+                int StartIndex = GetCityIndex(c1)+1;
+                int EndIndex = GetCityIndex(c2)+1;
+
+                if (StartIndex > EndIndex)
+                    return (StartIndex - EndIndex) - 1;
+                else
+                    return (EndIndex - StartIndex) - 1;
+            }
+            return -1;
         }
     }
 }

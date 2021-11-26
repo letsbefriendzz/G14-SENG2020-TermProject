@@ -16,6 +16,8 @@ using System.Collections.Generic;
 GOALS FOR THIS CLASS
 
 The order class needs to represent an order. Shocker, thanks Ryan, you're a genius. What does that mean?
+An order is first initialized by a Buyer, who finds the contract on the marketplace and creates an order
+to fill it.
 
 */
 
@@ -51,9 +53,27 @@ namespace SENG2020_TermProject.Data_Logic
         public bool IsComplete;
         /// \brief      A float that represents how many hours the selected shipping sequence will take
         public double TimeToComplete;
+        /// \brief      The total distance between the start city and end city.
         public int DistanceToComplete;
 
         public Order()
+        {
+            IsComplete = false;
+            TimeToComplete = 0.0;
+            DistanceToComplete = 0;
+        }
+
+        private void CalculateDistance()
+        {
+            DistanceToComplete += CityList.DrivingDistance(mr.CityOrigin, mr.CityDestin);
+        }
+
+        private void CalculateTime()
+        {
+
+        }
+
+        public void Display()
         {
 
         }

@@ -52,7 +52,7 @@ namespace SENG2020_TermProject.DatabaseManagement
          *              It then test the connection to the server specified; if an exception occurs, we dump the information
          *              to the console and revert the MySqlConnection instance to null.
          */
-        protected bool initConnection(String server, String port, String user, String password, String database, String sslM)
+        protected bool InitConnection(String server, String port, String user, String password, String database, String sslM)
         {
             String connString = String.Format("server={0};port={1};user id={2}; password={3}; database={4}; SslMode={5}", server, port, user, password, database, sslM);
 

@@ -50,7 +50,7 @@ namespace SENG2020_TermProject.DatabaseManagement
                 this.usrnm = nusrnm;
                 this.pwd = npwd;
                 this.table = ntable;
-                this.ValidConnection = initConnection(server, port, usrnm, pwd, table, "0");
+                this.ValidConnection = InitConnection(server, port, usrnm, pwd, table, "0");
             }
         }
 
@@ -68,7 +68,7 @@ namespace SENG2020_TermProject.DatabaseManagement
             this.usrnm = CMDatabaseValues.usrnm;
             this.pwd = CMDatabaseValues.pwd;
             this.table = CMDatabaseValues.table;
-            this.ValidConnection = initConnection(server, port, usrnm, pwd, table, "0");
+            this.ValidConnection = InitConnection(server, port, usrnm, pwd, table, "0");
         }
 
         /**
