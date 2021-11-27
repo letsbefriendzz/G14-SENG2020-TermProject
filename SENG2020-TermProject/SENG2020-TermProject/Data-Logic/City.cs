@@ -192,7 +192,7 @@ namespace SENG2020_TermProject.Data_Logic
                 }
 
                 int Distance = 0;
-                for (int i = StartIndex; i <= EndIndex; i++)
+                for (int i = StartIndex; i < EndIndex; i++)
                     Distance += CitySequence[i].EastCityDistance;
                 return Distance;
             }
@@ -235,7 +235,7 @@ namespace SENG2020_TermProject.Data_Logic
                 }
 
                 double TimeToTravel = 0;
-                for (int i = StartIndex; i <= EndIndex; i++)
+                for (int i = StartIndex; i < EndIndex; i++)
                     TimeToTravel += CitySequence[i].TimeToEastCity;
                 return TimeToTravel;
             }
@@ -246,7 +246,7 @@ namespace SENG2020_TermProject.Data_Logic
          * \brief       Calculates the number of stops on a given route if the order is LTL.
          * 
          * \details     This function calculates the number of stops between two cities. It subtracts the
-         *              lesser city index from the greater city index, and then subtracts one. That's it.
+         *              lesser city index from the greater city index, and then subtracts one. That's it.   
          * 
          * \retval      Returns an integer, the number of stops between a two cities. If a city
          *              passed doesn't exist, -1 is returned.

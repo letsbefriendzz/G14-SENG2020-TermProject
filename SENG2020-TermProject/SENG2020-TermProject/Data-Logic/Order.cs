@@ -7,6 +7,7 @@
 */
 
 using System.Collections.Generic;
+using System;
 
 //reference this fucker like crazy!
 //https://conestoga.desire2learn.com/d2l/le/content/482677/viewContent/9959524/View
@@ -63,19 +64,41 @@ namespace SENG2020_TermProject.Data_Logic
             DistanceToComplete = 0;
         }
 
+        public Order(MarketplaceRequest req)
+        {
+            this.mr = req;
+            CalculateDistance();
+            CalculateTime();
+        }
+
         private void CalculateDistance()
         {
             DistanceToComplete += CityList.DrivingDistance(mr.CityOrigin, mr.CityDestin);
         }
 
+        /**
+         * \brief       Calculates the time necessary to ship a load from its origin to destination. Stores this value in the TimeToComplete member.
+         * 
+         * \details
+         */
         private void CalculateTime()
         {
+            if(mr.JobType == 0)
+            {
+                this.TimeToComplete += CityList.DrivingTime(mr.CityOrigin, mr.CityDestin);
+                this.TimeToComplete += (LOAD_UNLOAD_TIME * 2);
+            }
+            else
+            {
 
+            }
         }
 
         public void Display()
         {
-
+            this.mr.Display();
+            Console.WriteLine("Time to complete:\t{0}h", this.TimeToComplete);
+            Console.WriteLine("Distance to destin:\t{0}km", this.DistanceToComplete);
         }
     }
 }
