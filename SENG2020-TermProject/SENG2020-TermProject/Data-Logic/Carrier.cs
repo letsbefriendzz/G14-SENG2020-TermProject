@@ -178,9 +178,18 @@ namespace SENG2020_TermProject.Data_Logic
                 c.Display();
         }
 
-        public static void GenerateRoute(Order o)
+        public static List<Carrier> CarriersForRoute(Order o)
         {
-
+            List<Carrier> l = new List<Carrier>();
+            foreach(Carrier c in Carriers)
+            {
+                if (c.HasDepotIn(o.GetOrigin()) && c.HasDepotIn(o.GetDestin()))
+                {
+                    l.Add(c);
+                    return l;
+                }
+            }
+            return null;
         }
     }
 }

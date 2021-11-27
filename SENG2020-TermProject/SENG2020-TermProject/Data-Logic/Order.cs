@@ -37,6 +37,7 @@ namespace SENG2020_TermProject.Data_Logic
         /// \brief      This macro defines the time requried to load and unload at the origin and destination.
         ///             baically, just add this twice to the total time.
         const int LOAD_UNLOAD_TIME = 2;
+        public bool fulfilled = false;
 
         /**
          * \brief       mr represents the MarketplaceRequest object that this Order was created from.
@@ -57,6 +58,16 @@ namespace SENG2020_TermProject.Data_Logic
         /// \brief      The total distance between the start city and end city.
         public int DistanceToComplete;
 
+        public String GetOrigin()
+        {
+            return this.mr.CityOrigin;
+        }
+
+        public String GetDestin()
+        {
+            return this.mr.CityDestin;
+        }
+
         public Order()
         {
             IsComplete = false;
@@ -64,25 +75,58 @@ namespace SENG2020_TermProject.Data_Logic
             DistanceToComplete = 0;
         }
 
+        /**
+         * \brief       Creates an order based on the information given to us by a MarketplaceRequest.
+         * 
+         * \details     This constructor accepts a MarketplaceRequest object to then pass to the ParseMarketplaceRequest
+         *              function for further processing.
+         */
         public Order(MarketplaceRequest req)
         {
-            this.mr = req;
-            CalculateDistance();
-            CalculateTime();
-        }
-
-        private void CalculateDistance()
-        {
-            DistanceToComplete += CityList.DrivingDistance(mr.CityOrigin, mr.CityDestin);
+            ParseMarketplaceRequest(req);
         }
 
         /**
-         * \brief       Calculates the time necessary to ship a load from its origin to destination. Stores this value in the TimeToComplete member.
+         * \brief       Populates Order instance fields based on information supplied by the MarketplaceRequest parmaeter.
          * 
-         * \details
+         * \details     This function accepts a MarketplaceRequest object to create an order from. First, the req paramater
+         *              is copied to the local MarketplaceRequest instance (mr). Then, the CalculateDistance and CalculateTime
+         *              functions are called to further populate the Order fields.
+         */
+        private void ParseMarketplaceRequest(MarketplaceRequest req)
+        {
+            if(req != null)
+            {
+                this.mr = req;
+                CalculateDistance();
+                CalculateTime();
+            }
+        }
+
+        /**
+         * \brief       Assigns a value to the DistanceToComplete member.
+         * 
+         * \details     This function calls the CityList.DrivingDistance with its mr.CityOrigin and mr.CityDestin fields as
+         *              parameters. If mr is null, these function calls are not made.
+         */
+        private void CalculateDistance()
+        {
+            if(this.mr!=null)
+                DistanceToComplete += CityList.DrivingDistance(mr.CityOrigin, mr.CityDestin);
+        }
+
+        /**
+         * \brief       Assigns a value to the TimeToComplete member.
+         * 
+         * \details     This function, assuming mr is not null, assigns value to the TimeToComplete member. Frist, the
+         *              CityList.DrivingTime function is called with mr.CityOrigin and mr.CityDestin as parameters; then,
+         *              2 * LOAD_UNLOAD_TIME is added. Finally, if the job type is LTL, we add 2 for each stop that occurs
+         *              between the cities, as defined by the CityList.LTLStops function with the same parameters.
          */
         private void CalculateTime()
         {
+            if (mr == null) return;
+
             this.TimeToComplete += CityList.DrivingTime(mr.CityOrigin, mr.CityDestin);
             this.TimeToComplete += (LOAD_UNLOAD_TIME * 2);
             if (mr.JobType == 1)

@@ -1,9 +1,10 @@
 using NUnit.Framework;
 using SENG2020_TermProject.Data_Logic;
+using SENG2020_TermProject.DatabaseManagement;
 
 namespace TermProjectUnitTests
 {
-    public class CityListTests
+    public class UnitTests
     {
         [SetUp]
         public void Setup()
@@ -58,6 +59,22 @@ namespace TermProjectUnitTests
             if (CityList.LTLStops("Hamilton", "Oshawa") == 1)
                 Assert.Pass();
             else Assert.Fail();
+        }
+
+        #endregion
+
+        #region Database Tests
+
+        //why is this failing????
+        [Test]
+        public void GetAllMarketplaceRequestsHappyPath()
+        {
+            ContractMarketAccess cma = new ContractMarketAccess();
+            MarketplaceRequest[] mr = null;
+            mr = cma.GetAllMarketplaceRequests();
+            if (mr == null)
+                Assert.Fail();
+            else Assert.Pass();
         }
 
         #endregion

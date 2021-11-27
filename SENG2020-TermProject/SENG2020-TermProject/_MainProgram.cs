@@ -49,12 +49,9 @@ namespace SENG2020_TermProject
         {
             MarketplaceRequest[] mrs = new ContractMarketAccess().GetAllMarketplaceRequests();
 
-            foreach (MarketplaceRequest m in mrs)
-                new Order(m).Display();
-
-            AnyKeyToContinue();
-
-            CarrierList.Display();
+            Order TestOrder = new Order(mrs[0]);
+            TestOrder.Display();
+            CarrierList.CarriersForRoute(new Order(mrs[0]))[0].Display();
 
             AnyKeyToContinue();
 

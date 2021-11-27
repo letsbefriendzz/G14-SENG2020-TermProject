@@ -40,11 +40,6 @@ namespace SENG2020_TermProject.Data_Logic
         /// \brief      The time it takes to travel to the city west of CityName, in hours.
         public double TimeToEastCity;
 
-        public City()
-        {
-
-        }
-
         public City(String cn, String ecn, int ecd, double ttec)
         {
             this.CityName = cn;
@@ -74,8 +69,6 @@ namespace SENG2020_TermProject.Data_Logic
          */
         static CityList()
         {
-            //really this list is duplicating data but, I do not care! ease of access please!
-
             //null <- Windsor -> London
             CitySequence.Add(new City("Windsor", "London", 191, 2.5));
 
