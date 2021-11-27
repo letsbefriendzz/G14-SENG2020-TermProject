@@ -44,6 +44,14 @@ namespace SENG2020_TermProject.Data_Logic
             foreach (Depot d in Depots)
                 d.Display();
         }
+
+        public bool HasDepotIn(String cn)
+        {
+            foreach(Depot d in Depots)
+                if (d.CityName == cn)
+                    return true;
+            return false;
+        }
     }
 
     /**
@@ -91,6 +99,20 @@ namespace SENG2020_TermProject.Data_Logic
             Console.WriteLine("LTL Rate:\t\t{0}", this.LTLRate);
             Console.WriteLine("Reefer Charge:\t\t{0}", this.reefCharge);
             Console.WriteLine();
+        }
+
+        public bool HasFTLAvail(int FTLNeeded)
+        {
+            if (this.FTLAvail > FTLNeeded)
+                return true;
+            return false;
+        }
+
+        public bool HasLTLAvail(int LTLneeded)
+        {
+            if (this.LTLAvail > LTLneeded)
+                return true;
+            return false;
         }
     }
 
@@ -147,6 +169,11 @@ namespace SENG2020_TermProject.Data_Logic
         {
             foreach (Carrier c in Carriers)
                 c.Display();
+        }
+
+        public static void GenerateRoute(Order o)
+        {
+
         }
     }
 }

@@ -47,6 +47,13 @@ namespace SENG2020_TermProject
         //what is this doing?
         static void Main(string[] args)
         {
+            MarketplaceRequest[] mrs = new ContractMarketAccess().GetAllMarketplaceRequests();
+
+            foreach (MarketplaceRequest m in mrs)
+                new Order(m).Display();
+
+            AnyKeyToContinue();
+
             CarrierList.Display();
 
             AnyKeyToContinue();
