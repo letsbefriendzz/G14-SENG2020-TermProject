@@ -6,6 +6,9 @@
  * DESCRIPTION      :
  */
 
+//TODO
+//change accessibility level to private and protected once tests are finished!
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +28,7 @@ namespace SENG2020_TermProject.Data_Logic
      *              which creates and holds a constant sequence-list of the cities that
      *              can be shipped to or from.
      */
-    class City
+    public class City
     {
         /// \brief      The name of the City this object represents.
         public String CityName;
@@ -55,7 +58,7 @@ namespace SENG2020_TermProject.Data_Logic
     /**
      * \brief       Defines the order and list of cities that can be shipped to and from.
      */
-    static class CityList
+    public static class CityList
     {
         /**
          * \brief       A List<T> that holds the sequence of and information about cities.
@@ -130,7 +133,7 @@ namespace SENG2020_TermProject.Data_Logic
          * 
          * \retval      Returns a boolean; true if the city is found, false if not.
          */
-        private static bool ContainsCity(String cn)
+        public static bool ContainsCity(String cn)
         {
             foreach (City c in CitySequence)
                 if (c.CityName == cn) return true;
@@ -143,7 +146,7 @@ namespace SENG2020_TermProject.Data_Logic
          * 
          * \retval      Returns an integer; either the index that the city name is found at in the CitySequence, or -1 if it doesn't exist.
          */
-        private static int GetCityIndex(String cn)
+        public static int GetCityIndex(String cn)
         {
             for(int i = 0; i < CitySequence.Count; i++)
             {

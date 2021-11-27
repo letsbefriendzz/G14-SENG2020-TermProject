@@ -18,7 +18,7 @@ namespace SENG2020_TermProject.DatabaseManagement
      *              from each of these whatever shared attributes they have. This includes SQL server details like the server and port,
      *              as well as the username and password that we're trying to access the database with.
      */
-    abstract class DatabaseAccess
+    public abstract class DatabaseAccess
     {
         /// \brief      The object that actually connects us to an SQL database.
         protected MySqlConnection cn;

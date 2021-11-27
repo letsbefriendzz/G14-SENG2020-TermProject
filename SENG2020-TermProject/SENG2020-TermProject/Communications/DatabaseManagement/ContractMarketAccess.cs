@@ -32,7 +32,7 @@ namespace SENG2020_TermProject.DatabaseManagement
      *              custom methods to access the Contract Market, as well as a constructor that applies default values for Contract
      *              Market connection.
      */
-    class ContractMarketAccess : DatabaseAccess
+    public class ContractMarketAccess : DatabaseAccess
     {
         /**
          * \brief       Expanded ContractMarketAccess constructor.

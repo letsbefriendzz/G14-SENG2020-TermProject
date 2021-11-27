@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SENG2020-TermProject", "SEN
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMSConsoleUI", "TMSConsoleUI\TMSConsoleUI.csproj", "{A3607D70-513F-43AB-9B33-44124AEC97DE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TermProjectUnitTests", "TermProjectUnitTests\TermProjectUnitTests.csproj", "{3F27CE08-D02F-4628-954A-12980301D179}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{A3607D70-513F-43AB-9B33-44124AEC97DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3607D70-513F-43AB-9B33-44124AEC97DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3607D70-513F-43AB-9B33-44124AEC97DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F27CE08-D02F-4628-954A-12980301D179}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F27CE08-D02F-4628-954A-12980301D179}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F27CE08-D02F-4628-954A-12980301D179}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F27CE08-D02F-4628-954A-12980301D179}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

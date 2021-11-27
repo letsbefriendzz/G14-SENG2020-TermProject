@@ -117,17 +117,24 @@ namespace SENG2020_TermProject.Data_Logic
     }
 
     /**
-     * \brief
+     * \brief       A static list of available carriers for shipments.
      * 
-     * \details
+     * \details     The CarrierList class contains a single List of type Carrier. This class is used
+     *              to access the available carriers to calculate shipping routes.
      */
     static class CarrierList
     {
         /// \brief      The list of Carriers that can be selected for shipments.
         private static List<Carrier> Carriers = new List<Carrier>();
 
-        /// \brief      Populates the Carriers List<Carrier> with the default
-        ///             carrier values.
+        /** \brief      Populates the Carriers List<Carrier> with the default
+         *              carrier values.
+         *              
+         * \details     This function will eventually access the Carrier update system to get live updates
+         *              about availabilty. Until this has been implemented (see Communications folder for
+         *              progress updates), we will use these hardcoded default values for each instance.
+         */
+
         static CarrierList()
         {
             //Planet Express
