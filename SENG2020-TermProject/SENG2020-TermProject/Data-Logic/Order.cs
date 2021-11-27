@@ -83,14 +83,14 @@ namespace SENG2020_TermProject.Data_Logic
          */
         private void CalculateTime()
         {
-            if(mr.JobType == 0)
+            this.TimeToComplete += CityList.DrivingTime(mr.CityOrigin, mr.CityDestin);
+            this.TimeToComplete += (LOAD_UNLOAD_TIME * 2);
+            if (mr.JobType == 1)
             {
-                this.TimeToComplete += CityList.DrivingTime(mr.CityOrigin, mr.CityDestin);
-                this.TimeToComplete += (LOAD_UNLOAD_TIME * 2);
-            }
-            else
-            {
-
+                for(int i = 0; i < CityList.LTLStops(mr.CityOrigin, mr.CityDestin); i++)
+                {
+                    TimeToComplete += 2;
+                }
             }
         }
 

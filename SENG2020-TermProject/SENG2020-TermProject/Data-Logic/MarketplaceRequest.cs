@@ -119,11 +119,21 @@ namespace SENG2020_TermProject.Data_Logic
         {
             Console.WriteLine("=====================");
             Console.WriteLine("ClientName:\t{0}", ClientName);
-            Console.WriteLine("JobType:\t{0}", JobType);
+
+            if(JobType == 0)
+                Console.WriteLine("JobType:\tFTL");
+            else
+                Console.WriteLine("JobType:\tLTL");
+
             Console.WriteLine("Quantity:\t{0}", Quantity);
             Console.WriteLine("Origin:\t\t{0}", CityOrigin);
             Console.WriteLine("Destin:\t\t{0}", CityDestin);
-            Console.WriteLine("VanType:\t{0}", VanType);
+
+            if(VanType == 0)
+                Console.WriteLine("VanType:\tDry");
+            else
+                Console.WriteLine("VanType:\tReefer");
+
             Console.WriteLine();
         }
     }

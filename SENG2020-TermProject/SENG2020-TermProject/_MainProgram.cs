@@ -1,11 +1,13 @@
 ﻿/*
- * FILE             : MainProgram.cs
+ * FILE             : _MainProgram.cs
  * PROJECT          : SENG2020 - Term Project
  * PROGRAMMER(s)    : Ryan Enns
  * FIRST VERSION    : 2021-11-25
  * DESCRIPTION      :
  */
 
+
+//makes sense to define the DOxygen index stuff where main() can be found.
 /**
  * \mainpage SENG2020 Group 14 - TMS System
  * 
@@ -45,13 +47,7 @@ namespace SENG2020_TermProject
         //what is this doing?
         static void Main(string[] args)
         {
-            MarketplaceRequest mp = new ContractMarketAccess().GetAllMarketplaceRequests()[0];
-            mp.Display();
-
-            AnyKeyToContinue();
-
-            Order o = new Order(mp);
-            o.Display();
+            CarrierList.Display();
 
             AnyKeyToContinue();
 

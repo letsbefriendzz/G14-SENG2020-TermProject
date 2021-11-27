@@ -30,13 +30,6 @@ namespace SENG2020_TermProject.Data_Logic
         /// \brief      The name of the City this object represents.
         public String CityName;
 
-        /// \brief      The name of the next city west of CityName.
-        public String WestCityName;
-        /// \brief      The distance to the city west of CityName, in km.
-        public int WestCityDistance;
-        /// \brief      The time it takes to travel to the city west of CityName, in hours.
-        public double TimeToWestcity;
-
         /// \brief      The name of the next city east of CityName.
         public String EastCityName;
         /// \brief      The distance to the city east of CityName, in km.
@@ -49,13 +42,9 @@ namespace SENG2020_TermProject.Data_Logic
 
         }
 
-        public City(String cn, String wcn, int wcd, double ttwc, String ecn, int ecd, double ttec)
+        public City(String cn, String ecn, int ecd, double ttec)
         {
             this.CityName = cn;
-            
-            this.WestCityName = wcn;
-            this.WestCityDistance = wcd;
-            this.TimeToWestcity = ttwc;
 
             this.EastCityName = ecn;
             this.EastCityDistance = ecd;
@@ -71,7 +60,7 @@ namespace SENG2020_TermProject.Data_Logic
         /**
          * \brief       A List<T> that holds the sequence of and information about cities.
          */
-        public static List<City> CitySequence = new List<City>();
+        private static List<City> CitySequence = new List<City>();
 
         /**
          * \brief       The default CityList constructor.
@@ -85,28 +74,28 @@ namespace SENG2020_TermProject.Data_Logic
             //really this list is duplicating data but, I do not care! ease of access please!
 
             //null <- Windsor -> London
-            CitySequence.Add(new City("Windsor", null, -1, -1.0, "London", 191, 2.5));
+            CitySequence.Add(new City("Windsor", "London", 191, 2.5));
 
             //Windsor <- London -> Hamilton
-            CitySequence.Add(new City("London", "Windsor", 191, 2.5, "Hamilton", 128, 1.75));
+            CitySequence.Add(new City("London", "Hamilton", 128, 1.75));
 
             //London <- Hamilton -> Toronto
-            CitySequence.Add(new City("Hamilton", "London", 128, 1.75, "Toronto", 68, 1.25));
+            CitySequence.Add(new City("Hamilton", "Toronto", 68, 1.25));
 
             //Hamilton <- Toronto -> Oshawa
-            CitySequence.Add(new City("Toronto", "Hamilton", 68, 1.25, "Oshawa", 60, 1.3));
+            CitySequence.Add(new City("Toronto", "Oshawa", 60, 1.3));
 
             //Toronto <- Oshawa -> Belleville
-            CitySequence.Add(new City("Oshawa", "Toronto", 60, 1.3, "Belleville", 134, 1.65));
+            CitySequence.Add(new City("Oshawa", "Belleville", 134, 1.65));
 
             //Oshawa <- Belleville -> Kingston
-            CitySequence.Add(new City("Belleville", "Oshawa", 134, 1.65, "Kingston", 82, 1.2));
+            CitySequence.Add(new City("Belleville", "Kingston", 82, 1.2));
 
             //Belleville <- Kingston -> Ottawa
-            CitySequence.Add(new City("Kingston", "Belleville", 82, 1.2, "Ottawa", 196, 2.5));
+            CitySequence.Add(new City("Kingston", "Ottawa", 196, 2.5));
 
             //Kingston <- Ottawa -> null
-            CitySequence.Add(new City("Ottawa", "Kingston", 196, 2.5, null, -1, -1.0));
+            CitySequence.Add(new City("Ottawa", null, -1, -1.0));
         }
 
         /**
