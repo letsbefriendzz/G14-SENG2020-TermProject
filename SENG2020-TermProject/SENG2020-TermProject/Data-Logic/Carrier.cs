@@ -45,6 +45,15 @@ namespace SENG2020_TermProject.Data_Logic
                 d.Display();
         }
 
+        /**
+         * \brief       Checks to see if a Carrier has a depot in a given city.
+         * 
+         * \details     This function iterates through the respective Carrier instance's List<Depot>, comparing
+         *              the Depot.CityName with the String cn passed as a parameter. If it finds a match, true is
+         *              returned. Otherwise, false is returned.
+         * 
+         * \retval      Returns a boolean; true or false.
+         */
         public bool HasDepotIn(String cn)
         {
             foreach(Depot d in Depots)
@@ -101,6 +110,15 @@ namespace SENG2020_TermProject.Data_Logic
             Console.WriteLine();
         }
 
+        /**
+         * \brief       Checks if a depot has full truck loads available.
+         * 
+         * \details     Compares the FTL available of the given Depot with the FTL needed integer passed
+         *              as a parameter. If the FTL available exceeds the FTL needed, true is returned.
+         *              Otherwise, false is returned.
+         * 
+         * \retval      Returns a boolean; true or false.
+         */
         public bool HasFTLAvail(int FTLNeeded)
         {
             if (this.FTLAvail > FTLNeeded)
@@ -108,6 +126,15 @@ namespace SENG2020_TermProject.Data_Logic
             return false;
         }
 
+        /**
+         * \brief       Checks if a depot has limited truck loads available.
+         * 
+         * \details     Compares the LTL available of the given Depot with the LTL needed integer passed
+         *              as a parameter. If the LTL available exceeds the LTL needed, true is returned.
+         *              Otherwise, false is returned.
+         * 
+         * \retval      Returns a boolean; true or false.
+         */
         public bool HasLTLAvail(int LTLneeded)
         {
             if (this.LTLAvail > LTLneeded)
@@ -134,7 +161,6 @@ namespace SENG2020_TermProject.Data_Logic
          *              about availabilty. Until this has been implemented (see Communications folder for
          *              progress updates), we will use these hardcoded default values for each instance.
          */
-
         static CarrierList()
         {
             //Planet Express
@@ -178,17 +204,41 @@ namespace SENG2020_TermProject.Data_Logic
                 c.Display();
         }
 
-        public static List<Carrier> CarriersForRoute(Order o)
+        /**
+         * \brief       Establishes which carrier will be used for an order.
+         * 
+         * \details     This function accepts an Order parameter and compares the start and end destinatino
+         *              with the various available carriers that OSHT has contact with. It returns the Carrier
+         *              instance that has depots in both the origin and destination cities for the given order.
+         *              If two carriers can perform the same delivery, a cost effectiveness algorithm is deployed
+         *              and the cheapest option available is the one that is chosen.
+         * 
+         * \returns     An instance of Carrier; the carrier that will be used for the given order.
+         */
+        public static Carrier CarriersForRoute(Order o)
         {
+            if (o == null) return null;
+
             List<Carrier> l = new List<Carrier>();
             foreach(Carrier c in Carriers)
             {
                 if (c.HasDepotIn(o.GetOrigin()) && c.HasDepotIn(o.GetDestin()))
                 {
                     l.Add(c);
-                    return l;
                 }
             }
+
+            //if more than one carrier can fulfill our order...
+            if (l.Count > 1)
+            {
+                //call some cost calculating algorithm here to determine what is best!
+                return l[0];
+            }
+            else if(l.Count != 0)
+            {
+                return l[0];
+            }
+            
             return null;
         }
     }
