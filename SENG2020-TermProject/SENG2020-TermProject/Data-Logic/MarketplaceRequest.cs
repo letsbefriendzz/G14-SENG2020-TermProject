@@ -4,7 +4,21 @@
  * PROGRAMMER(s)    : Ryan Enns
  * FIRST VERSION    : 2021-11-25
  * DESCRIPTION      :
+
+Division of Development Duties – Each developer on the team will be required to take lead on a
+specific area of functionality. According to the block diagram above, for example, four 
+developers could split the areas of responsibility as such:
+
+User Interface
+
+Communications/Logging
+
+Data/Logic – Contact Management & Billing
+
+Data/Logic – Order, Carrier, Trip management
  */
+
+
 
 using System;
 

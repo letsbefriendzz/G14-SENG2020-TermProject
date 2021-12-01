@@ -141,6 +141,16 @@ namespace SENG2020_TermProject.Data_Logic
                 return true;
             return false;
         }
+
+        public double FTLCharge(int distance)
+        {
+            return this.FTLRate * distance; //return the distance multiplied by FTLRate
+        }
+
+        public double LTLCharge(int distance)
+        {
+            return this.LTLRate * distance;
+        }
     }
 
     /**
@@ -232,6 +242,7 @@ namespace SENG2020_TermProject.Data_Logic
             if (l.Count > 1)
             {
                 //call some cost calculating algorithm here to determine what is best!
+                Console.WriteLine("Wow! you've got a fun order!");
                 return l[0];
             }
             else if(l.Count != 0)

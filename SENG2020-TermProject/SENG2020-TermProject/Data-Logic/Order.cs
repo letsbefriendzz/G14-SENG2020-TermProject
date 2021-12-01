@@ -57,6 +57,10 @@ namespace SENG2020_TermProject.Data_Logic
         public double TimeToComplete;
         /// \brief      The total distance between the start city and end city.
         public int DistanceToComplete;
+        /// \brief      The total cost of the shipment using the given carrier.
+        public double CostToComplete = -1.0; //default -1, unset flag
+        /// \brief      The carrier being used to ship this order.
+        private Carrier c = null;
 
         public String GetOrigin()
         {
@@ -103,6 +107,15 @@ namespace SENG2020_TermProject.Data_Logic
             }
         }
 
+        private void GetCarrier()
+        {
+            this.c = CarrierList.CarriersForRoute(this);
+            if(this.c != null)
+            {
+                this.CalculateCost(c);
+            }
+        }
+
         /**
          * \brief       Assigns a value to the DistanceToComplete member.
          * 
@@ -136,6 +149,11 @@ namespace SENG2020_TermProject.Data_Logic
                     TimeToComplete += 2;
                 }
             }
+        }
+
+        private void CalculateCost(Carrier c)
+        {
+
         }
 
         public void Display()
