@@ -1,16 +1,13 @@
 ﻿/*
  * FILE             : Carrier.cs
  * PROJECT          : SENG2020 Term Project
- * PROGRAMMER       : Ryan Enns
+ * PROGRAMMER       : Ryan Enns - lol don't even put your names on shit I wrote
  * FIRST VERSION    : 2021-11-26
  * DESCRIPTION      :
  */
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SENG2020_TermProject.Data_Logic
 {
@@ -39,10 +36,13 @@ namespace SENG2020_TermProject.Data_Logic
         /// \brief      Dumps all data about this respective carrier to the console.
         public void Display()
         {
-            Console.WriteLine("==============\n{0}\n==============", CarrierName);
+            Console.WriteLine("=================");
+            Console.WriteLine(CarrierName);
             Console.WriteLine("Total Depots:\t\t{0}\n", this.Depots.Count);
+            Console.WriteLine("Has Depots In:");
             foreach (Depot d in Depots)
-                d.Display();
+                Console.WriteLine(" -\t{0}", d.CityName);
+            Console.WriteLine("=================");
         }
 
         /**
@@ -60,6 +60,17 @@ namespace SENG2020_TermProject.Data_Logic
                 if (d.CityName == cn)
                     return true;
             return false;
+        }
+
+        //fetches a Depot object from a Carrier object
+        public Depot GetDepot(String dcn)
+        {
+            if(HasDepotIn(dcn))
+            {
+                foreach (Depot d in Depots)
+                    if (d.CityName == dcn) return d;
+            }
+            return null;
         }
     }
 
@@ -207,7 +218,12 @@ namespace SENG2020_TermProject.Data_Logic
 
             Carriers.Add(new Carrier("We Haul", wh));
         }
-
+        /*
+         * NAME :
+         * DESC :
+         * PARM :
+         * RTRN :
+         */
         public static void Display()
         {
             foreach (Carrier c in Carriers)
@@ -225,16 +241,40 @@ namespace SENG2020_TermProject.Data_Logic
          * 
          * \returns     An instance of Carrier; the carrier that will be used for the given order.
          */
-        public static Carrier CarriersForRoute(Order o)
+        /*
+         * NAME : CarriersForRoute
+         * DESC :
+         *  The CarriersForRoute function returns a Carrier instance that will be used to fulfill
+         *  an Order. If there are multiple Carriers that could satisfy an order, we will run an
+         *  algorithm to determine the most cost effective solution.
+         *  
+         *  This algorithm ignores the potential for orders that have an origin and destination city
+         *  that can't be solved by a singular Carrier. This is because, logistically, this would be
+         *  a nightmare - and also because coding a solution for that would take up precious time that
+         *  I currently just don't have.
+         * PARM : Order
+         * RTRN : Carrier
+         */
+        public static List<Carrier> CarriersForRoute(Order o)
         {
             if (o == null) return null;
 
             List<Carrier> l = new List<Carrier>();
             foreach(Carrier c in Carriers)
             {
+                //add each potential carrier to the list of potential carriers
                 if (c.HasDepotIn(o.GetOrigin()) && c.HasDepotIn(o.GetDestin()))
                 {
-                    l.Add(c);
+                    if (o.JobType() == "FTL")
+                    {
+                        if(c.GetDepot(o.GetOrigin()).HasFTLAvail(1))
+                            l.Add(c);
+                    }
+                    else
+                    {
+                        if (c.GetDepot(o.GetOrigin()).HasLTLAvail(o.LTLQty()))
+                            l.Add(c);
+                    }
                 }
             }
 
@@ -242,15 +282,56 @@ namespace SENG2020_TermProject.Data_Logic
             if (l.Count > 1)
             {
                 //call some cost calculating algorithm here to determine what is best!
-                Console.WriteLine("Wow! you've got a fun order!");
-                return l[0];
+/*                int lowestCostIndex = 0;
+                double prevCost = 0.0;
+                for (int i = 0; i < l.Count; i++)
+                {
+                    Order dupe = o;
+                    dupe.PrepOrder(l[i]);
+                    if (o.CostToComplete < prevCost)
+                    {
+                        prevCost = dupe.CostToComplete;
+                        lowestCostIndex = i;
+                    }
+                    if (i == 0) prevCost = dupe.CostToComplete;
+                } //fuck with this shit later - 2021-12-02*/
             }
             else if(l.Count != 0)
             {
-                return l[0];
+
             }
-            
+
+            return l;
+        }
+
+        /*
+         * NAME : Contains
+         * DESC :
+         *  This function returns a Carrier instance if it is present in the local CarrierList.
+         * PARM : String
+         * RTRN : Carrier
+         */
+        public static Carrier Contains(String cName)
+        {
+            foreach (Carrier c in CarrierList.Carriers)
+                if (c.CarrierName == cName) return c;
             return null;
+        }
+
+        //returns a depot from a carrier - if either the depot or the carrier don't
+        //exist, null is returned.
+        /*
+         * NAME : GetCarrierDepot
+         * DESC :
+         *  This function retrieves a Depot instance from a specified carrier and locaiton.
+         *  This allows us to retrieve Depots to establish the costs of shipping to populate
+         *  fields in our Order class.
+         * PARM : String, String
+         * RTRN : Depot
+         */
+        public static Depot GetCarrierDepot(String CarrierName, String DepotLocation)
+        {
+            return Contains(CarrierName).GetDepot(DepotLocation);
         }
     }
 }

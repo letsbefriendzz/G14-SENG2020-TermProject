@@ -74,6 +74,7 @@
 using SENG2020_TermProject.DatabaseManagement;
 using SENG2020_TermProject.Data_Logic;
 using System;
+using System.Collections.Generic;
 
 namespace SENG2020_TermProject
 {
@@ -81,18 +82,147 @@ namespace SENG2020_TermProject
     {
         private static void AnyKeyToContinue()
         {
-            Console.WriteLine("Press any key to continue.");
-            Console.ReadKey();
+            Console.ReadLine();
         }
 
 
         //what is this doing?
+        //lol
         static void Main(string[] args)
         {
-            CityList.DisplayList();
+            ContractMarketAccess cma = new ContractMarketAccess();
+            MarketplaceRequest[] mpr = cma.GetAllMarketplaceRequests();
+
+            List<Order> o = new List<Order>();
+
+            bool exit = false;
+            while(!exit)
+            {
+                Order or = Buyer();
+                if (or == null)
+                    exit = true;
+                else o.Add(or);
+            }
+
+            //Planner(new Order(mpr[3]));
 
             AnyKeyToContinue();
             return; //and then return!
+        }
+
+        //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        static Order Buyer()
+        {
+            String inp = "";
+            while(inp != null)
+            {
+                Console.WriteLine("Make a selection:");
+                Console.WriteLine("1. View Contracts from Marketplace");
+                Console.WriteLine("2. View Unfilled Orders");
+                Console.WriteLine("3. Exit");
+
+                inp = GetInput();
+
+                if(inp == "1")
+                {
+                    inp = "";
+                    ContractMarketAccess cma = new ContractMarketAccess();
+                    MarketplaceRequest[] mpr = cma.GetAllMarketplaceRequests();
+                    int iter = 0;
+                    foreach (MarketplaceRequest m in mpr)
+                    {
+                        Console.WriteLine("Order #{0}", iter);
+                        m.Display();
+                        iter++;
+                    }
+
+                    Console.WriteLine("Select From Contracts? Y/N");
+
+                    while(inp != "Y" && inp != "N")
+                    {
+                        inp = GetInput();
+                    }
+
+                    if(inp == "Y")
+                    {
+                        Console.WriteLine("Select a Contract - (0 - {0})", mpr.Length - 1);
+                        inp = GetInput();
+
+                        int integerInp = int.Parse(inp);
+                        Order o = new Order(mpr[integerInp]);
+                        o.Display();
+                        return o;
+                    }
+                }
+                else if(inp == "2")
+                {
+
+                }
+                else if(inp == "3")
+                {
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        //basically just a procedural version of the planner workflow
+        //this is the procedural flow in a console when a planner has
+        //selected an unfilled order from the TMS database.
+        static void Planner(Order o) //this will actually take a value from a database based on user input ! :)
+        {
+            String inp = "";
+            while (inp != null)
+            {
+                Console.WriteLine("Make a selection:");
+                Console.WriteLine("1. Select a Carrier for Order");
+                if(o.isprepped) Console.WriteLine("2. Simulate Time");
+
+                inp = GetInput();
+
+                if (inp == "1")
+                {
+                    if (CarrierList.CarriersForRoute(o) != null)
+                    {
+                        Console.WriteLine("Order Details:");
+                        o.Display();
+                        List<Carrier> c = CarrierList.CarriersForRoute(o);
+                        Console.WriteLine("Available Carriers to Fulfill Order:");
+                        foreach (Carrier ca in c)
+                        {
+                            ca.Display();
+                        }
+
+                        Console.WriteLine("Select a Carrier - (0 - {0})", c.Count - 1);
+                        inp = GetInput();
+
+                        int integerInp = int.Parse(inp);
+                        o.PrepOrder(c[integerInp]);
+
+                        o.Display();
+                    }
+                    else
+                    {
+                        Console.WriteLine("There are no Carrier services that can fulfill this order!");
+                        Console.WriteLine("Order Details:");
+                        o.Display();
+                    }
+                }
+                else if (inp == "2")
+                {
+
+                }
+                else if (inp == "3")
+                {
+
+                }
+            }
+        }
+
+        static String GetInput()
+        {
+            Console.Write(">> ");
+            return Console.ReadLine();
         }
     }
 }

@@ -38,6 +38,7 @@ namespace SENG2020_TermProject.Data_Logic
         ///             baically, just add this twice to the total time.
         const int LOAD_UNLOAD_TIME = 2;
         public bool fulfilled = false;
+        public bool isprepped = false;
 
         /**
          * \brief       mr represents the MarketplaceRequest object that this Order was created from.
@@ -59,6 +60,8 @@ namespace SENG2020_TermProject.Data_Logic
         public int DistanceToComplete;
         /// \brief      The total cost of the shipment using the given carrier.
         public double CostToComplete = -1.0; //default -1, unset flag
+        /// \brief      The surcharge that OSHT will apply for profit to this order.
+        public double OSHTSurcharge = -1.0;
         /// \brief      The carrier being used to ship this order.
         private Carrier c = null;
 
@@ -75,8 +78,23 @@ namespace SENG2020_TermProject.Data_Logic
         public Order()
         {
             IsComplete = false;
-            TimeToComplete = 0.0;
+            TimeToComplete = -1.0;
             DistanceToComplete = 0;
+        }
+
+        public String JobType()
+        {
+            if (mr.JobType == 0)
+                return "FTL";
+            else
+                return "LTL";
+        }
+
+        public int LTLQty()
+        {
+            if (this.JobType() == "LTL")
+                return this.mr.Quantity;
+            else return -1;
         }
 
         /**
@@ -85,9 +103,9 @@ namespace SENG2020_TermProject.Data_Logic
          * \details     This constructor accepts a MarketplaceRequest object to then pass to the ParseMarketplaceRequest
          *              function for further processing.
          */
-        public Order(MarketplaceRequest req)
+        public Order(MarketplaceRequest req) : this()
         {
-            ParseMarketplaceRequest(req);
+            this.mr = req;
         }
 
         /**
@@ -97,23 +115,31 @@ namespace SENG2020_TermProject.Data_Logic
          *              is copied to the local MarketplaceRequest instance (mr). Then, the CalculateDistance and CalculateTime
          *              functions are called to further populate the Order fields.
          */
-        private void ParseMarketplaceRequest(MarketplaceRequest req)
+        public void PrepOrder(Carrier car)
         {
-            if(req != null)
+            if (isprepped) throw new Exception("Order already prepared.");
+            if(this.mr != null && car !=null)
             {
-                this.mr = req;
                 CalculateDistance();
                 CalculateTime();
+                SetCarrier(car);
+                if(mr.JobType == 0)
+                {
+                    CalculateCost(c.GetDepot(mr.CityOrigin).FTLRate);
+                }
+                else
+                {
+                    CalculateCost(c.GetDepot(mr.CityOrigin).LTLRate);
+                }
+
+                isprepped = true;
             }
         }
 
-        private void GetCarrier()
+        private void SetCarrier(Carrier car)
         {
-            this.c = CarrierList.CarriersForRoute(this);
-            if(this.c != null)
-            {
-                this.CalculateCost(c);
-            }
+            if (car == null) return;
+            else this.c = car;
         }
 
         /**
@@ -146,21 +172,51 @@ namespace SENG2020_TermProject.Data_Logic
             {
                 for(int i = 0; i < CityList.LTLStops(mr.CityOrigin, mr.CityDestin); i++)
                 {
+                    //For each stop we add two hours
                     TimeToComplete += 2;
                 }
             }
         }
 
-        private void CalculateCost(Carrier c)
+        private void CalculateCost(double rate)
         {
+            //The carrier object we take here will dictate the cost per km
+            //this Order instance NEEDS to be init for this func to work
+            if (this == null) return;
 
+            double markup;
+
+            if (this.mr.JobType == 0)
+            {
+                this.CostToComplete = DistanceToComplete * rate;
+                markup = rate * 0.08;
+                this.OSHTSurcharge = DistanceToComplete * markup;
+            }
+            else
+            {
+                //LTL $/km rate is rate * quantity of pallets
+                double LTLCharge = rate * mr.Quantity;
+                //cost to complete will be LTL * distance
+                this.CostToComplete = DistanceToComplete * LTLCharge;
+                //markup will have to be 5% on top of present LTL charge
+                markup = LTLCharge * 0.05;
+                //OSHT surcharge is still distance to complete * markup
+                this.OSHTSurcharge = DistanceToComplete * markup;
+            }
         }
 
         public void Display()
         {
             this.mr.Display();
-            Console.WriteLine("Time to complete:\t{0}h", this.TimeToComplete);
-            Console.WriteLine("Distance to destin:\t{0}km", this.DistanceToComplete);
+            if (!(this.TimeToComplete == -1.0))
+            {
+                Console.WriteLine("Time to complete:\t{0}h", this.TimeToComplete);
+                Console.WriteLine("Distance to destin:\t{0}km", this.DistanceToComplete);
+                Console.WriteLine("Carrier Charges:\t${0}", this.CostToComplete);
+                Console.WriteLine("OSHT Charges:\t\t${0}", this.OSHTSurcharge);
+                Console.WriteLine("Total cost to complete:\t${0}", this.CostToComplete + this.OSHTSurcharge);
+                Console.WriteLine("Carrier to complete:\t{0}", this.c.CarrierName);
+            }
         }
     }
 }

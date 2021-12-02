@@ -75,7 +75,7 @@ namespace SENG2020_TermProject.Data_Logic
             //Windsor <- London -> Hamilton
             CitySequence.Add(new City("London", "Hamilton", 128, 1.75));
 
-            //London <- Hamilton -> Toronto
+            //London <- Hamilton -> TorontoFDi
             CitySequence.Add(new City("Hamilton", "Toronto", 68, 1.25));
 
             //Hamilton <- Toronto -> Oshawa

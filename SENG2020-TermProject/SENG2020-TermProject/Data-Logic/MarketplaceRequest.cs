@@ -137,9 +137,11 @@ namespace SENG2020_TermProject.Data_Logic
             if(JobType == 0)
                 Console.WriteLine("JobType:\tFTL");
             else
+            {
                 Console.WriteLine("JobType:\tLTL");
+                Console.WriteLine("Quantity:\t{0} Pallets", Quantity);
+            }
 
-            Console.WriteLine("Quantity:\t{0}", Quantity);
             Console.WriteLine("Origin:\t\t{0}", CityOrigin);
             Console.WriteLine("Destin:\t\t{0}", CityDestin);
 
