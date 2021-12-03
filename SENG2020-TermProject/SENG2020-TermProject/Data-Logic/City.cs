@@ -39,6 +39,11 @@ namespace SENG2020_TermProject.Data_Logic
         /// \brief      The time it takes to travel to the city west of CityName, in hours.
         public double TimeToEastCity;
 
+        public String GetName()
+        {
+            return this.CityName;
+        }
+
         public City(String cn, String ecn, int ecd, double ttec)
         {
             this.CityName = cn;
@@ -91,6 +96,11 @@ namespace SENG2020_TermProject.Data_Logic
 
             //Kingston <- Ottawa -> null
             CitySequence.Add(new City("Ottawa", null, -1, -1.0));
+        }
+
+        public static List<City> GetList()
+        {
+            return CitySequence;
         }
 
         /**
@@ -146,6 +156,16 @@ namespace SENG2020_TermProject.Data_Logic
                     return i;
             }
             return -1;
+        }
+
+        public static City GetCity(String city)
+        {
+            if(ContainsCity(city))
+            {
+                foreach (City c in CitySequence)
+                    if (c.CityName == city) return c;
+            }
+            return null;
         }
 
         /**

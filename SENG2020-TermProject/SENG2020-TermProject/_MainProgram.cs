@@ -75,29 +75,47 @@ using SENG2020_TermProject.DatabaseManagement;
 using SENG2020_TermProject.Data_Logic;
 using System;
 using System.Collections.Generic;
+using SENG2020_TermProject.UserStructure;
 
 namespace SENG2020_TermProject
 {
     class _MainProgram
     {
-        public static List<Order> orders = new List<Order>();
         private static void AnyKeyToContinue()
         {
-            Console.WriteLine("\n\n\n\nPress enter to continue.");
+            Console.WriteLine("\n\nPress enter to continue.");
             Console.ReadLine();
         }
-
+            
         static void Main(string[] args)
         {
-            Order[] o = new TMSDatabaseAccess().GetAllOrders();
+            MarketplaceRequest mr = new MarketplaceRequest("Ryan's Fuckery", 0, 0, "Windsor", "Toronto", 0);
+            Order o = new Order(mr);
+            o.PrepOrder();
+            o.Display();
 
-            foreach (Order order in o)
-                order.Display();
+            Buyer b = new Buyer();
 
             AnyKeyToContinue();
             return; //and then return!
         }
 
+        static void TestCities()
+        {
+            foreach(City c1 in CityList.GetList())
+            {
+                foreach(City c2 in CityList.GetList())
+                {
+                    if (CarrierList.CarriersForRoute(c1, c2) == null)
+                    {
+                        Console.WriteLine("Bad Test");
+                        Console.WriteLine("Origin:\t{0}", c1.CityName);
+                        Console.WriteLine("Destin:\t{0}", c2.CityName);
+                        Console.WriteLine();
+                    }
+                }
+            }
+        }
 
         //test harness func I'd like to hold on to
         static void PrepAndInsertOrders()
@@ -112,6 +130,7 @@ namespace SENG2020_TermProject
             foreach (MarketplaceRequest m in mpr)
             {
                 o[iter] = new Order(m);
+                //o[iter].PrepOrder(CarrierList.CarriersForRoute(o[iter])[0]);
                 iter++;
             }
 
@@ -127,14 +146,15 @@ namespace SENG2020_TermProject
         //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
         
         //renns
-        static Order Buyer()
+        static void Buyer()
         {
+            TMSDatabaseAccess tms = new TMSDatabaseAccess();
             String inp = "";
             while(inp != null)
             {
                 Console.WriteLine("Make a selection:");
                 Console.WriteLine("1. View Contracts from Marketplace");
-                Console.WriteLine("2. View Unfilled Orders");
+                Console.WriteLine("2. View Finished Orders");
                 Console.WriteLine("3. Exit");
 
                 inp = GetInput();
@@ -167,20 +187,43 @@ namespace SENG2020_TermProject
                         int integerInp = int.Parse(inp);
                         Order o = new Order(mpr[integerInp]);
                         o.Display();
-                        return o;
+                        tms.InsertOrder(o);
                     }
                 }
                 else if(inp == "2")
                 {
-                    foreach (Order o in orders)
-                        if (!o.isprepped) o.Display();
+                    Order[] orders = tms.GetFinishedOrders();
+                    if (orders == null)
+                        Console.WriteLine("No finished orders to process!");
+                    else
+                    {
+                        foreach (Order order in orders)
+                            order.Display();
+
+                        Console.WriteLine("Generate an invoice for an order? Y/N");
+
+                        while (inp != "Y" && inp != "N")
+                        {
+                            inp = GetInput();
+                        }
+
+                        if (inp == "Y")
+                        {
+                            Console.WriteLine("Select an Order - (0 - {0})", orders.Length - 1);
+                            inp = GetInput();
+
+                            int integerInp = int.Parse(inp);
+                            Order ForInvoice = orders[integerInp];
+                            if (ForInvoice.IsComplete == true)
+                                Console.WriteLine("Invoice Generated");
+                        }
+                    }
                 }
                 else if(inp == "3")
                 {
-                    return null;
+
                 }
             }
-            return null;
         }
 
         //basically just a procedural version of the planner workflow
@@ -188,20 +231,22 @@ namespace SENG2020_TermProject
         //selected an unfilled order from the TMS database.
 
         //renns
-        static void Planner(List<Order> orders) //this will actually take a value from a database based on user input ! :)
+        static void Planner() //this will actually take a value from a database based on user input ! :)
         {
+            TMSDatabaseAccess tms = new TMSDatabaseAccess();
+            Order[] orders = tms.GetIncompleteOrders();
             String inp = "";
             while (inp != null)
             {
                 Console.WriteLine("1. View Unfilled Orders");
-                Console.WriteLine("2. Fulfill Order");
+                Console.WriteLine("2. Confirm Order Completion");
                 Console.WriteLine("3. Simulate Order");
                 inp = GetInput();
 
                 if(inp == "1")
                 {
-                    foreach (Order or in orders)
-                        or.Display();
+                    foreach (Order order in orders)
+                        order.Display();
                 }
                 else if(inp == "2")
                 {
@@ -213,11 +258,26 @@ namespace SENG2020_TermProject
                         iter++;
                     }
 
-                    Console.WriteLine("Select an order to fulfill - (0 - {0}).", orders.Count);
+                    Console.WriteLine("Select an order to fulfill - (0 - {0}).", orders.Length);
                     inp = GetInput();
                     Order o = orders[int.Parse(inp)];
 
-                    if (CarrierList.CarriersForRoute(o) != null)
+                    tms.SetOrderComplete(o.GetID());
+                }
+            }
+        }
+
+        //renns
+        static String GetInput()
+        {
+            Console.Write(">> ");
+            return Console.ReadLine();
+        }
+    }
+}
+
+/*
+                     if (CarrierList.CarriersForRoute(o) != null)
                     {
                         Console.WriteLine("Order Details:");
                         o.Display();
@@ -242,15 +302,4 @@ namespace SENG2020_TermProject
                         Console.WriteLine("Order Details:");
                         o.Display();
                     }
-                }
-            }
-        }
-
-        //renns
-        static String GetInput()
-        {
-            Console.Write(">> ");
-            return Console.ReadLine();
-        }
-    }
-}
+ */

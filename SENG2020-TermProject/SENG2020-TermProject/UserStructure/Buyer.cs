@@ -57,5 +57,21 @@ namespace SENG2020_TermProject.UserStructure
         {
             return new ContractMarketAccess().GetAllMarketplaceRequests();
         }
+
+        public void SelectCities(MarketplaceRequest req)
+        {
+            Console.WriteLine("Please select any cities that must be stopped at during this order.");
+            int iter = 0;
+            foreach(City c in CityList.GetList())
+            {
+                Console.Write("City #{0}:\t{1}", iter, c.CityName);
+                if (req.CityOrigin == c.CityName)
+                    Console.WriteLine("\t\t[Origin]");
+                else if (req.CityDestin == c.CityName)
+                    Console.WriteLine("\t\t[Destin]");
+                else Console.WriteLine();
+                iter++;
+            }
+        }
     }
 }

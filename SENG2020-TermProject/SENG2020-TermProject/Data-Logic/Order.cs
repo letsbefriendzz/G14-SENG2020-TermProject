@@ -12,16 +12,6 @@ using System;
 //reference this fucker like crazy!
 //https://conestoga.desire2learn.com/d2l/le/content/482677/viewContent/9959524/View
 
-/*
-    
-GOALS FOR THIS CLASS
-
-The order class needs to represent an order. Shocker, thanks Ryan, you're a genius. What does that mean?
-An order is first initialized by a Buyer, who finds the contract on the marketplace and creates an order
-to fill it.
-
-*/
-
 namespace SENG2020_TermProject.Data_Logic
 {
     /**
@@ -37,7 +27,7 @@ namespace SENG2020_TermProject.Data_Logic
         /// \brief      This macro defines the time requried to load and unload at the origin and destination.
         ///             baically, just add this twice to the total time.
         const int LOAD_UNLOAD_TIME = 2;
-        private int ID;
+        private int ID = -1; //-1 is default for unprepped order
         public bool isprepped = false;
 
         /**
@@ -63,13 +53,20 @@ namespace SENG2020_TermProject.Data_Logic
         /// \brief      The surcharge that OSHT will apply for profit to this order.
         public double OSHTSurcharge = -1.0;
         /// \brief      The carrier being used to ship this order.
-        private Carrier c = null;
+        //private Carrier c = null;
+        private List<Trip> trips = new List<Trip>();
 
+
+        public int GetID()
+        {
+            return this.ID;
+        }
+        /*
         public String GetCarrierName()
         {
             return this.c.CarrierName;
         }
-
+        */
         public String GetOrigin()
         {
             return this.mr.CityOrigin;
@@ -113,7 +110,7 @@ namespace SENG2020_TermProject.Data_Logic
             this.mr = req;
         }
 
-        public Order(MarketplaceRequest req, double t, int d, double cost, double osh, Carrier car, bool c)
+        public Order(MarketplaceRequest req, double t, int d, double cost, double osh, bool c)
         {
             this.mr = req;
             this.IsComplete = c;
@@ -121,8 +118,6 @@ namespace SENG2020_TermProject.Data_Logic
             this.DistanceToComplete = d;
             this.CostToComplete = cost;
             this.OSHTSurcharge = osh;
-            if (car != null)
-                this.SetCarrier(car);
         }
 
         /**
@@ -132,31 +127,27 @@ namespace SENG2020_TermProject.Data_Logic
          *              is copied to the local MarketplaceRequest instance (mr). Then, the CalculateDistance and CalculateTime
          *              functions are called to further populate the Order fields.
          */
-        public void PrepOrder(Carrier car)
+        public void PrepOrder()
         {
             if (isprepped) throw new Exception("Order already prepared.");
-            if(this.mr != null && car !=null)
+            if(this.mr != null)
             {
                 CalculateDistance();
                 CalculateTime();
-                SetCarrier(car);
+                this.trips = CarrierList.CarriersForRoute(this);
+                CalculateCost();
+            
                 if(mr.JobType == 0)
                 {
-                    CalculateCost(c.GetDepot(mr.CityOrigin).FTLRate);
+                    //calculate cost
                 }
                 else
                 {
-                    CalculateCost(c.GetDepot(mr.CityOrigin).LTLRate);
+                    //calculate cost
                 }
 
                 isprepped = true;
             }
-        }
-
-        private void SetCarrier(Carrier car)
-        {
-            if (car == null) return;
-            else this.c = car;
         }
 
         /**
@@ -195,44 +186,59 @@ namespace SENG2020_TermProject.Data_Logic
             }
         }
 
-        private void CalculateCost(double rate)
+        private void CalculateCost()
         {
             //The carrier object we take here will dictate the cost per km
             //this Order instance NEEDS to be init for this func to work
+
             if (this == null) return;
+
+            double TotalCost = 0.0;
 
             double markup;
 
             if (this.mr.JobType == 0)
             {
-                this.CostToComplete = DistanceToComplete * rate;
-                markup = rate * 0.08;
-                this.OSHTSurcharge = DistanceToComplete * markup;
+                foreach (Trip t in trips)
+                {
+                    TotalCost += t.GetTripCost(this.mr.JobType, this.mr.Quantity);
+                }
             }
             else
             {
-                //LTL $/km rate is rate * quantity of pallets
+/*                //LTL $/km rate is rate * quantity of pallets
                 double LTLCharge = rate * mr.Quantity;
                 //cost to complete will be LTL * distance
                 this.CostToComplete = DistanceToComplete * LTLCharge;
                 //markup will have to be 5% on top of present LTL charge
                 markup = LTLCharge * 0.05;
                 //OSHT surcharge is still distance to complete * markup
-                this.OSHTSurcharge = DistanceToComplete * markup;
+                this.OSHTSurcharge = DistanceToComplete * markup;*/
             }
+
+            this.CostToComplete = TotalCost;
         }
 
         public void Display()
         {
             this.mr.Display();
-            if (!(this.TimeToComplete == -1.0))
+            if (this.isprepped == true)
             {
                 Console.WriteLine("Time to complete:\t{0}h", this.TimeToComplete);
                 Console.WriteLine("Distance to destin:\t{0}km", this.DistanceToComplete);
                 Console.WriteLine("Carrier Charges:\t${0}", this.CostToComplete);
                 Console.WriteLine("OSHT Charges:\t\t${0}", this.OSHTSurcharge);
                 Console.WriteLine("Total cost to complete:\t${0}", this.CostToComplete + this.OSHTSurcharge);
-                Console.WriteLine("Carrier to complete:\t{0}", this.c.CarrierName);
+                Console.WriteLine("Trips to Compelte:\t{0}", this.trips.Count);
+                foreach(Trip t in trips)
+                {
+                    Console.WriteLine("================================");
+                    Console.WriteLine("Trip Origin:\t\t{0}", t.GetOrigin().GetName());
+                    Console.WriteLine("Trip Destination:\t{0}", t.GetDestin().GetName());
+                    Console.WriteLine("Carrier to Complete:\t{0}", t.GetCarrier().GetName());
+                    Console.WriteLine("Trip Distance:\t\t{0}km", t.GetDistance());
+                    Console.WriteLine("Trip Cost:\t\t${0}", t.GetTripCost(this.mr.JobType, this.mr.Quantity));
+                }
             }
         }
     }

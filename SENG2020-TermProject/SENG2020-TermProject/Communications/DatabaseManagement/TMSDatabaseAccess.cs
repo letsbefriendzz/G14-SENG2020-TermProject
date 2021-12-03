@@ -35,9 +35,9 @@ namespace SENG2020_TermProject.DatabaseManagement
                 if (o.isprepped)
                 {
                     cm.CommandText = String.Format("insert into tmsorder " +
-                        "(ClientName, JobType, Quantity, CityOrigin, CityDestin, VanType, TimeToComplete, DistanceToComplete, CostToComplete, OSHTSurcharge, CarrierName, IsComplete) " +
+                        "(ClientName, JobType, Quantity, CityOrigin, CityDestin, VanType, TimeToComplete, DistanceToComplete, CostToComplete, OSHTSurcharge, IsComplete) " +
                         "values (\"{0}\",{1},{2},\"{3}\",\"{4}\",{5},{6},{7},{8},{9},\"{10}\",{11});",
-                        o.mr.ClientName, o.mr.JobType, o.mr.Quantity, o.mr.CityOrigin, o.mr.CityDestin, o.mr.VanType, o.TimeToComplete, o.DistanceToComplete, o.CostToComplete, o.OSHTSurcharge, o.GetCarrierName(), o.IsComplete);
+                        o.mr.ClientName, o.mr.JobType, o.mr.Quantity, o.mr.CityOrigin, o.mr.CityDestin, o.mr.VanType, o.TimeToComplete, o.DistanceToComplete, o.CostToComplete, o.OSHTSurcharge, o.IsComplete);
                 }
                 else
                 {
@@ -61,7 +61,60 @@ namespace SENG2020_TermProject.DatabaseManagement
             }
         }
 
+        public Order[] GetFinishedOrders()
+        {
+            return GetOrders("select * from tmsorder where IsComplete=1");
+        }
+
         public Order[] GetAllOrders()
+        {
+            return GetOrders("select * from tmsorder");
+        }
+
+        public Order[] GetOrderByOrigin(String city)
+        {
+            return GetOrders("select * from tmsorder where CityOrigin=\""+city+"\"");
+        }
+
+        public Order[] GetOrderByDestin(String city)
+        {
+            return GetOrders("select * from tmsorder where CityDestin=\"" + city + "\"");
+        }
+
+        public Order[] GetOrderByClient(String client)
+        {
+            return GetOrders("select * from tmsorder where ClientName=\"" + client + "\"");
+        }
+
+        public Order[] GetIncompleteOrders()
+        {
+            return GetOrders("select * from tmsorder where IsComplete=0");
+        }
+
+        public bool SetOrderComplete(int id)
+        {
+            if(this.cn!=null&&this.ValidConnection)
+            {
+                try
+                {
+                    cn.Open();
+                    using (MySqlCommand cm = cn.CreateCommand())
+                    {
+                        cm.CommandText = "update tmsorder set IsComplete=1 where OrderID="+id.ToString();
+                        cm.ExecuteNonQuery();
+                    }
+                    cn.Close();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        private Order[] GetOrders(String commandText)
         {
             Order[] orders = null;
             if (this.cn != null && this.ValidConnection)
@@ -71,7 +124,7 @@ namespace SENG2020_TermProject.DatabaseManagement
                     cn.Open();
                     using (MySqlCommand cm = cn.CreateCommand())
                     {
-                        cm.CommandText = "select * from tmsorder";
+                        cm.CommandText = commandText;
                         using (MySqlDataAdapter ada = new MySqlDataAdapter(cm))
                         {
                             DataTable dt = new DataTable();
@@ -112,7 +165,7 @@ namespace SENG2020_TermProject.DatabaseManagement
                                     if (ic == 0)
                                         IsComplete = false;
                                     else IsComplete = true;
-                                    orders[i] = new Order(temp, (double)dr[7], int.Parse(dr[8].ToString()), (double)dr[9], (double)dr[10], CarrierList.GetCarrierByName(dr[11].ToString()), IsComplete);
+                                    orders[i] = new Order(temp, (double)dr[7], int.Parse(dr[8].ToString()), (double)dr[9], (double)dr[10], IsComplete);
                                     //this catastrophically bad way of parsing an sbyte to a boolean deserves to be preserved in the museum of shitty code
                                     //bool IsComplete = bool.Parse(int.Parse(dr[11].ToString()).ToString()); 
                                 }

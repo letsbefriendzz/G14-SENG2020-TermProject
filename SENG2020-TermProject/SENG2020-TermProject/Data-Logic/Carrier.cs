@@ -26,6 +26,11 @@ namespace SENG2020_TermProject.Data_Logic
         /// \brief      The list of depots this carrier has.
         public List<Depot> Depots;
 
+        public String GetName()
+        {
+            return this.CarrierName;
+        }
+
         /// \brief      Sets the carrier name to paramater cn; copies the List<Depot> parameter to the local Depots list.
         public Carrier(String cn, List<Depot> d)
         {
@@ -230,6 +235,87 @@ namespace SENG2020_TermProject.Data_Logic
                 c.Display();
         }
 
+        /*
+         * NAME
+         * DESC :
+            This function has three nested loops. For each city that rests between our origin and destination,
+            we iterate through each carrier twice to test if any pair of carriers has a depot in a city between
+            the origin and destination. If it does, we add new trips to the trips list and return it. Otherwise,
+            we return null.
+         * RTRN
+         * PARM
+         */
+        public static List<Trip> FindIntermediaryCity(City c1, City c2)
+        {
+            List<Trip> trips = new List<Trip>();
+            String origin = c1.CityName;
+            String destin = c2.CityName;
+            int i1 = CityList.GetCityIndex(origin) +1;
+            int i2 = CityList.GetCityIndex(destin);
+
+            if(i1 > i2)
+            {
+                int inter = i1;
+                i1 = i2;
+                i2 = inter;
+            }
+
+            if (i1 == i2)
+                Console.WriteLine("No Intermediary Cities");
+
+            for(int i = i1; i < i2; i++)
+            {
+                String CurrentCity = CityList.CityAt(i).CityName;
+
+                foreach(Carrier carrier1 in Carriers)
+                {
+                    foreach(Carrier carrier2 in Carriers)
+                    {
+                        //if the first carrier has a depot in the origin city and the second carrier has a depot in the destination city...
+                        if (carrier1.HasDepotIn(origin) && carrier2.HasDepotIn(destin))
+                        {
+                            //if both carriers have a depot in the intermediary city
+                            if(carrier1.HasDepotIn(CurrentCity) && carrier2.HasDepotIn(CurrentCity))
+                            {
+                                //add a new trip - origin city as origin, intermediary city as destin
+                                trips.Add(new Trip(c1, CityList.GetCity(CurrentCity), carrier1));
+                                trips.Add(new Trip(CityList.GetCity(CurrentCity), c2, carrier2));
+
+                                return trips;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        //testing function
+        public static List<Trip> CarriersForRoute(City c1, City c2)
+        {
+            List<Carrier> l = new List<Carrier>();
+            foreach (Carrier c in Carriers)
+            {
+                //add each potential carrier to the list of potential carriers
+                if (c.HasDepotIn(c1.GetName()) && c.HasDepotIn(c2.GetName()))
+                {
+                    l.Add(c);
+                }
+            }
+
+            if (l.Count == 0)
+            {
+                return CarrierList.FindIntermediaryCity(CityList.GetCity(c1.GetName()), CityList.GetCity(c2.GetName()));
+            }
+            else
+            {
+                List<Trip> ReturnValue = new List<Trip>();
+                ReturnValue.Add(new Trip(c1.GetName(), c2.GetName(), l[0]));
+                return ReturnValue;
+            }
+        }
+
         /**
          * \brief       Establishes which carrier will be used for an order.
          * 
@@ -255,7 +341,7 @@ namespace SENG2020_TermProject.Data_Logic
          * PARM : Order
          * RTRN : Carrier
          */
-        public static List<Carrier> CarriersForRoute(Order o)
+        public static List<Trip> CarriersForRoute(Order o)
         {
             if (o == null) return null;
 
@@ -278,30 +364,16 @@ namespace SENG2020_TermProject.Data_Logic
                 }
             }
 
-            //if more than one carrier can fulfill our order...
-            if (l.Count > 1)
+            if(l.Count == 0)
             {
-                //call some cost calculating algorithm here to determine what is best!
-/*                int lowestCostIndex = 0;
-                double prevCost = 0.0;
-                for (int i = 0; i < l.Count; i++)
-                {
-                    Order dupe = o;
-                    dupe.PrepOrder(l[i]);
-                    if (o.CostToComplete < prevCost)
-                    {
-                        prevCost = dupe.CostToComplete;
-                        lowestCostIndex = i;
-                    }
-                    if (i == 0) prevCost = dupe.CostToComplete;
-                } //fuck with this shit later - 2021-12-02*/
+                return CarrierList.FindIntermediaryCity(CityList.GetCity(o.GetOrigin()), CityList.GetCity(o.GetDestin()));
             }
-            else if(l.Count != 0)
+            else
             {
-
+                List<Trip> ReturnValue = new List<Trip>();
+                ReturnValue.Add(new Trip(o.GetOrigin(), o.GetDestin(), l[0]));
+                return ReturnValue;
             }
-
-            return l;
         }
 
         /*
