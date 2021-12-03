@@ -311,7 +311,7 @@ namespace SENG2020_TermProject.Data_Logic
          * PARM : String
          * RTRN : Carrier
          */
-        public static Carrier Contains(String cName)
+        public static Carrier GetCarrierByName(String cName)
         {
             foreach (Carrier c in CarrierList.Carriers)
                 if (c.CarrierName == cName) return c;
@@ -331,7 +331,7 @@ namespace SENG2020_TermProject.Data_Logic
          */
         public static Depot GetCarrierDepot(String CarrierName, String DepotLocation)
         {
-            return Contains(CarrierName).GetDepot(DepotLocation);
+            return GetCarrierByName(CarrierName).GetDepot(DepotLocation);
         }
     }
 }

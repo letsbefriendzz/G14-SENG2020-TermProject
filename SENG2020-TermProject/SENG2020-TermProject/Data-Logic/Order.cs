@@ -37,7 +37,7 @@ namespace SENG2020_TermProject.Data_Logic
         /// \brief      This macro defines the time requried to load and unload at the origin and destination.
         ///             baically, just add this twice to the total time.
         const int LOAD_UNLOAD_TIME = 2;
-        public bool fulfilled = false;
+        private int ID;
         public bool isprepped = false;
 
         /**
@@ -50,7 +50,7 @@ namespace SENG2020_TermProject.Data_Logic
          *              order is a MarketplaceRequest. The Order class has a private MarketplaceRequest
          *              member to represent the MarketplaceRequest from which the Order was derived.
          */
-        private MarketplaceRequest mr = null;
+        public MarketplaceRequest mr = null;
 
         /// \brief      A boolean that indicates if this order has been fulfilled or not.
         public bool IsComplete;
@@ -64,6 +64,11 @@ namespace SENG2020_TermProject.Data_Logic
         public double OSHTSurcharge = -1.0;
         /// \brief      The carrier being used to ship this order.
         private Carrier c = null;
+
+        public String GetCarrierName()
+        {
+            return this.c.CarrierName;
+        }
 
         public String GetOrigin()
         {
@@ -106,6 +111,18 @@ namespace SENG2020_TermProject.Data_Logic
         public Order(MarketplaceRequest req) : this()
         {
             this.mr = req;
+        }
+
+        public Order(MarketplaceRequest req, double t, int d, double cost, double osh, Carrier car, bool c)
+        {
+            this.mr = req;
+            this.IsComplete = c;
+            this.TimeToComplete = t;
+            this.DistanceToComplete = d;
+            this.CostToComplete = cost;
+            this.OSHTSurcharge = osh;
+            if (car != null)
+                this.SetCarrier(car);
         }
 
         /**

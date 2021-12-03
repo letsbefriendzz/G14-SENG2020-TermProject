@@ -80,37 +80,53 @@ namespace SENG2020_TermProject
 {
     class _MainProgram
     {
+        public static List<Order> orders = new List<Order>();
         private static void AnyKeyToContinue()
         {
+            Console.WriteLine("\n\n\n\nPress enter to continue.");
             Console.ReadLine();
         }
 
-
-        //what is this doing?
-        //lol
         static void Main(string[] args)
         {
-            ContractMarketAccess cma = new ContractMarketAccess();
-            MarketplaceRequest[] mpr = cma.GetAllMarketplaceRequests();
+            Order[] o = new TMSDatabaseAccess().GetAllOrders();
 
-            List<Order> o = new List<Order>();
-
-            bool exit = false;
-            while(!exit)
-            {
-                Order or = Buyer();
-                if (or == null)
-                    exit = true;
-                else o.Add(or);
-            }
-
-            //Planner(new Order(mpr[3]));
+            foreach (Order order in o)
+                order.Display();
 
             AnyKeyToContinue();
             return; //and then return!
         }
 
+
+        //test harness func I'd like to hold on to
+        static void PrepAndInsertOrders()
+        {
+            TMSDatabaseAccess tms = new TMSDatabaseAccess();
+
+            ContractMarketAccess cma = new ContractMarketAccess();
+            MarketplaceRequest[] mpr = cma.GetAllMarketplaceRequests();
+
+            Order[] o = new Order[mpr.Length];
+            int iter = 0;
+            foreach (MarketplaceRequest m in mpr)
+            {
+                o[iter] = new Order(m);
+                iter++;
+            }
+
+            foreach (Order r in o)
+            {
+                //Prep the order with the first carrier returned by
+                //the CarriersForRoute function using itself as a parmater
+                r.Display();
+                tms.InsertOrder(r);
+            }
+        }
+
         //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        
+        //renns
         static Order Buyer()
         {
             String inp = "";
@@ -131,7 +147,7 @@ namespace SENG2020_TermProject
                     int iter = 0;
                     foreach (MarketplaceRequest m in mpr)
                     {
-                        Console.WriteLine("Order #{0}", iter);
+                        Console.WriteLine("Contract #{0}", iter);
                         m.Display();
                         iter++;
                     }
@@ -156,7 +172,8 @@ namespace SENG2020_TermProject
                 }
                 else if(inp == "2")
                 {
-
+                    foreach (Order o in orders)
+                        if (!o.isprepped) o.Display();
                 }
                 else if(inp == "3")
                 {
@@ -169,19 +186,37 @@ namespace SENG2020_TermProject
         //basically just a procedural version of the planner workflow
         //this is the procedural flow in a console when a planner has
         //selected an unfilled order from the TMS database.
-        static void Planner(Order o) //this will actually take a value from a database based on user input ! :)
+
+        //renns
+        static void Planner(List<Order> orders) //this will actually take a value from a database based on user input ! :)
         {
             String inp = "";
             while (inp != null)
             {
-                Console.WriteLine("Make a selection:");
-                Console.WriteLine("1. Select a Carrier for Order");
-                if(o.isprepped) Console.WriteLine("2. Simulate Time");
-
+                Console.WriteLine("1. View Unfilled Orders");
+                Console.WriteLine("2. Fulfill Order");
+                Console.WriteLine("3. Simulate Order");
                 inp = GetInput();
 
-                if (inp == "1")
+                if(inp == "1")
                 {
+                    foreach (Order or in orders)
+                        or.Display();
+                }
+                else if(inp == "2")
+                {
+                    int iter = 0;
+                    foreach (Order or in orders)
+                    {
+                        Console.WriteLine("Order #{0}", iter);
+                        or.Display();
+                        iter++;
+                    }
+
+                    Console.WriteLine("Select an order to fulfill - (0 - {0}).", orders.Count);
+                    inp = GetInput();
+                    Order o = orders[int.Parse(inp)];
+
                     if (CarrierList.CarriersForRoute(o) != null)
                     {
                         Console.WriteLine("Order Details:");
@@ -208,17 +243,10 @@ namespace SENG2020_TermProject
                         o.Display();
                     }
                 }
-                else if (inp == "2")
-                {
-
-                }
-                else if (inp == "3")
-                {
-
-                }
             }
         }
 
+        //renns
         static String GetInput()
         {
             Console.Write(">> ");
@@ -226,29 +254,3 @@ namespace SENG2020_TermProject
         }
     }
 }
-
-/*
-            String c1 = "Windsor";
-            String c2 = "Ottawa";
-            Console.WriteLine("Getting distance between {0} and {1}.\nDistance:\t{2}", c1, c2, CityList.DrivingDistance(c1,c2));
-            Console.WriteLine("Getting driving time between {0} and {1}.\nTime:\t\t{2}", c1, c2, CityList.DrivingTime(c1, c2));
-
-            Console.WriteLine("Stops between {0} and {1}:\t{2}",c1,c2, CityList.LTLStops(c1, c2));
-            //good question!
-            //we're making a new cma object and getting all available requests from the marketplace database.
-            ContractMarketAccess cma = new ContractMarketAccess();
-            MarketplaceRequest[] mpr = cma.GetAllMarketplaceRequests();
-            //and for each one we receive, we dump out the contents
-            if(mpr != null)
-            {
-                foreach (MarketplaceRequest mr in mpr)
-                    mr.Display();
-            }
-
-            //then we get any key to continue
-            AnyKeyToContinue();
-
-            CityList.DisplayList();
-
-            AnyKeyToContinue();
- */

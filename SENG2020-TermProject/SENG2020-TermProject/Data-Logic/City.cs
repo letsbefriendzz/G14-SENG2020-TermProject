@@ -32,7 +32,6 @@ namespace SENG2020_TermProject.Data_Logic
     {
         /// \brief      The name of the City this object represents.
         public String CityName;
-
         /// \brief      The name of the next city east of CityName.
         public String EastCityName;
         /// \brief      The distance to the city east of CityName, in km.
@@ -58,7 +57,7 @@ namespace SENG2020_TermProject.Data_Logic
         /**
          * \brief       A List<T> that holds the sequence of and information about cities.
          */
-        private static List<City> CitySequence = new List<City>();
+        private static readonly List<City> CitySequence = new List<City>();
 
         /**
          * \brief       The default CityList constructor.
@@ -75,7 +74,7 @@ namespace SENG2020_TermProject.Data_Logic
             //Windsor <- London -> Hamilton
             CitySequence.Add(new City("London", "Hamilton", 128, 1.75));
 
-            //London <- Hamilton -> TorontoFDi
+            //London <- Hamilton -> Toronto
             CitySequence.Add(new City("Hamilton", "Toronto", 68, 1.25));
 
             //Hamilton <- Toronto -> Oshawa
