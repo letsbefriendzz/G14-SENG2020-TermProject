@@ -21,7 +21,7 @@ namespace SENG2020_TermProject.UserStructure
      *              modify log directories, database IP addresses, database ports,
      *              review logs, alter carrier data and the route table, among others.
      */
-    public class Admin : User
+    class Admin : User
     {
 
     }

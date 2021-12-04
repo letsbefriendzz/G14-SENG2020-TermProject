@@ -24,11 +24,9 @@ namespace SENG2020_TermProject.Data_Logic
      */
     class Order
     {
-        /// \brief      This macro defines the time requried to load and unload at the origin and destination.
-        ///             baically, just add this twice to the total time.
-        const int LOAD_UNLOAD_TIME = 2;
+        
         private int ID = -1; //-1 is default for unprepped order
-        public bool isprepped = false;
+        public bool isprepped = false; //bless :"D
 
         /**
          * \brief       mr represents the MarketplaceRequest object that this Order was created from.
@@ -49,9 +47,9 @@ namespace SENG2020_TermProject.Data_Logic
         /// \brief      The total distance between the start city and end city.
         public int DistanceToComplete;
         /// \brief      The total cost of the shipment using the given carrier.
-        public double CostToComplete = -1.0; //default -1, unset flag
+        public double CostToComplete = 0.0;
         /// \brief      The surcharge that OSHT will apply for profit to this order.
-        public double OSHTSurcharge = -1.0;
+        public double OSHTSurcharge = 0.0;
         /// \brief      The carrier being used to ship this order.
         //private Carrier c = null;
         private List<Trip> trips = new List<Trip>();
@@ -109,6 +107,12 @@ namespace SENG2020_TermProject.Data_Logic
         {
             this.mr = req;
         }
+        
+        public Order(int nid, MarketplaceRequest req): this()
+        {
+            this.mr = req;
+            this.ID = nid;
+        }
 
         public Order(MarketplaceRequest req, double t, int d, double cost, double osh, bool c)
         {
@@ -127,14 +131,27 @@ namespace SENG2020_TermProject.Data_Logic
          *              is copied to the local MarketplaceRequest instance (mr). Then, the CalculateDistance and CalculateTime
          *              functions are called to further populate the Order fields.
          */
-        public void PrepOrder()
+        /*
+         * NAME : PrepOrder
+         * DESC :
+         *  This function "prepares" an order for fulfillment. This means that the carriers it needs to use are established,
+         *  and from this the distance, time and cost are established using various other member functions.
+         * 
+         * RTRN
+         * PARM
+         */
+        public bool PrepOrder()
         {
             if (isprepped) throw new Exception("Order already prepared.");
             if(this.mr != null)
             {
+                this.trips = CarrierList.CarriersForRoute(this);
+                if(this.trips == null)
+                {
+                    return false;
+                }
                 CalculateDistance();
                 CalculateTime();
-                this.trips = CarrierList.CarriersForRoute(this);
                 CalculateCost();
             
                 if(mr.JobType == 0)
@@ -148,6 +165,7 @@ namespace SENG2020_TermProject.Data_Logic
 
                 isprepped = true;
             }
+            return this.isprepped;
         }
 
         /**
@@ -170,19 +188,19 @@ namespace SENG2020_TermProject.Data_Logic
          *              2 * LOAD_UNLOAD_TIME is added. Finally, if the job type is LTL, we add 2 for each stop that occurs
          *              between the cities, as defined by the CityList.LTLStops function with the same parameters.
          */
+        /*
+         * NAME : CalculateTime
+         * DESC :
+
+         * RTRN :
+         * PARM :
+         */
         private void CalculateTime()
         {
-            if (mr == null) return;
-
-            this.TimeToComplete += CityList.DrivingTime(mr.CityOrigin, mr.CityDestin);
-            this.TimeToComplete += (LOAD_UNLOAD_TIME * 2);
-            if (mr.JobType == 1)
+            this.TimeToComplete = 0.0;
+            foreach(Trip t in trips)
             {
-                for(int i = 0; i < CityList.LTLStops(mr.CityOrigin, mr.CityDestin); i++)
-                {
-                    //For each stop we add two hours
-                    TimeToComplete += 2;
-                }
+                this.TimeToComplete += t.GetTripTime(this.mr.JobType);
             }
         }
 
@@ -195,32 +213,22 @@ namespace SENG2020_TermProject.Data_Logic
 
             double TotalCost = 0.0;
 
-            double markup;
+            foreach (Trip t in trips)
+            {
+                TotalCost += t.GetTripCost(this.mr.JobType, this.mr.Quantity, this.mr.VanType);
+            }
 
-            if (this.mr.JobType == 0)
-            {
-                foreach (Trip t in trips)
-                {
-                    TotalCost += t.GetTripCost(this.mr.JobType, this.mr.Quantity);
-                }
-            }
-            else
-            {
-/*                //LTL $/km rate is rate * quantity of pallets
-                double LTLCharge = rate * mr.Quantity;
-                //cost to complete will be LTL * distance
-                this.CostToComplete = DistanceToComplete * LTLCharge;
-                //markup will have to be 5% on top of present LTL charge
-                markup = LTLCharge * 0.05;
-                //OSHT surcharge is still distance to complete * markup
-                this.OSHTSurcharge = DistanceToComplete * markup;*/
-            }
+            if (this.JobType() == "FTL")
+                this.OSHTSurcharge = TotalCost * 0.08;
+            else this.OSHTSurcharge = TotalCost * 0.05;
 
             this.CostToComplete = TotalCost;
         }
 
         public void Display()
         {
+            if (!(this.ID == -1))
+                Console.WriteLine("Database ID:\t\t#{0}", this.ID);
             this.mr.Display();
             if (this.isprepped == true)
             {
@@ -229,15 +237,19 @@ namespace SENG2020_TermProject.Data_Logic
                 Console.WriteLine("Carrier Charges:\t${0}", this.CostToComplete);
                 Console.WriteLine("OSHT Charges:\t\t${0}", this.OSHTSurcharge);
                 Console.WriteLine("Total cost to complete:\t${0}", this.CostToComplete + this.OSHTSurcharge);
+                Console.WriteLine();
                 Console.WriteLine("Trips to Compelte:\t{0}", this.trips.Count);
-                foreach(Trip t in trips)
+                
+                foreach (Trip t in trips)
                 {
                     Console.WriteLine("================================");
                     Console.WriteLine("Trip Origin:\t\t{0}", t.GetOrigin().GetName());
                     Console.WriteLine("Trip Destination:\t{0}", t.GetDestin().GetName());
                     Console.WriteLine("Carrier to Complete:\t{0}", t.GetCarrier().GetName());
-                    Console.WriteLine("Trip Distance:\t\t{0}km", t.GetDistance());
+                    Console.WriteLine("Trip Distance:\t\t{0}km", t.GetTripDistance());
                     Console.WriteLine("Trip Cost:\t\t${0}", t.GetTripCost(this.mr.JobType, this.mr.Quantity));
+                    Console.WriteLine("Trip Time:\t\t{0}h", t.GetTripTime(this.mr.JobType));
+                    Console.WriteLine();
                 }
             }
         }

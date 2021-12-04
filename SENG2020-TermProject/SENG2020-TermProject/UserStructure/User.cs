@@ -29,17 +29,13 @@ namespace SENG2020_TermProject.UserStructure
      *              defines common fields and methods that each of its subclasses
      *              uses.
      */
-    public class User
+    class User
     {
-        /// \brief      Dictates whether a user can change database connection information.
-        public bool CanChangeDatabaseConnections = false;
-        /// \brief      Dictates whether a user can generate an invoice.
-        public bool CanGenerateInvoice = false;
-        /// \brief      Dictates whether a user can generate an order.
-        public bool CanGenerateOrder = false;
-        /// \brief      Dictates whether a user can use functions in the ContractMarketAccess class.
-        public bool CanAccessContractMarket = false;
-        /// \brief      Dictates whether a user can use functions in the TMSDatabaseAccess class.
-        public bool CanAccessTMSDatabase = false;
+        //renns
+        public static String GetInput()
+        {
+            Console.Write(">> ");
+            return Console.ReadLine();
+        }
     }
 }

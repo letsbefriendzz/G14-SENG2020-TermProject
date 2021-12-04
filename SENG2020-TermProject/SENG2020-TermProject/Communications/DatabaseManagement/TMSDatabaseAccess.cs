@@ -8,6 +8,7 @@
 
 using System;
 using System.Data;
+using System.Collections.Generic;
 using SENG2020_TermProject.Data_Logic;
 using MySql.Data.MySqlClient;
 
@@ -27,6 +28,22 @@ namespace SENG2020_TermProject.DatabaseManagement
                 this.ValidConnection = true;
         }
 
+        /*
+         * NAME : InsertOrder
+         * DESC :
+         *  This function inserts an order based on parameters passed to it, in the form of an Order object.
+         *  If the Order isprepped flag is set, this means that cost, distance, and surcharges have been calculated.
+         *  These values can thus be inserted into the database. This should also mean that the order is finished;
+         *  currently there is no use case where a prepped order wouldn't be finished, as the Planner must prep
+         *  the order before simulating time, whereby the order is considered finished.
+         *  
+         *  If the order is not prepped, we are inserting only the MarketplaceRequest fields that the Order contains.
+         *  This is use case is used by the Buyer when inserting a newly created order based on a MarketplaceRequest.
+         *  
+         *  Finally, if an error occurs, false is returned. If the insertion is successful, true is returned.
+         * RTRN : bool
+         * PARM : Order
+         */
         public bool InsertOrder(Order o)
         {
             cn.Open();
@@ -41,8 +58,8 @@ namespace SENG2020_TermProject.DatabaseManagement
                 }
                 else
                 {
-                    cm.CommandText = String.Format("insert into tmsorder (ClientName, JobType, Quantity, CityOrigin, CityDestin, VanType)" +
-                        "values (\"{0}\",{1},{2},\"{3}\",\"{4}\",{5});",
+                    cm.CommandText = String.Format("insert into tmsorder (ClientName, JobType, Quantity, CityOrigin, CityDestin, VanType, IsComplete)" +
+                        "values (\"{0}\",{1},{2},\"{3}\",\"{4}\",{5},0);",
                         o.mr.ClientName, o.mr.JobType, o.mr.Quantity, o.mr.CityOrigin, o.mr.CityDestin, o.mr.VanType);
 
                 }
@@ -91,9 +108,10 @@ namespace SENG2020_TermProject.DatabaseManagement
             return GetOrders("select * from tmsorder where IsComplete=0");
         }
 
-        public bool SetOrderComplete(int id)
+        public bool SetOrderComplete(Order o)
         {
-            if(this.cn!=null&&this.ValidConnection)
+            int id = o.GetID();
+            if(this.cn != null && this.ValidConnection)
             {
                 try
                 {
@@ -114,6 +132,35 @@ namespace SENG2020_TermProject.DatabaseManagement
             return false;
         }
 
+
+        /*
+         * NAME : GetOrder
+         * DESC :
+         *  This function makes an SQL request to the TMS Databse based on the command text given to it. This function is
+         *  private because it is intended exclusively to return Order objects; if it was a general command interface, we
+         *  could make it public.
+         *  
+         *  This function is referenced by a bunch of subfunctions of the TMSDatabaseAccess class that pass hardcoded SQL
+         *  queries based on their own parameters. For Example, GetOrderByClient accepts a string that is expected to be
+         *  a Client name. The ClientName parameter is then concatenated to the commandText string to form a proper SQL
+         *  request.
+         *  
+         *  This function creates an array of Orders sized to however many rows were returned in the DataTable that the
+         *  SQL query populates. Then, for each row returned, a new MarketplaceRequest object is created and popualted
+         *  with the respective values. An Order object is then instantiated in the array using this MarketplaceRequest
+         *  instance, until the Order array is fully populated by unfilled, unprepped orders.
+         *  
+         *  In the case that there are finished orders in the request, these will be returned as well; the Order instance
+         *  in the array is instantiated with the MarketplaceRequest, as well as the rest of the values that are expected
+         *  to be returned. This includes the time to complete, distance, carrier cost, OSHT surcharge, and completion status.
+         *  
+         *  I'm still working on this. Something isn't finished and I kind of forget what. It has to do with returning
+         *  finished orders though. something about the order ID. come back to this later.
+         *  
+         *  - Ryan Enns, 2021-12-03 - code written probably like three days ago at this point? comment written on given date
+         * RTRN
+         * PARM
+         */
         private Order[] GetOrders(String commandText)
         {
             Order[] orders = null;
@@ -166,12 +213,13 @@ namespace SENG2020_TermProject.DatabaseManagement
                                         IsComplete = false;
                                     else IsComplete = true;
                                     orders[i] = new Order(temp, (double)dr[7], int.Parse(dr[8].ToString()), (double)dr[9], (double)dr[10], IsComplete);
-                                    //this catastrophically bad way of parsing an sbyte to a boolean deserves to be preserved in the museum of shitty code
+
+                                    //this catastrophically bad way of parsing an sbyte to a boolean deserves to be preserved in the museum of awful code
                                     //bool IsComplete = bool.Parse(int.Parse(dr[11].ToString()).ToString()); 
                                 }
                                 else
                                 {
-                                    orders[i] = new Order(temp);
+                                    orders[i] = new Order(int.Parse(dr[0].ToString()), temp);
                                 }
                                 i++;
                             }
@@ -187,6 +235,43 @@ namespace SENG2020_TermProject.DatabaseManagement
             }
 
             return orders;
+        }
+
+        public Depot[] GetDepots(String CarrierName)
+        {
+            Depot[] ReturnArray = null;
+            if (this.cn != null && this.ValidConnection)
+            {
+                try
+                {
+                    cn.Open();
+                    using (MySqlCommand cm = cn.CreateCommand())
+                    {
+                        cm.CommandText = "select * from depot where CarrierName=\"" + CarrierName + "\"";
+                        using (MySqlDataAdapter ada = new MySqlDataAdapter(cm))
+                        {
+                            DataTable dt = new DataTable();
+                            ada.Fill(dt);
+
+                            ReturnArray = new Depot[dt.Rows.Count];
+
+                            int i = 0;
+                            foreach(DataRow d in dt.Rows)
+                            {
+                                ReturnArray[0].CityName = d[0].ToString();
+
+                                i++;
+                            }
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+
+            return ReturnArray;
         }
     }
 }

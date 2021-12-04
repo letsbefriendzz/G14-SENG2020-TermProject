@@ -71,11 +71,18 @@
  * DESCRIPTION      :
  */
 
-using SENG2020_TermProject.DatabaseManagement;
+/*
+ * TODO
+ * 1. Work on GetDepots function in TMSDatabaseAccess
+ * 2. Allow Planner to select from carrier options
+ * 3. Establish most time efficient and cost efficient carrier options
+ * 4. Migrate Buyer(), Planner() from _MainProgram to respective User classes
+ */
+
 using SENG2020_TermProject.Data_Logic;
-using System;
-using System.Collections.Generic;
+using SENG2020_TermProject.DatabaseManagement;
 using SENG2020_TermProject.UserStructure;
+using System;
 
 namespace SENG2020_TermProject
 {
@@ -86,25 +93,28 @@ namespace SENG2020_TermProject
             Console.WriteLine("\n\nPress enter to continue.");
             Console.ReadLine();
         }
-            
+
         static void Main(string[] args)
         {
-            MarketplaceRequest mr = new MarketplaceRequest("Ryan's Fuckery", 0, 0, "Windsor", "Toronto", 0);
-            Order o = new Order(mr);
-            o.PrepOrder();
-            o.Display();
-
-            Buyer b = new Buyer();
+            Planner.PlannerWorkFlow();
 
             AnyKeyToContinue();
             return; //and then return!
         }
 
+        static void PrepHarness()
+        {
+            MarketplaceRequest mr = new MarketplaceRequest("Ryan's Fuckery", 0, 0, "Hamilton", "Windsor", 0);
+            Order o = new Order(mr);
+            o.PrepOrder();
+            o.Display();
+        }
+
         static void TestCities()
         {
-            foreach(City c1 in CityList.GetList())
+            foreach (City c1 in CityList.GetList())
             {
-                foreach(City c2 in CityList.GetList())
+                foreach (City c2 in CityList.GetList())
                 {
                     if (CarrierList.CarriersForRoute(c1, c2) == null)
                     {
@@ -136,170 +146,14 @@ namespace SENG2020_TermProject
 
             foreach (Order r in o)
             {
+                r.PrepOrder();
                 //Prep the order with the first carrier returned by
                 //the CarriersForRoute function using itself as a parmater
                 r.Display();
-                tms.InsertOrder(r);
+                //tms.InsertOrder(r);
             }
         }
 
         //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-        
-        //renns
-        static void Buyer()
-        {
-            TMSDatabaseAccess tms = new TMSDatabaseAccess();
-            String inp = "";
-            while(inp != null)
-            {
-                Console.WriteLine("Make a selection:");
-                Console.WriteLine("1. View Contracts from Marketplace");
-                Console.WriteLine("2. View Finished Orders");
-                Console.WriteLine("3. Exit");
-
-                inp = GetInput();
-
-                if(inp == "1")
-                {
-                    inp = "";
-                    ContractMarketAccess cma = new ContractMarketAccess();
-                    MarketplaceRequest[] mpr = cma.GetAllMarketplaceRequests();
-                    int iter = 0;
-                    foreach (MarketplaceRequest m in mpr)
-                    {
-                        Console.WriteLine("Contract #{0}", iter);
-                        m.Display();
-                        iter++;
-                    }
-
-                    Console.WriteLine("Select From Contracts? Y/N");
-
-                    while(inp != "Y" && inp != "N")
-                    {
-                        inp = GetInput();
-                    }
-
-                    if(inp == "Y")
-                    {
-                        Console.WriteLine("Select a Contract - (0 - {0})", mpr.Length - 1);
-                        inp = GetInput();
-
-                        int integerInp = int.Parse(inp);
-                        Order o = new Order(mpr[integerInp]);
-                        o.Display();
-                        tms.InsertOrder(o);
-                    }
-                }
-                else if(inp == "2")
-                {
-                    Order[] orders = tms.GetFinishedOrders();
-                    if (orders == null)
-                        Console.WriteLine("No finished orders to process!");
-                    else
-                    {
-                        foreach (Order order in orders)
-                            order.Display();
-
-                        Console.WriteLine("Generate an invoice for an order? Y/N");
-
-                        while (inp != "Y" && inp != "N")
-                        {
-                            inp = GetInput();
-                        }
-
-                        if (inp == "Y")
-                        {
-                            Console.WriteLine("Select an Order - (0 - {0})", orders.Length - 1);
-                            inp = GetInput();
-
-                            int integerInp = int.Parse(inp);
-                            Order ForInvoice = orders[integerInp];
-                            if (ForInvoice.IsComplete == true)
-                                Console.WriteLine("Invoice Generated");
-                        }
-                    }
-                }
-                else if(inp == "3")
-                {
-
-                }
-            }
-        }
-
-        //basically just a procedural version of the planner workflow
-        //this is the procedural flow in a console when a planner has
-        //selected an unfilled order from the TMS database.
-
-        //renns
-        static void Planner() //this will actually take a value from a database based on user input ! :)
-        {
-            TMSDatabaseAccess tms = new TMSDatabaseAccess();
-            Order[] orders = tms.GetIncompleteOrders();
-            String inp = "";
-            while (inp != null)
-            {
-                Console.WriteLine("1. View Unfilled Orders");
-                Console.WriteLine("2. Confirm Order Completion");
-                Console.WriteLine("3. Simulate Order");
-                inp = GetInput();
-
-                if(inp == "1")
-                {
-                    foreach (Order order in orders)
-                        order.Display();
-                }
-                else if(inp == "2")
-                {
-                    int iter = 0;
-                    foreach (Order or in orders)
-                    {
-                        Console.WriteLine("Order #{0}", iter);
-                        or.Display();
-                        iter++;
-                    }
-
-                    Console.WriteLine("Select an order to fulfill - (0 - {0}).", orders.Length);
-                    inp = GetInput();
-                    Order o = orders[int.Parse(inp)];
-
-                    tms.SetOrderComplete(o.GetID());
-                }
-            }
-        }
-
-        //renns
-        static String GetInput()
-        {
-            Console.Write(">> ");
-            return Console.ReadLine();
-        }
     }
 }
-
-/*
-                     if (CarrierList.CarriersForRoute(o) != null)
-                    {
-                        Console.WriteLine("Order Details:");
-                        o.Display();
-                        List<Carrier> c = CarrierList.CarriersForRoute(o);
-                        Console.WriteLine("Available Carriers to Fulfill Order:");
-                        foreach (Carrier ca in c)
-                        {
-                            ca.Display();
-                        }
-
-                        Console.WriteLine("Select a Carrier - (0 - {0})", c.Count - 1);
-                        inp = GetInput();
-
-                        int integerInp = int.Parse(inp);
-                        o.PrepOrder(c[integerInp]);
-
-                        o.Display();
-                    }
-                    else
-                    {
-                        Console.WriteLine("There are no Carrier services that can fulfill this order!");
-                        Console.WriteLine("Order Details:");
-                        o.Display();
-                    }
- */

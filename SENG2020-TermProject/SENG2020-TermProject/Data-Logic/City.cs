@@ -168,6 +168,11 @@ namespace SENG2020_TermProject.Data_Logic
             return null;
         }
 
+        public static City GetCity(City c)
+        {
+            return GetCity(c.GetName());
+        }
+
         /**
          * \brief       Calculates the <b>driving distance</b> between two cities.
          * 

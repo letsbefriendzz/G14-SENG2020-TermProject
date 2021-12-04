@@ -46,11 +46,98 @@ namespace SENG2020_TermProject.UserStructure
      *              fulfilled, will generate an invoice for the customer and the TMS
      *              database.
      */
-    public class Buyer : User
+    class Buyer : User
     {
         public Buyer()
         {
 
+        }
+
+        //renns
+        public static void BuyerWorkFlow()
+        {
+            TMSDatabaseAccess tms = new TMSDatabaseAccess();
+            String inp = "";
+            while (inp != null)
+            {
+                Console.WriteLine("Make a selection:");
+                Console.WriteLine("1. View Contracts from Marketplace");
+                Console.WriteLine("2. View Finished Orders");
+                Console.WriteLine("3. Exit");
+
+                inp = GetInput();
+
+                if (inp == "1")
+                {
+                    inp = "";
+                    ContractMarketAccess cma = new ContractMarketAccess();
+                    MarketplaceRequest[] mpr = cma.GetAllMarketplaceRequests();
+                    int iter = 0;
+                    foreach (MarketplaceRequest m in mpr)
+                    {
+                        Console.WriteLine("Contract #{0}", iter);
+                        m.Display();
+                        iter++;
+                    }
+
+                    Console.WriteLine("Select From Contracts? Y/N");
+
+                    while (inp != "Y" && inp != "N")
+                    {
+                        inp = GetInput();
+                    }
+
+                    if (inp == "Y")
+                    {
+                        Console.WriteLine("Select a Contract - (0 - {0})", mpr.Length - 1);
+                        inp = GetInput();
+
+                        int integerInp = int.Parse(inp);
+                        Order o = new Order(mpr[integerInp]);
+                        o.Display();
+                        if (tms.InsertOrder(o))
+                            Console.WriteLine("Successfully converted Marketplace Request to Order;\nDatabase insertion successful.");
+                        else
+                        {
+                            Console.WriteLine("An error has occured -- database insertion not successful");
+                            throw new Exception("TMS Database Insertion Exception");
+                        }
+                    }
+                }
+                else if (inp == "2")
+                {
+                    Order[] orders = tms.GetFinishedOrders();
+                    if (orders == null || orders.Length == 0)
+                        Console.WriteLine("No finished orders to process!");
+                    else
+                    {
+                        foreach (Order order in orders)
+                            order.Display();
+
+                        Console.WriteLine("Generate an invoice for an order? Y/N");
+
+                        while (inp != "Y" && inp != "N")
+                        {
+                            inp = GetInput();
+                        }
+
+                        if (inp == "Y")
+                        {
+                            Console.WriteLine("Select an Order - (0 - {0})", orders.Length - 1);
+                            inp = GetInput();
+
+                            int integerInp = int.Parse(inp);
+                            Order ForInvoice = orders[integerInp];
+                            if (ForInvoice.IsComplete == true)
+                                Console.WriteLine("Invoice Generated");
+                        }
+                    }
+                }
+                else if (inp == "3")
+                {
+
+                }
+            }
         }
 
         public MarketplaceRequest[] GetContracts()
