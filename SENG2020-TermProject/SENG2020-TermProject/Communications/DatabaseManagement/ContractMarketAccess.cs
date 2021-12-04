@@ -8,6 +8,7 @@
 
 using MySql.Data.MySqlClient;
 using SENG2020_TermProject.Data_Logic;
+using SENG2020_TermProject.Communications;
 using System;
 using System.Data;
 
@@ -131,8 +132,9 @@ namespace SENG2020_TermProject.DatabaseManagement
                     }
                     cn.Close();
                 }
-                catch (MySqlException)
+                catch (MySqlException mse)
                 {
+                    FileAccess.Log("ERROR in ContractMarketAcces.cs :: GetAllMarketplaceRequests\n" + mse.ToString());
                     return null;
                 }
             }

@@ -75,6 +75,31 @@ namespace SENG2020_TermProject.Data_Logic
             return this.mr.CityDestin;
         }
 
+        public String GetClient()
+        {
+            return this.mr.ClientName;
+        }
+
+        public double GetTimeToComplete()
+        {
+            return this.TimeToComplete;
+        }
+
+        public double GetDistanceToComplete()
+        {
+            return this.DistanceToComplete;
+        }
+
+        public double GetCostToComplete()
+        {
+            return this.CostToComplete;
+        }
+
+        public double GetOSHTSurcharge()
+        {
+            return this.OSHTSurcharge;
+        }
+
         public Order()
         {
             IsComplete = false;
@@ -254,6 +279,20 @@ namespace SENG2020_TermProject.Data_Logic
                     Console.WriteLine("Trip Cost:\t\t${0}", t.GetTripCost(this.mr.JobType, this.mr.Quantity));
                     Console.WriteLine("Trip Time:\t\t{0}h", t.GetTripTime(this.mr.JobType));
                     Console.WriteLine();
+                }
+            }
+        }
+
+        public void SimulateTime()
+        {
+            if (!this.isprepped) return;
+
+            foreach(Trip t in this.trips)
+            {
+                for(double hoursPassed = 0.0; hoursPassed < t.GetTripTime(this.mr.JobType); hoursPassed++)
+                {
+                    Console.WriteLine("Currently {0} hours into a {1} hour trip.");
+                    Console.WriteLine("Continue");
                 }
             }
         }

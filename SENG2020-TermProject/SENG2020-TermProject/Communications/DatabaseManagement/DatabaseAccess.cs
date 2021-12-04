@@ -6,6 +6,7 @@
  * DESCRIPTION      :
  */
 
+using SENG2020_TermProject.Communications;
 using MySql.Data.MySqlClient;
 using System;
 
@@ -63,9 +64,10 @@ namespace SENG2020_TermProject.DatabaseManagement
                 cn.Close();
                 return true;
             }
-            catch (MySqlException e)
+            catch (MySqlException mse)
             {
-                Console.WriteLine(e.ToString());
+                FileAccess.Log("ERROR in DatabaseAccess.cs :: InitConnection\n" + mse.ToString());
+                this.ValidConnection = false;
                 cn = null;
                 return false;
             }

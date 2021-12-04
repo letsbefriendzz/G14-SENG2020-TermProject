@@ -9,6 +9,7 @@
 using System;
 using System.Data;
 using SENG2020_TermProject.Data_Logic;
+using SENG2020_TermProject.Communications;
 using MySql.Data.MySqlClient;
 
 namespace SENG2020_TermProject.DatabaseManagement
@@ -21,9 +22,15 @@ namespace SENG2020_TermProject.DatabaseManagement
     class TMSDatabaseAccess : DatabaseAccess
     {
         public TMSDatabaseAccess()
-        {
+        { //LocalHostRoot99
             //please please please make another account that isn't root and also host this elsewhere
             if (this.InitConnection("127.0.0.1", "3306", "root", "LocalHostRoot99", "tmsdatabase", "0"))
+                this.ValidConnection = true; //LocalHostRoot99
+        }
+
+        public TMSDatabaseAccess(String usr, String pwd)
+        {
+            if (this.InitConnection("127.0.0.1", "3306", usr, pwd, "tmsdatabase", "0"))
                 this.ValidConnection = true;
         }
 
@@ -145,8 +152,9 @@ namespace SENG2020_TermProject.DatabaseManagement
                     cn.Close();
                     return true;
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    FileAccess.Log(String.Format("ERROR in TMSDatabaseAccess.cs :: SetorderComplete(Order o)\n {0}", e.ToString()));
                     cn.Close();
                     return false;
                 }
@@ -249,9 +257,9 @@ namespace SENG2020_TermProject.DatabaseManagement
                     }
                     cn.Close();
                 }
-                catch (MySqlException)
+                catch (MySqlException mse)
                 {
-                    //log some stuff in here
+                    FileAccess.Log("Error in TMSDatabaseAccess.cs :: Getorders(String commandText)\n " + mse.ToString());
                     return null;
                 }
             }
@@ -288,9 +296,10 @@ namespace SENG2020_TermProject.DatabaseManagement
                     }
                     cn.Close();
                 }
-                catch (Exception)
+                catch (MySqlException mse)
                 {
-
+                    FileAccess.Log("ERROR in TMSDatabaseAccess.cs :: GetDepots(String CarrierName)\n " + mse.ToString());
+                    return null;
                 }
             }
 

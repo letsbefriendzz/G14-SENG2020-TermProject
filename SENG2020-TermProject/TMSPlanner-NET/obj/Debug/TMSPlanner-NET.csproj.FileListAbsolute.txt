@@ -1,2 +1,0 @@
-F:\SENG2020-TermProject\G14-SENG2020-TermProject\SENG2020-TermProject\TMSPlanner-NET\obj\Debug\TMSPlanner-NET.csproj.AssemblyReference.cache
-F:\SENG2020-TermProject\G14-SENG2020-TermProject\SENG2020-TermProject\TMSPlanner-NET\obj\Debug\TMSPlanner-NET.csproj.CoreCompileInputs.cache

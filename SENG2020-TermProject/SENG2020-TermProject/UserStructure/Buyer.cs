@@ -6,13 +6,10 @@
  * DESCRIPTION      :
  */
 
+using SENG2020_TermProject.Communications;
 using SENG2020_TermProject.DatabaseManagement;
 using SENG2020_TermProject.Data_Logic;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 /*
 The buyer represents an employee of OSHT who is tasked with requesting Customer contracts from the 
@@ -59,9 +56,8 @@ namespace SENG2020_TermProject.UserStructure
      *              fulfilled, will generate an invoice for the customer and the TMS
      *              database.
      */
-    public class Buyer : User
+    class Buyer : User
     {
-        private TMSDatabaseAccess tms = new TMSDatabaseAccess();
         private static void BuyerHeader()
         {
             Console.WriteLine("===================");
@@ -110,6 +106,7 @@ namespace SENG2020_TermProject.UserStructure
         public void BuyerWorkFlow()
         {
             BuyerHeader();
+            if (!this.tms.ValidConnection) return;
             String inp = "";
             while (inp != null)
             {
@@ -160,7 +157,11 @@ namespace SENG2020_TermProject.UserStructure
                     int integerInp = int.Parse(inp);
                     Order ForInvoice = orders[integerInp];
                     if (ForInvoice.IsComplete == true)
+                    {
                         Console.WriteLine("Invoice Generated");
+                    }
+
+                    Console.WriteLine("Invoice can be found at:\n{0}", FileAccess.CreateInvoice(ForInvoice));
                 }
                 else if (inp == "5")
                 {

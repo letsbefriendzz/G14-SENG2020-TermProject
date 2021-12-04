@@ -41,6 +41,9 @@ namespace SENG2020_TermProject.UserStructure
      */
     class Admin : User
     {
+        public void AdminWorkFlow()
+        {
 
+        }
     }
 }

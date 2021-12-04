@@ -76,11 +76,14 @@
  * 1. Work on GetDepots function in TMSDatabaseAccess
  * 2. Allow Planner to select from carrier options
  * 3. Establish most time efficient and cost efficient carrier options
- * 4. Migrate Buyer(), Planner() from _MainProgram to respective User classes
+ * 4. Work on Logger class (mostly done)
+ * 5. Migrate to Carrier db
+ * 
  */
 
-using SENG2020_TermProject.Data_Logic;
 using SENG2020_TermProject.DatabaseManagement;
+using SENG2020_TermProject.Communications;
+using SENG2020_TermProject.Data_Logic;
 using SENG2020_TermProject.UserStructure;
 using System;
 
@@ -96,6 +99,8 @@ namespace SENG2020_TermProject
 
         static void Main(string[] args)
         {
+            FileAccess.initInstallDirectories();
+
             String inp = null;
             Console.WriteLine("Select Buyer (1) or Planner (2)");
             Console.Write(">> ");

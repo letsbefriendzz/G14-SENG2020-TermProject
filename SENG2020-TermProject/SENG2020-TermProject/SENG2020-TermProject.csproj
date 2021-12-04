@@ -88,6 +88,7 @@
   <ItemGroup>
     <Compile Include="Communications\DatabaseManagement\ContractMarketAccess.cs" />
     <Compile Include="Communications\DatabaseManagement\DatabaseAccess.cs" />
+    <Compile Include="Communications\FileAccess.cs" />
     <Compile Include="Communications\DatabaseManagement\TMSDatabaseAccess.cs" />
     <Compile Include="Data-Logic\Carrier.cs" />
     <Compile Include="Data-Logic\City.cs" />

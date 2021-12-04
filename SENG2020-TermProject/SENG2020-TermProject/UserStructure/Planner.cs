@@ -72,9 +72,8 @@ namespace SENG2020_TermProject.UserStructure
      *              a carrier or carriers to fulfill it. The planner also keeps track of
      *              order progress.
      */
-    public class Planner : User
+    class Planner : User
     {
-        TMSDatabaseAccess tms = new TMSDatabaseAccess();
         private static void PlannerHeader()
         {
             Console.WriteLine("=====================");
@@ -101,6 +100,7 @@ namespace SENG2020_TermProject.UserStructure
         public void PlannerWorkFlow() //this will actually take a value from a database based on user input ! :)
         {
             PlannerHeader();
+            if (!this.tms.ValidConnection) return; // exit the application immediately upon establishing the connection is invalid
 
             Order[] orders;
             String inp = "";

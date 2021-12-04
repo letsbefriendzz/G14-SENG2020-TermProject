@@ -7,10 +7,7 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SENG2020_TermProject.DatabaseManagement;
 /*
  * Various users can do various different things. The only way that these users interact is via fetching data
  * from the TMS database. They exclusively access the end results of each other's labours through the TMS database.
@@ -29,9 +26,10 @@ namespace SENG2020_TermProject.UserStructure
      *              defines common fields and methods that each of its subclasses
      *              uses.
      */
-    public class User
+    class User
     {
         //renns
+        protected TMSDatabaseAccess tms = new TMSDatabaseAccess();
         public static String GetInput()
         {
             Console.Write(">> ");
