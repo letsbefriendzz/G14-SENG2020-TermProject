@@ -4,6 +4,12 @@
  * PROGRAMMER(s)    : Ryan Enns
  * FIRST VERSION    : 2021-11-25
  * DESCRIPTION      :
+ *  The TMSDatabaseAccess class provides an interface with the TMSDatabase. It inherits
+ *  its SQL connection abilities from the DatabaseAccess class.
+ *  
+ *  The TMSDatabaseAccess class provides methods for retrieving sets of orders based
+ *  on a variety of parameters. It also provides an interface for updating an order
+ *  to a finished state.
  */
 
 using System;
@@ -136,54 +142,6 @@ namespace SENG2020_TermProject.DatabaseManagement
 
         #endregion
 
-        /*
-         * NAME : SetOrderComplete
-         * DESC :
-         *  When the Planner is finished prepping and simulating an Order, it needs to be updated
-         *  in the TMS database. An unprepped order has half of its fields set as null; once it is
-         *  prepped and finished, the remaining fields (time, distance, cost, osht charges) are
-         *  assigned values and the IsComplete flag is set to 1.
-         *  
-         *  This function accepts an Order object that has been retrieved from the db already. This
-         *  can be identified by the Order having a set ID field. If the Order ID field is -1, this
-         *  is a fresh that we're attempting to udpate - in other words, it won't exist in the db.
-         *  If this is the case, we throw an exception.
-         *  
-         *  If the Order has been retrieved from the DB and has a valid ID, we can continue to update
-         *  it. This involves an update SQL query 
-         * RTRN
-         * PARM
-         */
-        public bool SetOrderComplete(Order o)
-        {
-            int id = o.GetID();
-            if (id == -1) throw new Exception("Non DB Order passed to SetOrderCompelte");
-
-            if(this.cn != null && this.ValidConnection)
-            {
-                try
-                {
-                    cn.Open();
-                    using (MySqlCommand cm = cn.CreateCommand())
-                    {
-                        cm.CommandText = "update tmsorder set TimeToComplete=" + o.GetTimeToComplete() + ", DistanceToComplete=" + o.GetDistanceToComplete() +
-                                         ", CostToComplete=" + o.GetCostToComplete() + ", OSHTSurcharge=" + o.GetOSHTSurcharge() + ", IsComplete=1 " +
-                                          "where OrderID="+id.ToString();
-                        cm.ExecuteNonQuery();
-                    }
-                    cn.Close();
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    FileAccess.Log(String.Format("ERROR in TMSDatabaseAccess.cs :: SetorderComplete(Order o)\n {0}", e.ToString()));
-                    cn.Close();
-                    return false;
-                }
-            }
-            return false;
-        }
-
 
         /*
          * NAME : GetOrder
@@ -206,8 +164,6 @@ namespace SENG2020_TermProject.DatabaseManagement
          *  in the array is instantiated with the MarketplaceRequest, as well as the rest of the values that are expected
          *  to be returned. This includes the time to complete, distance, carrier cost, OSHT surcharge, and completion status.
          *  
-         *  I'm still working on this. Something isn't finished and I kind of forget what. It has to do with returning
-         *  finished orders though. something about the order ID. come back to this later.
          *  
          *  - Ryan Enns, 2021-12-03 - code written probably like three days ago at this point? comment written on given date
          * RTRN
@@ -288,6 +244,54 @@ namespace SENG2020_TermProject.DatabaseManagement
             }
 
             return orders;
+        }
+
+        /*
+         * NAME : SetOrderComplete
+         * DESC :
+         *  When the Planner is finished prepping and simulating an Order, it needs to be updated
+         *  in the TMS database. An unprepped order has half of its fields set as null; once it is
+         *  prepped and finished, the remaining fields (time, distance, cost, osht charges) are
+         *  assigned values and the IsComplete flag is set to 1.
+         *  
+         *  This function accepts an Order object that has been retrieved from the db already. This
+         *  can be identified by the Order having a set ID field. If the Order ID field is -1, this
+         *  is a fresh that we're attempting to udpate - in other words, it won't exist in the db.
+         *  If this is the case, we throw an exception.
+         *  
+         *  If the Order has been retrieved from the DB and has a valid ID, we can continue to update
+         *  it. This involves an update SQL query 
+         * RTRN
+         * PARM
+         */
+        public bool SetOrderComplete(Order o)
+        {
+            int id = o.GetID();
+            if (id == -1) throw new Exception("Non DB Order passed to SetOrderCompelte");
+
+            if (this.cn != null && this.ValidConnection)
+            {
+                try
+                {
+                    cn.Open();
+                    using (MySqlCommand cm = cn.CreateCommand())
+                    {
+                        cm.CommandText = "update tmsorder set TimeToComplete=" + o.GetTimeToComplete() + ", DistanceToComplete=" + o.GetDistanceToComplete() +
+                                         ", CostToComplete=" + o.GetCostToComplete() + ", OSHTSurcharge=" + o.GetOSHTSurcharge() + ", IsComplete=1 " +
+                                          "where OrderID=" + id.ToString();
+                        cm.ExecuteNonQuery();
+                    }
+                    cn.Close();
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    FileAccess.Log(String.Format("ERROR in TMSDatabaseAccess.cs :: SetorderComplete(Order o)\n {0}", e.ToString()));
+                    cn.Close();
+                    return false;
+                }
+            }
+            return false;
         }
 
 

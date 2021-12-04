@@ -4,6 +4,15 @@
  * PROGRAMMER(s)    : Ryan Enns
  * FIRST VERSION    : 2021-11-25
  * DESCRIPTION      :
+ *  The ContractMarketAccess class provides an interface to retrieve contracts
+ *  from the contract marketplace. The ContractMarketAccess class inherits the
+ *  MySql objects from the abstract DatabaseAccess. The MySqlConnection is
+ *  initialized with the default Contract Marketplace access values that are
+ *  defined in the static CMDatabaseValues class.
+ *  
+ *  The class contains one method that populates and returns an array of
+ *  MarketplaceRequest objects based on the values returned by an SQL query.
+ *  
  */
 
 using MySql.Data.MySqlClient;

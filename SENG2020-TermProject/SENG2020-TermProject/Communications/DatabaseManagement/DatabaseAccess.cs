@@ -4,6 +4,12 @@
  * PROGRAMMER       : Ryan Enns
  * FIRST VERSION    : 2021-11-25
  * DESCRIPTION      :
+ *  The DatabaseAccess class is an abstract class from which specific db connection
+ *  interface classes are derived. The class contains protected fields for the server
+ *  IP, Port, Username, Password, relation, and local mySqlConnection instance.
+ *  
+ *  The InitConnection method accepts parameters for each of the aforementioned
+ *  fields and attempts to connect to a SQL database using the fields provided.
  */
 
 using SENG2020_TermProject.Communications;
