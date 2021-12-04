@@ -72,52 +72,66 @@ namespace SENG2020_TermProject.UserStructure
      *              a carrier or carriers to fulfill it. The planner also keeps track of
      *              order progress.
      */
-    class Planner : User
+    public class Planner : User
     {
+        TMSDatabaseAccess tms = new TMSDatabaseAccess();
         private static void PlannerHeader()
         {
             Console.WriteLine("=====================");
             Console.WriteLine("Logged in as: Planner");
             Console.WriteLine("=====================");
         }
+
+        public void DisplayUnfilledOrders()
+        {
+            Console.WriteLine("\n\nTMS DATABASE - UNFINISHED ORDERS");
+            Console.WriteLine(System.DateTime.Now);
+            Console.WriteLine("===================================\n");
+            Order[] orders = tms.GetIncompleteOrders();
+            int iter = 0;
+            foreach (Order order in orders)
+            {
+                Console.WriteLine("Order #{0}", iter);
+                order.Display();
+                iter++;
+            }
+        }
+
         //renns
-        public static void PlannerWorkFlow() //this will actually take a value from a database based on user input ! :)
+        public void PlannerWorkFlow() //this will actually take a value from a database based on user input ! :)
         {
             PlannerHeader();
-            TMSDatabaseAccess tms = new TMSDatabaseAccess();
+
             Order[] orders;
             String inp = "";
             while (inp != null)
             {
                 Console.WriteLine("1. View Unfilled Orders");
-                Console.WriteLine("2. Prepare an Order");
-                Console.WriteLine("3. Simulate Order");
+                Console.WriteLine("2. Prepare and Simualte an Order");
                 inp = GetInput();
 
                 if (inp == "1")
                 {
-                    orders = tms.GetIncompleteOrders();
-                    foreach (Order order in orders)
-                        order.Display();
+                    DisplayUnfilledOrders();
                 }
                 else if (inp == "2")
                 {
                     orders = tms.GetIncompleteOrders();
-                    int iter = 0;
-                    foreach (Order or in orders)
-                    {
-                        Console.WriteLine("Order #{0}", iter);
-                        or.Display();
-                        iter++;
-                    }
+                    DisplayUnfilledOrders();
 
                     Console.WriteLine("Select an order to fulfill - (0 - {0}).", orders.Length - 1);
-                    inp = GetInput();
-                    Order o = orders[int.Parse(inp)];
+                    Order o = orders[GetIntBetween(orders.Length - 1, 0)];
                     o.PrepOrder();
                     o.Display();
 
-                    tms.SetOrderComplete(o);
+                    if (tms.SetOrderComplete(o))
+                    {
+                        Console.WriteLine("Sucessfully finished Order #{0} - {1}", o.GetID(), o.mr.ClientName);
+                    }
+                    else
+                    {
+                        Console.WriteLine("An error occured in TMSDatabaseAccess.cs - See Logs");
+                    }
                 }
             }
         }

@@ -11,7 +11,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+/*
+4.5.2.1 Admin
 
+The Admin user role represents an individual at OSHT who has IT experience and is tasked with 
+configuration, maintenance, and troubleshooting of the TMS application.
+
+4.5.2.1.1 Admin may access general configuration options for TMS, such as selecting directories 
+for log files, targeting IP address and ports for all DBMS communications; etc.
+
+4.5.2.1.2 Admin may review logfiles without leaving the TMS application.
+
+4.5.2.1.3 Admin may alter the following, key TMS data:
+ - Rate/Fee Tables
+ - Carrier Data (e.g. to add, update, or delete Carrier information)
+ - Route Table
+
+4.5.2.1.4 Admin may initiate a backup job on the local TMS Database, specifying the directory for 
+the backup files to be produced.
+ */
 namespace SENG2020_TermProject.UserStructure
 {
     /**

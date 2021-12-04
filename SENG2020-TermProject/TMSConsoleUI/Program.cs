@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SENG2020_TermProject.UserStructure;
 
-namespace TMSConsoleUI
+namespace TMSBuyer
 {
     class Program
     {
         static void Main(string[] args)
         {
-            UI u = new UI();
+            Buyer b = new Buyer();
+            b.BuyerWorkFlow();
         }
     }
 }

@@ -29,13 +29,46 @@ namespace SENG2020_TermProject.UserStructure
      *              defines common fields and methods that each of its subclasses
      *              uses.
      */
-    class User
+    public class User
     {
         //renns
         public static String GetInput()
         {
             Console.Write(">> ");
             return Console.ReadLine();
+        }
+
+        public static void ClearTerminal()
+        {
+            Console.WriteLine("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        }
+
+        public static int GetIntBetween(int UpperBound, int LowerBound = 0)
+        {
+            String inp = null;
+            int ReturnValue = -1;
+            while (ReturnValue < LowerBound || ReturnValue > UpperBound)
+            {
+                inp = "";
+                while (!int.TryParse(inp, out ReturnValue))
+                {
+                    Console.WriteLine("Enter an integer between {0} and {1}", UpperBound, LowerBound);
+                    inp = GetInput();
+                }
+            }
+
+            return ReturnValue;
+        }
+
+        public static String GetYesNo()
+        {
+            String inp = "";
+            while (inp.ToUpper() != "Y" && inp.ToUpper() != " N")
+            {
+                inp = GetInput();
+            }
+
+            return inp;
         }
     }
 }

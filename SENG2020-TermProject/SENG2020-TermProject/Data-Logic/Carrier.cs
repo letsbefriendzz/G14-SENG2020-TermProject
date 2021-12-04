@@ -287,8 +287,8 @@ namespace SENG2020_TermProject.Data_Logic
         public static List<Trip> OneStopRoutes(City c1, City c2, int JobType, int quantity = 0)
         {
             List<List<Trip>> TripsList = new List<List<Trip>>();
-            String origin = c1.CityName;
-            String destin = c2.CityName;
+            String origin = c1.GetName();
+            String destin = c2.GetName();
             int i1 = CityList.GetCityIndex(origin) +1;
             int i2 = CityList.GetCityIndex(destin);
             
@@ -304,7 +304,7 @@ namespace SENG2020_TermProject.Data_Logic
 
             for(int i = i1; i < i2; i++)
             {
-                String CurrentCity = CityList.CityAt(i).CityName;
+                String CurrentCity = CityList.CityAt(i).GetName();
 
                 foreach(Carrier carrier1 in Carriers)
                 {

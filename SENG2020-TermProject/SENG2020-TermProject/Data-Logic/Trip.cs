@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+* FILE             : Order.cs
+* PROJECT          : SENG2020 - Term Project
+* PROGRAMMER(s)    : Ryan Enns
+* FIRST VERSION    : 2021-12-03
+* DESCRIPTION      :
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -123,11 +131,11 @@ namespace SENG2020_TermProject.Data_Logic
         {
             double Time = 0.0;
             Time += LOAD_UNLOAD_TIME * 2;
-            Time += CityList.DrivingTime(Origin.CityName, Destin.CityName);
+            Time += CityList.DrivingTime(Origin.GetName(), Destin.GetName());
 
             if (JobType == 1)
             {
-                Time += 2 * CityList.LTLStops(this.Origin.CityName, this.Destin.CityName);
+                Time += 2 * CityList.LTLStops(this.Origin.GetName(), this.Destin.GetName());
             }
 
             return Time;

@@ -31,17 +31,32 @@ namespace SENG2020_TermProject.Data_Logic
     public class City
     {
         /// \brief      The name of the City this object represents.
-        public String CityName;
+        private readonly String CityName;
         /// \brief      The name of the next city east of CityName.
-        public String EastCityName;
+        private readonly String EastCityName;
         /// \brief      The distance to the city east of CityName, in km.
-        public int EastCityDistance;
+        private readonly int EastCityDistance;
         /// \brief      The time it takes to travel to the city west of CityName, in hours.
-        public double TimeToEastCity;
+        private readonly double TimeToEastCity;
 
         public String GetName()
         {
             return this.CityName;
+        }
+
+        public String GetEastCityName()
+        {
+            return this.EastCityName;
+        }
+
+        public int GetEastCityDistance()
+        {
+            return this.EastCityDistance;
+        }
+
+        public double GetTimeToEastCity()
+        {
+            return this.TimeToEastCity;
         }
 
         public City(String cn, String ecn, int ecd, double ttec)
@@ -110,7 +125,7 @@ namespace SENG2020_TermProject.Data_Logic
         {
             foreach(City c in CitySequence)
             {
-                Console.WriteLine(c.CityName);
+                Console.WriteLine(c.GetName());
             }
         }
 
@@ -138,7 +153,7 @@ namespace SENG2020_TermProject.Data_Logic
         public static bool ContainsCity(String cn)
         {
             foreach (City c in CitySequence)
-                if (c.CityName == cn) return true;
+                if (c.GetName() == cn) return true;
             return false;
         }
 
@@ -152,7 +167,7 @@ namespace SENG2020_TermProject.Data_Logic
         {
             for(int i = 0; i < CitySequence.Count; i++)
             {
-                if (CitySequence[i].CityName == cn)
+                if (CitySequence[i].GetName() == cn)
                     return i;
             }
             return -1;
@@ -163,7 +178,7 @@ namespace SENG2020_TermProject.Data_Logic
             if(ContainsCity(city))
             {
                 foreach (City c in CitySequence)
-                    if (c.CityName == city) return c;
+                    if (c.GetName() == city) return c;
             }
             return null;
         }
@@ -202,7 +217,7 @@ namespace SENG2020_TermProject.Data_Logic
 
                 int Distance = 0;
                 for (int i = StartIndex; i < EndIndex; i++)
-                    Distance += CitySequence[i].EastCityDistance;
+                    Distance += CitySequence[i].GetEastCityDistance();
                 return Distance;
             }
             return -1;
@@ -245,7 +260,7 @@ namespace SENG2020_TermProject.Data_Logic
 
                 double TimeToTravel = 0;
                 for (int i = StartIndex; i < EndIndex; i++)
-                    TimeToTravel += CitySequence[i].TimeToEastCity;
+                    TimeToTravel += CitySequence[i].GetTimeToEastCity();
                 return TimeToTravel;
             }
             return -1.0;

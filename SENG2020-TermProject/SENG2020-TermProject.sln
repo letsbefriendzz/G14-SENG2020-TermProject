@@ -5,9 +5,7 @@ VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SENG2020-TermProject", "SENG2020-TermProject\SENG2020-TermProject.csproj", "{101DDD0A-203E-4011-A7F5-985EA4AD6AD9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMSConsoleUI", "TMSConsoleUI\TMSConsoleUI.csproj", "{A3607D70-513F-43AB-9B33-44124AEC97DE}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TermProjectUnitTests", "TermProjectUnitTests\TermProjectUnitTests.csproj", "{3F27CE08-D02F-4628-954A-12980301D179}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TermProjectUnitTests", "TermProjectUnitTests\TermProjectUnitTests.csproj", "{3F27CE08-D02F-4628-954A-12980301D179}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +17,6 @@ Global
 		{101DDD0A-203E-4011-A7F5-985EA4AD6AD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{101DDD0A-203E-4011-A7F5-985EA4AD6AD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{101DDD0A-203E-4011-A7F5-985EA4AD6AD9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A3607D70-513F-43AB-9B33-44124AEC97DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A3607D70-513F-43AB-9B33-44124AEC97DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A3607D70-513F-43AB-9B33-44124AEC97DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A3607D70-513F-43AB-9B33-44124AEC97DE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3F27CE08-D02F-4628-954A-12980301D179}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3F27CE08-D02F-4628-954A-12980301D179}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F27CE08-D02F-4628-954A-12980301D179}.Release|Any CPU.ActiveCfg = Release|Any CPU

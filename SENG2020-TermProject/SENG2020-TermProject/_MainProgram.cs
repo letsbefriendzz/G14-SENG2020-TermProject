@@ -96,20 +96,44 @@ namespace SENG2020_TermProject
 
         static void Main(string[] args)
         {
-            Planner.PlannerWorkFlow();
+            String inp = null;
+            Console.WriteLine("Select Buyer (1) or Planner (2)");
+            Console.Write(">> ");
+
+            while (inp == null)
+            {
+                inp = Console.ReadLine();
+                if (inp == "1")
+                {
+                    Buyer b = new Buyer();
+                    b.BuyerWorkFlow();
+                }
+                else if (inp == "2")
+                {
+                    Planner p = new Planner();
+                    p.PlannerWorkFlow();
+                }
+                else
+                {
+                    inp = null;
+                }
+            }
 
             AnyKeyToContinue();
             return; //and then return!
         }
 
-        static void PrepHarness()
-        {
-            MarketplaceRequest mr = new MarketplaceRequest("Ryan's Fuckery", 0, 0, "Hamilton", "Windsor", 0);
-            Order o = new Order(mr);
-            o.PrepOrder();
-            o.Display();
-        }
 
+
+
+
+
+
+
+        //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        //VARIOUS TEST HARNESS FUNCTIONS
         static void TestCities()
         {
             foreach (City c1 in CityList.GetList())
@@ -119,12 +143,20 @@ namespace SENG2020_TermProject
                     if (CarrierList.CarriersForRoute(c1, c2) == null)
                     {
                         Console.WriteLine("Bad Test");
-                        Console.WriteLine("Origin:\t{0}", c1.CityName);
-                        Console.WriteLine("Destin:\t{0}", c2.CityName);
+                        Console.WriteLine("Origin:\t{0}", c1.GetName());
+                        Console.WriteLine("Destin:\t{0}", c2.GetName());
                         Console.WriteLine();
                     }
                 }
             }
+        }
+
+        static void PrepHarness()
+        {
+            MarketplaceRequest mr = new MarketplaceRequest("Ryan's Fuckery", 0, 0, "Hamilton", "Windsor", 0);
+            Order o = new Order(mr);
+            o.PrepOrder();
+            o.Display();
         }
 
         //test harness func I'd like to hold on to
@@ -153,7 +185,5 @@ namespace SENG2020_TermProject
                 //tms.InsertOrder(r);
             }
         }
-
-        //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     }
 }

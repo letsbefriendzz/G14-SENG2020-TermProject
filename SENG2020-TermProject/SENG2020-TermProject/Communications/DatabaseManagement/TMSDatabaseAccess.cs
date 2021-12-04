@@ -8,7 +8,6 @@
 
 using System;
 using System.Data;
-using System.Collections.Generic;
 using SENG2020_TermProject.Data_Logic;
 using MySql.Data.MySqlClient;
 
@@ -108,9 +107,29 @@ namespace SENG2020_TermProject.DatabaseManagement
             return GetOrders("select * from tmsorder where IsComplete=0");
         }
 
+        /*
+         * NAME : SetOrderComplete
+         * DESC :
+         *  When the Planner is finished prepping and simulating an Order, it needs to be updated
+         *  in the TMS database. An unprepped order has half of its fields set as null; once it is
+         *  prepped and finished, the remaining fields (time, distance, cost, osht charges) are
+         *  assigned values and the IsComplete flag is set to 1.
+         *  
+         *  This function accepts an Order object that has been retrieved from the db already. This
+         *  can be identified by the Order having a set ID field. If the Order ID field is -1, this
+         *  is a fresh that we're attempting to udpate - in other words, it won't exist in the db.
+         *  If this is the case, we throw an exception.
+         *  
+         *  If the Order has been retrieved from the DB and has a valid ID, we can continue to update
+         *  it. This involves an update SQL query 
+         * RTRN
+         * PARM
+         */
         public bool SetOrderComplete(Order o)
         {
             int id = o.GetID();
+            if (id == -1) throw new Exception("Non DB Order passed to SetOrderCompelte");
+
             if(this.cn != null && this.ValidConnection)
             {
                 try
@@ -118,7 +137,9 @@ namespace SENG2020_TermProject.DatabaseManagement
                     cn.Open();
                     using (MySqlCommand cm = cn.CreateCommand())
                     {
-                        cm.CommandText = "update tmsorder set IsComplete=1 where OrderID="+id.ToString();
+                        cm.CommandText = "update tmsorder set TimeToComplete=" + o.TimeToComplete + ", DistanceToComplete=" + o.DistanceToComplete +
+                                         ", CostToComplete=" + o.CostToComplete + ", OSHTSurcharge=" + o.OSHTSurcharge + ", IsComplete=1 " +
+                                          "where OrderID="+id.ToString();
                         cm.ExecuteNonQuery();
                     }
                     cn.Close();
@@ -126,6 +147,7 @@ namespace SENG2020_TermProject.DatabaseManagement
                 }
                 catch (Exception)
                 {
+                    cn.Close();
                     return false;
                 }
             }
@@ -207,12 +229,12 @@ namespace SENG2020_TermProject.DatabaseManagement
 
                                     //gotta pre-parse this bad boy to an integer and then logically determine the bool val from it because
                                     //csharp has a personal vendetta against redheads like myself
-                                    int ic = int.Parse(dr[12].ToString());
+                                    int ic = int.Parse(dr[11].ToString());
                                     bool IsComplete = false;
                                     if (ic == 0)
                                         IsComplete = false;
                                     else IsComplete = true;
-                                    orders[i] = new Order(temp, (double)dr[7], int.Parse(dr[8].ToString()), (double)dr[9], (double)dr[10], IsComplete);
+                                    orders[i] = new Order(int.Parse(dr[0].ToString()), temp, (double)dr[7], int.Parse(dr[8].ToString()), (double)dr[9], (double)dr[10], IsComplete);
 
                                     //this catastrophically bad way of parsing an sbyte to a boolean deserves to be preserved in the museum of awful code
                                     //bool IsComplete = bool.Parse(int.Parse(dr[11].ToString()).ToString()); 
@@ -264,6 +286,7 @@ namespace SENG2020_TermProject.DatabaseManagement
                             }
                         }
                     }
+                    cn.Close();
                 }
                 catch (Exception)
                 {

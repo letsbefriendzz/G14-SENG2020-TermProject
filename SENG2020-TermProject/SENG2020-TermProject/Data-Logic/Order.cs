@@ -114,14 +114,16 @@ namespace SENG2020_TermProject.Data_Logic
             this.ID = nid;
         }
 
-        public Order(MarketplaceRequest req, double t, int d, double cost, double osh, bool c)
+        public Order(int nid, MarketplaceRequest req, double t, int d, double cost, double osh, bool c)
         {
+            this.ID = nid;
             this.mr = req;
             this.IsComplete = c;
             this.TimeToComplete = t;
             this.DistanceToComplete = d;
             this.CostToComplete = cost;
             this.OSHTSurcharge = osh;
+            this.isprepped = true;
         }
 
         /**
@@ -238,8 +240,10 @@ namespace SENG2020_TermProject.Data_Logic
                 Console.WriteLine("OSHT Charges:\t\t${0}", this.OSHTSurcharge);
                 Console.WriteLine("Total cost to complete:\t${0}", this.CostToComplete + this.OSHTSurcharge);
                 Console.WriteLine();
-                Console.WriteLine("Trips to Compelte:\t{0}", this.trips.Count);
                 
+                if(!(trips == null || trips.Count == 0))
+                    Console.WriteLine("Trips to Compelte:\t{0}", this.trips.Count);
+
                 foreach (Trip t in trips)
                 {
                     Console.WriteLine("================================");

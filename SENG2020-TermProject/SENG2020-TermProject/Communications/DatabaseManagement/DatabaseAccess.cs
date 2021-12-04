@@ -33,7 +33,7 @@ namespace SENG2020_TermProject.DatabaseManagement
         /// \brief      Represents the schema in which we want access to in the database.
         protected String table;
 
-        protected bool ValidConnection = false;
+        public bool ValidConnection = false;
 
         public DatabaseAccess()
         {
