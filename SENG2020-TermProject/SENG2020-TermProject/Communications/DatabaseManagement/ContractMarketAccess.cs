@@ -118,12 +118,12 @@ namespace SENG2020_TermProject.DatabaseManagement
                                 MarketplaceRequest temp = new MarketplaceRequest();
                                 //what a complete fucking hodgepodge this mess is
                                 //magic numbers bad! but hey! i do not care!
-                                temp.ClientName = dr[0].ToString();
-                                temp.JobType = int.Parse(dr[1].ToString());
-                                temp.Quantity = int.Parse(dr[2].ToString());
-                                temp.CityOrigin = dr[3].ToString();
-                                temp.CityDestin = dr[4].ToString();
-                                temp.VanType = int.Parse(dr[5].ToString());
+                                temp.SetClientName(dr[0].ToString());
+                                temp.SetJobType(int.Parse(dr[1].ToString()));
+                                temp.SetQuantity(int.Parse(dr[2].ToString()));
+                                temp.SetCityOrigin(dr[3].ToString());
+                                temp.SetCityDestination(dr[4].ToString());
+                                temp.SetVanType(int.Parse(dr[5].ToString()));
 
                                 mr[MarketplaceIterator] = temp;
                                 MarketplaceIterator++;

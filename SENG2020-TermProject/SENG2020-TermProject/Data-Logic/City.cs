@@ -4,16 +4,42 @@
  * PROGRAMMER       : Ryan Enns
  * FIRST VERSION    : 2021-11-26
  * DESCRIPTION      :
+ *  The City.cs file defines two classes; the City class and the CityList static class.
+ *  The City object is used to represent a City in our supply chain. Since our supply
+ *  chain is linear, thank the Good Lord Jesus himself, we can create a staic List<T>
+ *  of City instances to represent our linear and relatively constant supply chain.
+ *  
+ *  THE CITY CLASS
+ *  ==============
+ *  
+ *  The City object exists solely to serve the CityList class and the Depot class. It
+ *  has no complicated methods; it's a nice wrapper for data. It has fields for the city
+ *  name, the city to the east of it (because west -> east is considered to be a linear
+ *  progression in our supply chain), the distance to the city east of it, and the time
+ *  it takes to travel to the city east of it. Wow, that's a lotta easts. The City class
+ *  has getters for each of these members, and only one constructor that takes values
+ *  for each field upon instantiation.
+ *  
+ *  THE CITYLIST CLASS
+ *  ==================
+ *  
+ *  As previously mentioned, thank the Holy Saviour Lord Jesus himself like 20x over
+ *  that our supply route is exclusively linear. If it wasn't, I'd probably be curled
+ *  up in the fetal position trying to figure this back end out on my own. Considering
+ *  I did that multiple times trying to figure out a linear supply route back end, I
+ *  am quite thankful.
+ *  
+ *  Anyhow, the CityList class. What is it? Why does it exist?
+ *  
+ *  Well, the CityList class is comprised of a static List<T> of City instances that is
+ *  used to model our supply route. Using its various methods, we can measure the time
+ *  needed to travel from city x to city y, the distance between city x and city y, check
+ *  if city xyz is in the list, check how many stops would be needed between city x and y
+ *  for an LTL order, and so forth.
  */
-
-//TODO
-//change accessibility level to private and protected once tests are finished!
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SENG2020_TermProject.Data_Logic
 {
@@ -123,7 +149,7 @@ namespace SENG2020_TermProject.Data_Logic
          */
         public static void DisplayList()
         {
-            foreach(City c in CitySequence)
+            foreach (City c in CitySequence)
             {
                 Console.WriteLine(c.GetName());
             }
@@ -165,7 +191,7 @@ namespace SENG2020_TermProject.Data_Logic
          */
         public static int GetCityIndex(String cn)
         {
-            for(int i = 0; i < CitySequence.Count; i++)
+            for (int i = 0; i < CitySequence.Count; i++)
             {
                 if (CitySequence[i].GetName() == cn)
                     return i;
@@ -175,7 +201,7 @@ namespace SENG2020_TermProject.Data_Logic
 
         public static City GetCity(String city)
         {
-            if(ContainsCity(city))
+            if (ContainsCity(city))
             {
                 foreach (City c in CitySequence)
                     if (c.GetName() == city) return c;
@@ -202,13 +228,13 @@ namespace SENG2020_TermProject.Data_Logic
         public static int DrivingDistance(String c1, String c2)
         {
             //if both cities passed exist, continue. otherwise return -1
-            if(ContainsCity(c1) && ContainsCity(c2))
+            if (ContainsCity(c1) && ContainsCity(c2))
             {
                 //get the indices of both cities in the array
                 int StartIndex = GetCityIndex(c1);
                 int EndIndex = GetCityIndex(c2);
 
-                if(StartIndex > EndIndex)
+                if (StartIndex > EndIndex)
                 {
                     int inter = StartIndex;
                     StartIndex = EndIndex;
@@ -243,7 +269,7 @@ namespace SENG2020_TermProject.Data_Logic
          */
         public static double DrivingTime(String c1, String c2)
         {
-            if(ContainsCity(c1) && ContainsCity(c2))
+            if (ContainsCity(c1) && ContainsCity(c2))
             {
                 //get the indices of both cities in the array
                 int StartIndex = GetCityIndex(c1);
@@ -277,10 +303,10 @@ namespace SENG2020_TermProject.Data_Logic
          */
         public static int LTLStops(String c1, String c2)
         {
-            if(ContainsCity(c1) && ContainsCity(c2))
+            if (ContainsCity(c1) && ContainsCity(c2))
             {
-                int StartIndex = GetCityIndex(c1)+1;
-                int EndIndex = GetCityIndex(c2)+1;
+                int StartIndex = GetCityIndex(c1) + 1;
+                int EndIndex = GetCityIndex(c2) + 1;
 
                 if (StartIndex > EndIndex)
                     return (StartIndex - EndIndex) - 1;

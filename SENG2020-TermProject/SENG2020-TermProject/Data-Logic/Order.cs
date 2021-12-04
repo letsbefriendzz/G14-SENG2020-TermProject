@@ -4,12 +4,26 @@
 * PROGRAMMER(s)    : Ryan Enns
 * FIRST VERSION    : 2021-11-25
 * DESCRIPTION      :
+*   This is the Order object. The Order object is used to represent exactly that; an Order.
+*   
+*   The Order contains multiple fields to store various information about the given Order instance.
+*   First, it includes a MarketplaceRequest, to store the MarketplaceRequest data it was created from.
+*   It may make more sense to create separate members to store this data, however from a memory and
+*   efficiency standpoint, copying the MarketplaceRequest object makes life easier for everyone.
+*   
+*   Most of the Order's own members are only populated once the Order has been "prepared". What occures
+*   what an Order is prepared? Great question. An Order is prepared by the Planner when they select
+*   Carriers to satisfy an Order. Upon selection, the Order's fields can be calculated using the
+*   Carrier and Depot information given to it by the Planner's Carrier selection.
+*   
+*   The Order class contains all functions needed to calculate its own distance, cost, elapsed time,
+*   and so forth, given that it has a populated trips member to work with. It mostly does this
+*   with logic found in the Trip class.
 */
 
 using System.Collections.Generic;
 using System;
 
-//reference this fucker like crazy!
 //https://conestoga.desire2learn.com/d2l/le/content/482677/viewContent/9959524/View
 
 namespace SENG2020_TermProject.Data_Logic
@@ -41,18 +55,47 @@ namespace SENG2020_TermProject.Data_Logic
         public MarketplaceRequest mr = null;
 
         /// \brief      A boolean that indicates if this order has been fulfilled or not.
-        public bool IsComplete;
+        private bool IsComplete;
         /// \brief      A float that represents how many hours the selected shipping sequence will take
-        public double TimeToComplete;
+        private double TimeToComplete;
         /// \brief      The total distance between the start city and end city.
-        public int DistanceToComplete;
+        private int DistanceToComplete;
         /// \brief      The total cost of the shipment using the given carrier.
-        public double CostToComplete = 0.0;
+        private double CostToComplete = 0.0;
         /// \brief      The surcharge that OSHT will apply for profit to this order.
-        public double OSHTSurcharge = 0.0;
+        private double OSHTSurcharge = 0.0;
         /// \brief      The carrier being used to ship this order.
         //private Carrier c = null;
         private List<Trip> trips = new List<Trip>();
+
+        /**
+         * \brief       Creates an order based on the information given to us by a MarketplaceRequest.
+         * 
+         * \details     This constructor accepts a MarketplaceRequest object to then pass to the ParseMarketplaceRequest
+         *              function for further processing.
+         */
+        public Order(MarketplaceRequest req) : this()
+        {
+            this.mr = req;
+        }
+
+        public Order(int nid, MarketplaceRequest req) : this()
+        {
+            this.mr = req;
+            this.ID = nid;
+        }
+
+        public Order(int nid, MarketplaceRequest req, double t, int d, double cost, double osh, bool c)
+        {
+            this.ID = nid;
+            this.mr = req;
+            this.IsComplete = c;
+            this.TimeToComplete = t;
+            this.DistanceToComplete = d;
+            this.CostToComplete = cost;
+            this.OSHTSurcharge = osh;
+            this.isprepped = true;
+        }
 
 
         public int GetID()
@@ -67,17 +110,17 @@ namespace SENG2020_TermProject.Data_Logic
         */
         public String GetOrigin()
         {
-            return this.mr.CityOrigin;
+            return this.mr.GetCityOrigin();
         }
 
         public String GetDestin()
         {
-            return this.mr.CityDestin;
+            return this.mr.GetCityDestination();
         }
 
         public String GetClient()
         {
-            return this.mr.ClientName;
+            return this.mr.GetClientName();
         }
 
         public double GetTimeToComplete()
@@ -100,6 +143,11 @@ namespace SENG2020_TermProject.Data_Logic
             return this.OSHTSurcharge;
         }
 
+        public bool GetIsComplete()
+        {
+            return this.IsComplete;
+        }
+
         public Order()
         {
             IsComplete = false;
@@ -109,7 +157,7 @@ namespace SENG2020_TermProject.Data_Logic
 
         public String JobType()
         {
-            if (mr.JobType == 0)
+            if (mr.GetJobType() == 0)
                 return "FTL";
             else
                 return "LTL";
@@ -118,37 +166,8 @@ namespace SENG2020_TermProject.Data_Logic
         public int LTLQty()
         {
             if (this.JobType() == "LTL")
-                return this.mr.Quantity;
+                return this.mr.GetQuantity();
             else return -1;
-        }
-
-        /**
-         * \brief       Creates an order based on the information given to us by a MarketplaceRequest.
-         * 
-         * \details     This constructor accepts a MarketplaceRequest object to then pass to the ParseMarketplaceRequest
-         *              function for further processing.
-         */
-        public Order(MarketplaceRequest req) : this()
-        {
-            this.mr = req;
-        }
-        
-        public Order(int nid, MarketplaceRequest req): this()
-        {
-            this.mr = req;
-            this.ID = nid;
-        }
-
-        public Order(int nid, MarketplaceRequest req, double t, int d, double cost, double osh, bool c)
-        {
-            this.ID = nid;
-            this.mr = req;
-            this.IsComplete = c;
-            this.TimeToComplete = t;
-            this.DistanceToComplete = d;
-            this.CostToComplete = cost;
-            this.OSHTSurcharge = osh;
-            this.isprepped = true;
         }
 
         /**
@@ -163,9 +182,8 @@ namespace SENG2020_TermProject.Data_Logic
          * DESC :
          *  This function "prepares" an order for fulfillment. This means that the carriers it needs to use are established,
          *  and from this the distance, time and cost are established using various other member functions.
-         * 
-         * RTRN
-         * PARM
+         * RTRN : bool
+         * PARM : //
          */
         public bool PrepOrder()
         {
@@ -180,15 +198,6 @@ namespace SENG2020_TermProject.Data_Logic
                 CalculateDistance();
                 CalculateTime();
                 CalculateCost();
-            
-                if(mr.JobType == 0)
-                {
-                    //calculate cost
-                }
-                else
-                {
-                    //calculate cost
-                }
 
                 isprepped = true;
             }
@@ -204,7 +213,7 @@ namespace SENG2020_TermProject.Data_Logic
         private void CalculateDistance()
         {
             if(this.mr!=null)
-                DistanceToComplete += CityList.DrivingDistance(mr.CityOrigin, mr.CityDestin);
+                DistanceToComplete += CityList.DrivingDistance(mr.GetCityOrigin(), mr.GetCityDestination());
         }
 
         /**
@@ -218,19 +227,31 @@ namespace SENG2020_TermProject.Data_Logic
         /*
          * NAME : CalculateTime
          * DESC :
-
-         * RTRN :
-         * PARM :
+         * The CalculateTime function calculates the total time needed to complete an order
+         * by iterating through all Trip instances in its trips list. It adds all of these
+         * up in the TimeToComplete member.
+         * RTRN : //
+         * PARM : //
          */
         private void CalculateTime()
         {
             this.TimeToComplete = 0.0;
             foreach(Trip t in trips)
             {
-                this.TimeToComplete += t.GetTripTime(this.mr.JobType);
+                this.TimeToComplete += t.GetTripTime(this.mr.GetJobType());
             }
         }
 
+        /*
+         * NAME : CalculateCost
+         * DESC :
+         *  The CalculateCost function calculates an order's total cost by iterating and adding up
+         *  the results of the Trip.GetTripCost function for each individual trip in the respective
+         *  Order instance. Then, based on the job type, we apply the 8% or 5% surcharge to populate
+         *  the OSHTSurcharge method. Finally, the TotalCost member that is being used to track the
+         *  total Carrier charges of the order is copied to the CostToComplete member.
+         *  
+         */
         private void CalculateCost()
         {
             //The carrier object we take here will dictate the cost per km
@@ -242,7 +263,7 @@ namespace SENG2020_TermProject.Data_Logic
 
             foreach (Trip t in trips)
             {
-                TotalCost += t.GetTripCost(this.mr.JobType, this.mr.Quantity, this.mr.VanType);
+                TotalCost += t.GetTripCost(this.mr.GetJobType(), this.mr.GetQuantity(), this.mr.GetVanType());
             }
 
             if (this.JobType() == "FTL")
@@ -252,6 +273,13 @@ namespace SENG2020_TermProject.Data_Logic
             this.CostToComplete = TotalCost;
         }
 
+        /*
+         * NAME : Dispaly
+         * DESC :
+         *  The Display function neatly organizes and displays information about
+         *  an order to the console. Varying on trip length and ID number, some fields
+         *  are included or discluded.
+         */
         public void Display()
         {
             if (!(this.ID == -1))
@@ -276,20 +304,21 @@ namespace SENG2020_TermProject.Data_Logic
                     Console.WriteLine("Trip Destination:\t{0}", t.GetDestin().GetName());
                     Console.WriteLine("Carrier to Complete:\t{0}", t.GetCarrier().GetName());
                     Console.WriteLine("Trip Distance:\t\t{0}km", t.GetTripDistance());
-                    Console.WriteLine("Trip Cost:\t\t${0}", t.GetTripCost(this.mr.JobType, this.mr.Quantity));
-                    Console.WriteLine("Trip Time:\t\t{0}h", t.GetTripTime(this.mr.JobType));
+                    Console.WriteLine("Trip Cost:\t\t${0}", t.GetTripCost(this.mr.GetJobType(), this.mr.GetQuantity()));
+                    Console.WriteLine("Trip Time:\t\t{0}h", t.GetTripTime(this.mr.GetJobType()));
                     Console.WriteLine();
                 }
             }
         }
 
+        //hot garbage that needs work
         public void SimulateTime()
         {
             if (!this.isprepped) return;
 
             foreach(Trip t in this.trips)
             {
-                for(double hoursPassed = 0.0; hoursPassed < t.GetTripTime(this.mr.JobType); hoursPassed++)
+                for(double hoursPassed = 0.0; hoursPassed < t.GetTripTime(this.mr.GetJobType()); hoursPassed++)
                 {
                     Console.WriteLine("Currently {0} hours into a {1} hour trip.");
                     Console.WriteLine("Continue");

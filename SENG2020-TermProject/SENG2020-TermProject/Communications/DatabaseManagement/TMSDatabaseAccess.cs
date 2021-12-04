@@ -28,6 +28,7 @@ namespace SENG2020_TermProject.DatabaseManagement
                 this.ValidConnection = true; //LocalHostRoot99
         }
 
+        //Constructor that uses a usr and pwd string for user and password.
         public TMSDatabaseAccess(String usr, String pwd)
         {
             if (this.InitConnection("127.0.0.1", "3306", usr, pwd, "tmsdatabase", "0"))
@@ -60,13 +61,13 @@ namespace SENG2020_TermProject.DatabaseManagement
                     cm.CommandText = String.Format("insert into tmsorder " +
                         "(ClientName, JobType, Quantity, CityOrigin, CityDestin, VanType, TimeToComplete, DistanceToComplete, CostToComplete, OSHTSurcharge, IsComplete) " +
                         "values (\"{0}\",{1},{2},\"{3}\",\"{4}\",{5},{6},{7},{8},{9},\"{10}\",{11});",
-                        o.mr.ClientName, o.mr.JobType, o.mr.Quantity, o.mr.CityOrigin, o.mr.CityDestin, o.mr.VanType, o.TimeToComplete, o.DistanceToComplete, o.CostToComplete, o.OSHTSurcharge, o.IsComplete);
+                        o.mr.GetClientName(), o.mr.GetJobType(), o.mr.GetQuantity(), o.mr.GetCityOrigin(), o.mr.GetCityDestination(), o.mr.GetVanType(), o.GetTimeToComplete(), o.GetDistanceToComplete(), o.GetCostToComplete(), o.GetOSHTSurcharge(), o.GetIsComplete());
                 }
                 else
                 {
                     cm.CommandText = String.Format("insert into tmsorder (ClientName, JobType, Quantity, CityOrigin, CityDestin, VanType, IsComplete)" +
                         "values (\"{0}\",{1},{2},\"{3}\",\"{4}\",{5},0);",
-                        o.mr.ClientName, o.mr.JobType, o.mr.Quantity, o.mr.CityOrigin, o.mr.CityDestin, o.mr.VanType);
+                        o.mr.GetClientName(), o.mr.GetJobType(), o.mr.GetQuantity(), o.mr.GetCityOrigin(), o.mr.GetCityDestination(), o.mr.GetVanType());
 
                 }
 
@@ -84,35 +85,56 @@ namespace SENG2020_TermProject.DatabaseManagement
             }
         }
 
+        #region GetOrder Extensions
+
+        /*
+         * NAME(S)  : Get{xyz}Order
+         * DESC     :
+         *  The following functions don't warrant their own individual headers. Each of them,
+         *  based on a condition defined clearly in their method title, make a specific query
+         *  to the GetOrders() function. Some are hardcoded, some allow a single string input
+         *  for a certain field to be queried for.
+         * RTRN     : Order[]
+         * PARM     : String or void
+         */
+
+        //Extension of GetOrders()
         public Order[] GetFinishedOrders()
         {
             return GetOrders("select * from tmsorder where IsComplete=1");
         }
 
+        //Extension of GetOrders()
         public Order[] GetAllOrders()
         {
             return GetOrders("select * from tmsorder");
         }
 
+        //Extension of GetOrders()
         public Order[] GetOrderByOrigin(String city)
         {
             return GetOrders("select * from tmsorder where CityOrigin=\""+city+"\"");
         }
 
+        //Extension of GetOrders()
         public Order[] GetOrderByDestin(String city)
         {
             return GetOrders("select * from tmsorder where CityDestin=\"" + city + "\"");
         }
 
+        //Extension of GetOrders()
         public Order[] GetOrderByClient(String client)
         {
             return GetOrders("select * from tmsorder where ClientName=\"" + client + "\"");
         }
 
+        //Extension of GetOrders()
         public Order[] GetIncompleteOrders()
         {
             return GetOrders("select * from tmsorder where IsComplete=0");
         }
+
+        #endregion
 
         /*
          * NAME : SetOrderComplete
@@ -144,8 +166,8 @@ namespace SENG2020_TermProject.DatabaseManagement
                     cn.Open();
                     using (MySqlCommand cm = cn.CreateCommand())
                     {
-                        cm.CommandText = "update tmsorder set TimeToComplete=" + o.TimeToComplete + ", DistanceToComplete=" + o.DistanceToComplete +
-                                         ", CostToComplete=" + o.CostToComplete + ", OSHTSurcharge=" + o.OSHTSurcharge + ", IsComplete=1 " +
+                        cm.CommandText = "update tmsorder set TimeToComplete=" + o.GetTimeToComplete() + ", DistanceToComplete=" + o.GetDistanceToComplete() +
+                                         ", CostToComplete=" + o.GetCostToComplete() + ", OSHTSurcharge=" + o.GetOSHTSurcharge() + ", IsComplete=1 " +
                                           "where OrderID="+id.ToString();
                         cm.ExecuteNonQuery();
                     }
@@ -217,12 +239,13 @@ namespace SENG2020_TermProject.DatabaseManagement
                                 //temp mplace req so we can init an order with it
                                 MarketplaceRequest temp = new MarketplaceRequest();
 
-                                temp.ClientName = dr[1].ToString();
-                                temp.JobType = int.Parse(dr[2].ToString());
-                                temp.Quantity = int.Parse(dr[3].ToString());
-                                temp.CityOrigin = dr[4].ToString();
-                                temp.CityDestin = dr[5].ToString();
-                                temp.VanType = int.Parse(dr[6].ToString());
+                                temp.SetClientName(dr[1].ToString());
+                                temp.SetJobType(int.Parse(dr[2].ToString()));
+                                temp.SetQuantity(int.Parse(dr[3].ToString()));
+                                temp.SetCityOrigin(dr[4].ToString());
+                                temp.SetCityDestination(dr[5].ToString());
+                                temp.SetVanType(int.Parse(dr[6].ToString()));
+                                int.Parse(dr[6].ToString());
 
                                 if (!(dr[7].GetType().ToString() == "System.DBNull"))
                                 {
@@ -267,6 +290,8 @@ namespace SENG2020_TermProject.DatabaseManagement
             return orders;
         }
 
+
+        //unfinished hot garbage
         public Depot[] GetDepots(String CarrierName)
         {
             Depot[] ReturnArray = null;

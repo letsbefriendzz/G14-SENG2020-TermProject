@@ -1,9 +1,64 @@
 ﻿/*
  * FILE             : Carrier.cs
  * PROJECT          : SENG2020 Term Project
- * PROGRAMMER       : Ryan Enns - lol don't even put your names on shit I wrote
+ * PROGRAMMER       : Ryan Enns
  * FIRST VERSION    : 2021-11-26
  * DESCRIPTION      :
+ *  Ah yes, the Carrier.cs file. Finally getting aroud to writing my documentation for it a little
+ *  more thoroughly than I have thusfar. I'm in the midst of writing lots of documenation today 
+ *  (2021-12-04), so my apologies for any typos or grammar errors.
+ *  
+ *  The Carrier.cs file actually defines three classes. Carrier, Depot, and CarrierList. We will
+ *  go through these in descending order.
+ *  
+ *  funny how my lines get progressively longer as I type, it's like I never learned passed gr 2 lol
+ *  
+ *  THE CARRIER CLASS
+ *  =================
+ *  
+ *  The Carrier class is used to define a Carrier that can fulfill an order's needs. A carrier contains                                        <- the line started this short
+ *  only two fields, the name of the Carrier as defined by a String and a List<T> object of Depot objects
+ *  used to contain the information about the various cities that the Carrier has depots in.
+ *  
+ *  The City class is short and to the point, as it exports most of its logic and data storage to the Depot
+ *  class and other functions. It contains a getter for the CarrierName and getter for the Depots, as well
+ *  as a function to display an instance's info to the console. It has two GetDepot methods for acquiring
+ *  a Depot object if it is available, and a HasDepot function to determine if the Carrier has a depot in
+ *  a given city.
+ *  
+ *  THE DEPOT CLASS
+ *  ===============
+ *  
+ *  The Depot class exists exclusively as a handy dandy carrier for data that the Carrier class uses. Since
+ *  a Carrier can have many Depots, it makes more sense to package all that potentially duplicate data up
+ *  and put it in its own class to easily associate it all.
+ *  
+ *  At present, all members of this function are public. This will hopefully change to getters and setters.
+ *  However, this leaves the Depot class with very few methods. Beyond some overloaded constructors, it has
+ *  two functions to determine if the Depot has FTL or LTL availabilty.
+ *  
+ *  THE CarrierList CLASS
+ *  =====================
+ *  
+ *  Finally, the bread and butter of the whole back end of this program, the CarrierList class. Like the other
+ *  List classes in this solution, the CarrierList is a static class, and contains all information and methods
+ *  pertaining to Carrier interaction and route establishment.
+ *  
+ *  The primary method of the CarrierList is, of course, the List<T> of Carriers that is set to all default
+ *  values upon startup of the program. This is subject to change, however I've yet to migrate the CarrierList
+ *  class to db dependent data fields and am leaving the hardcoded stuffs for now. I might just leave the hard
+ *  coded values for the final solution out of convenience and lack of time. If you're wondering, yes, it's
+ *  still Ryan as the sole dev on this project as of 2pm on the 4th. And I can't work on it past noon on the 7th.
+ *  Oh Laura, if you're reading this, have pity on my measly console app solution.
+ *  
+ *  The true gem of the CarrierList class are the functions that set up Trip Lists that can be assigned to Orders.                          <- and ended this long lol
+ *  CarriersForRoute and OneStopRoutes are the present functions that sort this out, the former calling the latter
+ *  in the event that a single route solution proves impossible. Both of those functions have extensive headers of
+ *  their own, so I won't bother rehashing all that info here again.
+ *  
+ *  Aside from those two functions, which I insist are the bread and butter of this whole application, the class
+ *  also has methods to retrieve a given Carrier object and a Depot instance from a Carrier object stored within
+ *  the CityList List<T>
  */
 
 using System;
@@ -162,16 +217,6 @@ namespace SENG2020_TermProject.Data_Logic
                 return true;
             return false;
         }
-
-        public double FTLCharge(int distance)
-        {
-            return this.FTLRate * distance; //return the distance multiplied by FTLRate
-        }
-
-        public double LTLCharge(int distance)
-        {
-            return this.LTLRate * distance;
-        }
     }
 
     /**
@@ -233,12 +278,8 @@ namespace SENG2020_TermProject.Data_Logic
 
             Carriers.Add(new Carrier("We Haul", wh));
         }
-        /*
-         * NAME :
-         * DESC :
-         * PARM :
-         * RTRN :
-         */
+
+        //keeping this just in case, for debugging ;)
         public static void Display()
         {
             foreach (Carrier c in Carriers)
@@ -377,43 +418,6 @@ namespace SENG2020_TermProject.Data_Logic
             else return TripsList[0]; //nothing fancy; return first option
         }
 
-/*        private static List<Trip> OptimizeRoutes(List<List<Trip>> routes)
-        {
-            foreach(List<Trip> trips in routes)
-            {
-                double TripCost = 0.0;
-                foreach(Trip t in trips)
-                {
-                    TripCost += t.GetTripCost();
-                }
-            }
-        }*/
-
-        //testing function
-        public static List<Trip> CarriersForRoute(City c1, City c2)
-        {
-            List<Carrier> l = new List<Carrier>();
-            foreach (Carrier c in Carriers)
-            {
-                //add each potential carrier to the list of potential carriers
-                if (c.HasDepotIn(c1.GetName()) && c.HasDepotIn(c2.GetName()))
-                {
-                    l.Add(c);
-                }
-            }
-
-            if (l.Count == 0)
-            {
-                return CarrierList.OneStopRoutes(CityList.GetCity(c1.GetName()), CityList.GetCity(c2.GetName()), 0,0);
-            }
-            else
-            {
-                List<Trip> ReturnValue = new List<Trip>();
-                ReturnValue.Add(new Trip(c1.GetName(), c2.GetName(), l[0]));
-                return ReturnValue;
-            }
-        }
-
         /**
          * \brief       Establishes which carrier will be used for an order.
          * 
@@ -468,7 +472,7 @@ namespace SENG2020_TermProject.Data_Logic
             //duped code but it's better than running thru the foreach loop for no reason
             if(CityList.DrivingTime(o.GetOrigin(), o.GetDestin()) > 8)
             {
-                return CarrierList.OneStopRoutes(CityList.GetCity(o.GetOrigin()), CityList.GetCity(o.GetDestin()), o.mr.JobType, o.mr.Quantity);
+                return CarrierList.OneStopRoutes(CityList.GetCity(o.GetOrigin()), CityList.GetCity(o.GetDestin()), o.mr.GetJobType(), o.mr.GetQuantity());
             }
 
             List<Trip> t = new List<Trip>();
@@ -492,7 +496,7 @@ namespace SENG2020_TermProject.Data_Logic
 
             if(t.Count == 0)
             {
-                return CarrierList.OneStopRoutes(CityList.GetCity(o.GetOrigin()), CityList.GetCity(o.GetDestin()), o.mr.JobType, o.mr.Quantity);
+                return CarrierList.OneStopRoutes(CityList.GetCity(o.GetOrigin()), CityList.GetCity(o.GetDestin()), o.mr.GetJobType(), o.mr.GetQuantity());
             }
             else
             {
@@ -516,8 +520,6 @@ namespace SENG2020_TermProject.Data_Logic
             return null;
         }
 
-        //returns a depot from a carrier - if either the depot or the carrier don't
-        //exist, null is returned.
         /*
          * NAME : GetCarrierDepot
          * DESC :

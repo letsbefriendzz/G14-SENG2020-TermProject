@@ -4,18 +4,14 @@
  * PROGRAMMER(s)    : Ryan Enns
  * FIRST VERSION    : 2021-11-25
  * DESCRIPTION      :
-
-Division of Development Duties – Each developer on the team will be required to take lead on a
-specific area of functionality. According to the block diagram above, for example, four 
-developers could split the areas of responsibility as such:
-
-User Interface
-
-Communications/Logging
-
-Data/Logic – Contact Management & Billing
-
-Data/Logic – Order, Carrier, Trip management
+ *  The MarketplaceRequest.cs file defines the MarketplaceRequest class. This class is used as a data
+ *  container; it doesn't have any unique methods in it to manipulate the data that it has. This class
+ *  is used to package up data received from SQL queries that are located in the ContractMarketAccess
+ *  class. It contains fields for the client name, job type, pallet quantity (if not applicable, =0),
+ *  origin and destination cities, and the type of van needed to fulfill the request.
+ *  
+ *  This class is basically a proxy container for the Order class. Makes my life easier when getting
+ *  stuffs from the database.
  */
 
 
@@ -42,7 +38,7 @@ namespace SENG2020_TermProject.Data_Logic
          * \details     ClientName is a String that represents the name of the company that has issued
          *              the Marketplace Request that this instance represents.
          */
-        public String ClientName { get; set; }
+        private String ClientName { get; set; }
 
         /**
          * \brief       JobType
@@ -51,7 +47,7 @@ namespace SENG2020_TermProject.Data_Logic
          *              is a full truck load, or FTL order. If the JobType integer is 1, this means that
          *              the order is a less than truck load order, or LTL order.
          */
-        public int JobType { get; set; }
+        private int JobType { get; set; }
 
         /**
          * \brief       Quantity
@@ -59,7 +55,7 @@ namespace SENG2020_TermProject.Data_Logic
          * \details     A quantity value of 0 indicates use of a full truck load.
          *              Any positive integer indicates LTL shipping of Quantity number of pallettes.
          */
-        public int Quantity { get; set; }
+        private int Quantity { get; set; }
 
         /**
          * \brief       CityOrigin represents the city that the shipment starts in.
@@ -67,7 +63,7 @@ namespace SENG2020_TermProject.Data_Logic
          * \details     CityOrigin is a String that represents the present city that the shipment
          *              resides in.
          */
-        public String CityOrigin { get; set; }
+        private String CityOrigin { get; set; }
 
         /**
          * \brief       CityDestin represnts the city that the shipment will go to.
@@ -75,7 +71,7 @@ namespace SENG2020_TermProject.Data_Logic
          * \details     CityDestin is a String that represnts the city that the shipment needs
          *              to be delivered to.
          */
-        public String CityDestin { get; set; }
+        private String CityDestin { get; set; }
 
         /**
          * \brief       VanType represents the type of shipment vehicle required for this request.
@@ -83,7 +79,7 @@ namespace SENG2020_TermProject.Data_Logic
          * \details     VanType has two acceptable values; 0 or 1. If a MarketplaceRequest's VanType
          *              is 0, it requires a dry van. If the VanType value is 1, it requries a Reefer.
          */
-        public int VanType { get; set; }
+        private int VanType { get; set; }
 
         /**
          * \brief       Default MarketplaceRequest() Constructor
@@ -116,6 +112,67 @@ namespace SENG2020_TermProject.Data_Logic
             this.CityDestin = cd;
             this.VanType = vt;
         }
+
+        public String GetClientName()
+        {
+            return this.ClientName;
+        }
+
+        public void SetClientName(String cn)
+        {
+            this.ClientName = cn;
+        }
+
+        public int GetJobType()
+        {
+            return this.JobType;
+        }
+
+        public void SetJobType(int njt)
+        {
+            this.JobType = njt;
+        }
+
+        public int GetQuantity()
+        {
+            return this.Quantity;
+        }
+
+        public void SetQuantity(int nq)
+        {
+            this.Quantity = nq;
+        }
+
+        public String GetCityOrigin()
+        {
+            return this.CityOrigin;
+        }
+
+        public void SetCityOrigin(String nco)
+        {
+            this.CityOrigin = nco;
+        }
+
+        public String GetCityDestination()
+        {
+            return this.CityDestin;
+        }
+
+        public void SetCityDestination(String ncd)
+        {
+            this.CityDestin = ncd;
+        }
+
+        public int GetVanType()
+        {
+            return this.VanType;
+        }
+
+        public void SetVanType(int nvt)
+        {
+            this.VanType = nvt;
+        }
+
 
         /**
          * \brief   Dumps MarketplaceRequest object data to the consnole.. 

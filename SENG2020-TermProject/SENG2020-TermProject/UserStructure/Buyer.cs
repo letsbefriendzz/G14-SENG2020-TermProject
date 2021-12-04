@@ -156,7 +156,7 @@ namespace SENG2020_TermProject.UserStructure
 
                     int integerInp = int.Parse(inp);
                     Order ForInvoice = orders[integerInp];
-                    if (ForInvoice.IsComplete == true)
+                    if (ForInvoice.GetIsComplete() == true)
                     {
                         Console.WriteLine("Invoice Generated");
                     }

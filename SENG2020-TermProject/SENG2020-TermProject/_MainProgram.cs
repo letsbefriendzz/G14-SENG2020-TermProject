@@ -4,6 +4,12 @@
  * PROGRAMMER(s)    : Ryan Enns
  * FIRST VERSION    : 2021-11-25
  * DESCRIPTION      :
+ *  This is the main thread function of my implementation of the OSHT TMS.
+ *  Here we select a workflow, Admin, Buyer or Planner.
+ *  
+ *  Important to note - everywhere in this sln that a file header only lists Ryan Enns
+ *  as the programmer, every line of code and every class, function, and file header
+ *  within it has been written by me (Ryan Enns) exclusively.
  */
 
 
@@ -145,6 +151,7 @@ namespace SENG2020_TermProject
             {
                 foreach (City c2 in CityList.GetList())
                 {
+/*                    
                     if (CarrierList.CarriersForRoute(c1, c2) == null)
                     {
                         Console.WriteLine("Bad Test");
@@ -152,16 +159,9 @@ namespace SENG2020_TermProject
                         Console.WriteLine("Destin:\t{0}", c2.GetName());
                         Console.WriteLine();
                     }
+*/
                 }
             }
-        }
-
-        static void PrepHarness()
-        {
-            MarketplaceRequest mr = new MarketplaceRequest("Ryan's Fuckery", 0, 0, "Hamilton", "Windsor", 0);
-            Order o = new Order(mr);
-            o.PrepOrder();
-            o.Display();
         }
 
         //test harness func I'd like to hold on to

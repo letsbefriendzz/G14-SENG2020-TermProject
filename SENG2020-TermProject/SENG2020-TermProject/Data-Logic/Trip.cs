@@ -4,6 +4,29 @@
 * PROGRAMMER(s)    : Ryan Enns
 * FIRST VERSION    : 2021-12-03
 * DESCRIPTION      :
+*   The Trip class was an embarassingly late yet critical addition to this back end.
+*   Why is it so critical? Well, how else are you gonna store multi city routes if
+*   your Object class only has storage options for an origin and destination city?
+*   
+*   Enter: The Trip Class.
+*   
+*   The Trip class defines an origin and destination city, just like an Order does.
+*   Thus the Trip class is only extra overhead for single carrier solutions. However,
+*   this quickly becomes rectified by the fact that for double carrier solutions, which
+*   do in fact comprise a surprising amount of routes, the Trip class is absolutely
+*   amazing.
+*   
+*   The Trip class has only three fields. Two City objects for its Origin and Destination,
+*   and a Carrier instance for the Carrier that can perform this trip. A Carrier that can
+*   perform the trip is defined as a Carrier that has depots in the Origin and Destination
+*   cities.
+*   
+*   The Trip class contains three functions to determine the cost of the trip, the distance
+*   travelled during the trip, and the total time that will elapse during a trip. Sadly,
+*   the GetTripCost function does rely on Order information being passed in the form of
+*   the JobType and quantity. I may replace this with a GetFTLCost and GetLTLCost later
+*   for good design reasons, however I have very little time on my hands and what works
+*   right now, works. So, why reinvent the wheel?
 */
 
 using System;

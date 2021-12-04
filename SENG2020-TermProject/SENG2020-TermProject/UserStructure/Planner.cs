@@ -126,7 +126,7 @@ namespace SENG2020_TermProject.UserStructure
 
                     if (tms.SetOrderComplete(o))
                     {
-                        Console.WriteLine("Sucessfully finished Order #{0} - {1}", o.GetID(), o.mr.ClientName);
+                        Console.WriteLine("Sucessfully finished Order #{0} - {1}", o.GetID(), o.mr.GetClientName());
                     }
                     else
                     {

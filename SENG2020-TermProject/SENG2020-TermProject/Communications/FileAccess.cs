@@ -34,12 +34,12 @@ namespace SENG2020_TermProject.Communications
         public static String CreateInvoice(Order o)
         {
             String VanType;
-            if (o.mr.VanType == 0)
+            if (o.mr.GetVanType() == 0)
                 VanType = "Regular";
             else VanType = "Reefer";
 
 
-            String filename = String.Format("{0}-{1}-{2}-{3}.txt", o.GetID(), o.mr.ClientName, o.GetOrigin(), o.GetDestin());
+            String filename = String.Format("{0}-{1}-{2}-{3}.txt", o.GetID(), o.mr.GetClientName(), o.GetOrigin(), o.GetDestin());
             String filepath = InstallPath + "/invoices/" + filename;
             String invoice = String.Format("OrderID:\t\t{0}\n" +
                                            "ClientName:\t\t{1}\n" +
@@ -52,7 +52,7 @@ namespace SENG2020_TermProject.Communications
                                            "Carrier Charges:\t{8}\n" +
                                            "OSHT Charges:\t\t{9}\n" +
                                            "Status:\t\t\t\t{10}\n",
-                                           o.GetID(), o.GetClient(), o.JobType(), o.GetOrigin(), o.GetDestin(), VanType, o.GetTimeToComplete(), o.GetDistanceToComplete(), o.GetCostToComplete(), o.GetOSHTSurcharge(), o.IsComplete);
+                                           o.GetID(), o.GetClient(), o.JobType(), o.GetOrigin(), o.GetDestin(), VanType, o.GetTimeToComplete(), o.GetDistanceToComplete(), o.GetCostToComplete(), o.GetOSHTSurcharge(), o.GetIsComplete());
             
             File.Create(filepath).Close(); //close fstream
             File.WriteAllText(filepath, invoice);
