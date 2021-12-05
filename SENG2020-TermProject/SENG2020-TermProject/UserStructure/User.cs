@@ -4,6 +4,10 @@
  * PROGRAMMER(s)    : Ryan Enns
  * FIRST VERSION    : 2021-11-25
  * DESCRIPTION      :
+ *  The User.cs file defines a generic User object that the Planner, Buyer, and Admin
+ *  inherit from. This prevents code duplication, as each has access to the TMSDatabase
+ *  and needs some generic console UI components that can be provided through static
+ *  methods present in the class.
  */
 
 using System;
@@ -67,9 +71,9 @@ namespace SENG2020_TermProject.UserStructure
         public static String GetYesNo()
         {
             String inp = "";
-            while (inp.ToUpper() != "Y" && inp.ToUpper() != " N")
+            while (inp != "Y" && inp != "N")
             {
-                inp = GetInput();
+                inp = GetInput().ToUpper();
             }
 
             return inp;

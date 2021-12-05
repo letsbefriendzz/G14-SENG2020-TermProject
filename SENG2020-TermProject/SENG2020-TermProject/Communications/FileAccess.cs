@@ -2,7 +2,7 @@
  * FILE             : FileAccess.cs
  * PROJECT          : SENG2020 - Term Project
  * PROGRAMMER(s)    : Ryan Enns
- * FIRST VERSION    : 2021-11-25
+ * FIRST VERSION    : 2021-12-03
  * DESCRIPTION      :
  *  This file defines all File IO related methods. The static FileAccess class is intended to allow
  *  client code to create logs in a given directory, let the Buyer create invoices in new text files,
@@ -20,6 +20,70 @@ namespace SENG2020_TermProject.Communications
     {
         //default install path - the directory that the exe is being executed from
         private static String InstallPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+        /*
+         * NAME : SetInstallPath
+         * DESC :
+         *  The SetInstallPath function accepts a new pathway from an administrator
+         *  to set the InstallDirectory. If the directory exists, the InstalPath field
+         *  is updated and the /logs and /invoices folders are created as subdirectories.
+         *  
+         *  In each case, a Log is created to track the attempted change in system.
+         *  
+         *  If the function is successful, true is returned. Otherwise, false is returned.
+         * RTRN : bool
+         * PARM : String
+         */
+        public static bool SetInstallPath(String path)
+        {
+            if (Directory.Exists(path))
+            {
+               
+                InstallPath = path;
+                initInstallDirectories();
+                Log(String.Format("File dump directory changed from:\n{0}\n\nto\n\n{1}", InstallPath, path));
+                return true;
+            }
+            else
+            {
+                Log(String.Format("Error in install path change attempt;\n{0}\nIs not a working directory on this machine.", path));
+                return false;
+            }
+        }
+
+        public static bool WriteOrderBackup(Order[] orders, String pathway)
+        {
+            if (!Directory.Exists(pathway)) return false;
+
+            String output = "ID,ClientName,JobType,Origin,Destination,VanType,TimeToComplete,DistanceToComplete,CostToComplete,OSHTSurcharge,IsComplete";
+            foreach (Order o in orders)
+            {
+                //id-client-jobtype-origin-destination-vantype-time-distance-cost-oshtcharge-iscomplete
+                if (o.GetIsComplete())
+                {
+                    output += String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},",
+                                            o.GetID(), o.GetClient(), o.GetJobType(), o.GetOrigin(), o.GetDestin(), o.GetVanType(), o.GetTimeToComplete(), o.GetDistanceToComplete(), o.GetCostToComplete(), o.GetOSHTSurcharge(), o.GetIsComplete());
+                }
+                else
+                {
+
+                    output += String.Format("{0},{1},{2},{3},{4},{5},null,null,null,null,{6}",
+                                            o.GetID(), o.GetClient(), o.GetJobType(), o.GetOrigin(), o.GetDestin(), o.GetVanType(), o.GetIsComplete());
+                }
+                output += "\n";
+            }
+
+            pathway = pathway + "/" + String.Format("{0}-OrderDBBackup.txt", System.DateTime.Now.ToString().Replace(":", "-").Replace(" ", "_"));
+            File.Create(pathway).Close();
+            File.WriteAllText(pathway, output);
+            return true;
+        }
+
+        //a simple getter for the static String InstallPath
+        public static String GetInstallPath()
+        {
+            return InstallPath;
+        }
         
         /*
          * NAME : CreateInvoice
@@ -79,6 +143,14 @@ namespace SENG2020_TermProject.Communications
                 Directory.CreateDirectory(InstallPath + "/invoices");
         }
 
+        /*
+         * NAME : GetLogs
+         * DESC :
+         *  This function gets all the filenames that are present in the specified installpath/logs
+         *  folder. It returns an array of Strings that contains each filename present.
+         * RTRN : String[]
+         * PARM : //
+         */
         public static String[] GetLogs()
         {
             String[] ReturnValues = null;

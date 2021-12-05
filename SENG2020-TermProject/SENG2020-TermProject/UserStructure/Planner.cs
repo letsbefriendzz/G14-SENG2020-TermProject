@@ -4,12 +4,14 @@
  * PROGRAMMER(s)    : Ryan Enns
  * FIRST VERSION    : 2021-11-25
  * DESCRIPTION      :
+ *  The Planner.cs file outlines all logic pertaining to a Console implementation of a Planner
+ *  user's workflow. The Planner class inherits from the User class, and contains various functions
+ *  for the user to provide db login information and perform the various tasks that the Planner
+ *  is intended to be able to complete. The complete list of Planner requirements, as found in
+ *  the TMS Project Overview, are found below. Along with this, underneath each requirement,
+ *  I describe how I have either met the requirement, met a modified or improved version of the
+ *  requirement, or clarify that the requirement has not been met.
  */
-
-using System;
-using SENG2020_TermProject.Communications;
-using SENG2020_TermProject.Data_Logic;
-using System.Collections.Generic;
 
 /*
 The Planner employee is responsible for furthering the order by selecting one or more registered 
@@ -38,15 +40,17 @@ produce reports showing aggregate activity in OSHT.
     depot for a given carrier in a given city does not have capacity to fulfill it. Thus the Planner does
     not have to intentionally check if availability is present; the OSHT TMS system performs this automatically.
 
-4.5.2.3.4 The Planner may simulate the passage of time in 1-day increments in order to mover 
-Orders and their trips to completed state
+    4.5.2.3.4 The Planner may simulate the passage of time in 1-day increments in order to mover 
+    Orders and their trips to completed state
 
--- UNFINISHED
+    -- KIND OF SATISFIED? I have a simple little Console loop that cycles through each Trip
+    with some Thread.Sleep calls for fun. Really just a gimmick...
 
-4.5.2.3.5 Planner may confirm an order is completed. Completed Orders are marked for follow-up 
-from the Buyer
+    4.5.2.3.5 Planner may confirm an order is completed. Completed Orders are marked for follow-up 
+    from the Buyer
 
--- UNFINISHED
+    -- Satisfied; IsComplete db flag is set, Buyer can select from those db entries where IsComplete=true
+    to generate an invoice from them.
 
     4.5.2.3.6 Planner may see a summary of all active Orders in a status screen.
 
@@ -56,7 +60,7 @@ from the Buyer
 4.5.2.3.7 (Optional) The status screen is highly graphical, perhaps using some kind of Google Maps 
 plugin.
 
--- Sorry Laura, but it's the 4th, I'm busy on the 7th, so I need this done for noon of the 7th at the
+-- Sorry Laura, but it's the 4th, I'm busy on the 7th, so I need this done for 2pm of the 7th at the
 latest. No chance here. Maybe if my group members had done anything at all at this point, we'd be in a
 different position.
 
@@ -64,8 +68,14 @@ different position.
 ‘past 2 weeks’ of simulated time.
 
 -- UNFINISHED
-
  */
+
+
+using System;
+using SENG2020_TermProject.Communications;
+using SENG2020_TermProject.Data_Logic;
+using System.Collections.Generic;
+
 namespace SENG2020_TermProject.UserStructure
 {
     /**
@@ -155,6 +165,7 @@ namespace SENG2020_TermProject.UserStructure
         {
             PlannerHeader();
             GetDatabaseAccess();
+            Console.WriteLine("\n\n");
             if (!this.tms.ValidConnection)
             {
                 Console.WriteLine("Invalid TMS Database username or password!");
@@ -169,6 +180,7 @@ namespace SENG2020_TermProject.UserStructure
                 Console.WriteLine("1. View Unfilled Orders");
                 Console.WriteLine("2. Prepare and Simualte an Order");
                 Console.WriteLine("3. Generate Invoice Summary");
+                Console.WriteLine("0. Exit");
                 inp = GetInput();
 
                 if (inp == "1")
@@ -212,9 +224,9 @@ namespace SENG2020_TermProject.UserStructure
                 }
                 else if(inp == "3")
                 {
-                    //FileAccess class to iterate through Logs here
+                    //FileAccess class to iterate through invoices here
                 }
-                else if (inp == "5")
+                else if (inp == "0")
                 {
                     inp = null;
                 }

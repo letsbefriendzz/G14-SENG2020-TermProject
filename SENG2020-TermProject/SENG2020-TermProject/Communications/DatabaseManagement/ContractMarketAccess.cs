@@ -28,12 +28,12 @@ namespace SENG2020_TermProject.DatabaseManagement
      */
     static class CMDatabaseValues
     {
-        public const String server = "159.89.117.198";
-        public const String port = "3306";
-        public const String usrnm = "DevOSHT";
-        public const String pwd = "Snodgr4ss!";
-        public const String table = "cmp";
-        public const String ssl = "0";
+        public static String server = "159.89.117.198";
+        public static String port = "3306";
+        public static String usrnm = "DevOSHT";
+        public static String pwd = "Snodgr4ss!";
+        public static String table = "cmp";
+        public static String ssl = "0";
     }
     /**
      * \brief       The ContractMarketAccess manages all database access logic for the TMS accessing the Contract Marketplace.

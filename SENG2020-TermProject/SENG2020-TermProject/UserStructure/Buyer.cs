@@ -4,13 +4,15 @@
  * PROGRAMMER(s)    : Ryan Enns
  * FIRST VERSION    : 2021-11-25
  * DESCRIPTION      :
+ *  Buyer.cs outlines all logic pertaining the console UI workflow of the Buyer. Inheriting from
+ *  the User class, the Buyer contains various console IO functions and mainly acts as the supplier
+ *  for a console UI when logged in as a Buyer instance.
+ *  
+ *  The complete list of Buyer requirements, as found in the TMS Project Overview, are found below.
+ *  Along with this, underneath each requirement, I describe how I have either met the requirement,
+ *  met a modified or improved version of the requirement, or clarify that the requirement has not 
+ *  been met.
  */
-
-using SENG2020_TermProject.Communications;
-using SENG2020_TermProject.DatabaseManagement;
-using SENG2020_TermProject.Data_Logic;
-using System;
-using System.Threading;
 
 /*
 The buyer represents an employee of OSHT who is tasked with requesting Customer contracts from the 
@@ -46,6 +48,12 @@ city, and based on available carriers returns a carrier or group of carriers tha
 4.5.2.2.6 Invoice Generation results in a text file being generated with appropriate billing details. 
 This information is also stored in the TMS database.
  */
+
+using SENG2020_TermProject.Communications;
+using SENG2020_TermProject.DatabaseManagement;
+using SENG2020_TermProject.Data_Logic;
+using System;
+
 namespace SENG2020_TermProject.UserStructure
 {
     /**
@@ -64,10 +72,6 @@ namespace SENG2020_TermProject.UserStructure
             Console.WriteLine("===================");
             Console.WriteLine("Logged in as: Buyer");
             Console.WriteLine("===================");
-        }
-        public Buyer()
-        {
-            this.tms = new TMSDatabaseAccess();
         }
 
         private void DisplayAllContracts()
@@ -113,15 +117,22 @@ namespace SENG2020_TermProject.UserStructure
         {
             if (this.tms != null) return;
 
-            Console.WriteLine("Enter the Planner TMS Database password: ");
-            tms = new DatabaseManagement.TMSDatabaseAccess("planner", GetInput());
+            Console.WriteLine("Enter the Buyer TMS Database password: ");
+            tms = new TMSDatabaseAccess("buyer", GetInput());
         }
 
         //renns
         public void BuyerWorkFlow()
         {
             BuyerHeader();
-            if (!this.tms.ValidConnection) return;
+            GetDatabaseAccess();
+            Console.WriteLine("\n\n");
+            if (!this.tms.ValidConnection)
+            {
+                Console.WriteLine("Invalid TMS Database username or password!");
+                FileAccess.Log("Invalid Login Attempt by user Buyer");
+                return;
+            } // exit the application immediately upon establishing the connection is invalid
             String inp = "";
             while (inp != null)
             {
@@ -130,7 +141,7 @@ namespace SENG2020_TermProject.UserStructure
                 Console.WriteLine("2. Generate Order from Contract");
                 Console.WriteLine("3. View Finished Orders");
                 Console.WriteLine("4. Generate Invoice");
-                Console.WriteLine("5. Exit");
+                Console.WriteLine("0. Exit");
 
                 inp = GetInput();
 
@@ -184,7 +195,7 @@ namespace SENG2020_TermProject.UserStructure
                         Console.WriteLine("Invoice can be found at:\n{0}", FileAccess.CreateInvoice(ForInvoice));
                     }
                 }
-                else if (inp == "5")
+                else if (inp == "0")
                 {
                     inp = null;
                 }

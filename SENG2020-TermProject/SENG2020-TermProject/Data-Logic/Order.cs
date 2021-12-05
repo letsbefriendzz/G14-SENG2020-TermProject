@@ -148,6 +148,21 @@ namespace SENG2020_TermProject.Data_Logic
             return this.IsComplete;
         }
 
+        public double GetQuantity()
+        {
+            return this.mr.GetQuantity();
+        }
+
+        public int GetJobType()
+        {
+            return this.mr.GetJobType();
+        }
+
+        public int GetVanType()
+        {
+            return this.mr.GetVanType();
+        }
+
         public Order()
         {
             IsComplete = false;
@@ -317,6 +332,7 @@ namespace SENG2020_TermProject.Data_Logic
             int TripIter = 1;
             foreach (Trip t in this.trips)
             {
+                CarrierList.DecrementAvailability(t.GetCarrier().CarrierName, t.GetOrigin().GetName(), this.mr.GetJobType(), this.mr.GetQuantity());
                 double hoursPassed = 0.0;
                 Console.WriteLine("Trip #{0} / {1}", TripIter, this.trips.Count);
                 for(hoursPassed = 0.0; hoursPassed < t.GetTripTime(this.mr.GetJobType()); hoursPassed++)
@@ -329,6 +345,7 @@ namespace SENG2020_TermProject.Data_Logic
                 Console.WriteLine("{0}h / {1}h", hoursPassed, t.GetTripTime(this.mr.GetJobType()));
                 System.Threading.Thread.Sleep(750);
                 Console.WriteLine("Trip #{0} complete!", TripIter);
+                CarrierList.IncrementAvailability(t.GetCarrier().CarrierName, t.GetDestin().GetName(), this.mr.GetJobType(), this.mr.GetQuantity());
                 TripIter++;
             }
         }

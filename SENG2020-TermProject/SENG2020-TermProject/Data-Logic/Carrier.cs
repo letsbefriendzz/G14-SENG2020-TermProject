@@ -174,6 +174,56 @@ namespace SENG2020_TermProject.Data_Logic
             reefCharge = rc;
         }
 
+        /*
+         * NAME : Decrement
+         * DESC :
+         *  This function decrements either FTL or LTL availability. This function is called
+         *  only when an order is executed by the planner. This ensures that the values stored
+         *  in the various Carrier instances in the CarrierList class are updated.
+         *  
+         *  The function takes the job type integer to specify which field to decrement, and
+         *  if the order is LTL the user can supply the quantity of pallets. the quantity field
+         *  has a default value of 0.
+         * RTRN : void
+         * PARM : int, int = 0
+         */
+        public void Decrement(int JobType, int Quantity = 0)
+        {
+            if(JobType == 0)
+            {
+                this.FTLAvail--;
+            }
+            else
+            {
+                this.LTLAvail -= Quantity;
+            }
+        }
+
+        /*
+         * NAME : Increment
+         * DESC :
+         *  This function increments either FTL or LTL availability. This function is called
+         *  only when an order is executed by the planner. This ensures that the values stored
+         *  in the various Carrier instances in the CarrierList class are updated.
+         *  
+         *  The function takes the job type integer to specify which field to increment, and
+         *  if the order is LTL the user can supply the quantity of pallets. the quantity field
+         *  has a default value of 0.
+         * RTRN : void
+         * PARM : int, int = 0
+         */
+        public void Increment(int JobType, int Quantity = 0)
+        {
+            if (JobType == 0)
+            {
+                this.FTLAvail++;
+            }
+            else
+            {
+                this.LTLAvail += Quantity;
+            }
+        }
+
         /// \brief      Displays all info about the respective Depot.
         public void Display()
         {
@@ -225,7 +275,7 @@ namespace SENG2020_TermProject.Data_Logic
      * \details     The CarrierList class contains a single List of type Carrier. This class is used
      *              to access the available carriers to calculate shipping routes.
      */
-    static class CarrierList
+    class CarrierList
     {
         /// \brief      The list of Carriers that can be selected for shipments.
         private static List<Carrier> Carriers = new List<Carrier>();
@@ -277,6 +327,46 @@ namespace SENG2020_TermProject.Data_Logic
             wh.Add(new Depot("Toronto", 11, 0, 5.2, 0, 0.065));
 
             Carriers.Add(new Carrier("We Haul", wh));
+        }
+
+        public static bool DecrementAvailability(String CarrierName, String DepotLocation, int JobType, int Quantity = 0)
+        {
+            foreach(Carrier c in Carriers)
+            {
+                if(c.GetName() == CarrierName)
+                {
+                    foreach(Depot d in c.Depots)
+                    {
+                        if(d.CityName == DepotLocation)
+                        {
+                            d.Decrement(JobType, Quantity);
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public static bool IncrementAvailability(String CarrierName, String DepotLocation, int JobType, int Quantity = 0)
+        {
+            foreach (Carrier c in Carriers)
+            {
+                if (c.GetName() == CarrierName)
+                {
+                    foreach (Depot d in c.Depots)
+                    {
+                        if (d.CityName == DepotLocation)
+                        {
+                            d.Increment(JobType, Quantity);
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
 
         //keeping this just in case, for debugging ;)
@@ -413,9 +503,9 @@ namespace SENG2020_TermProject.Data_Logic
          * \returns     An instance of Carrier; the carrier that will be used for the given order.
          */
         /*
-         * NAME : CarriersForRoute
+         * NAME : CarriersForOrder
          * DESC :
-         *  The CarriersForRoute function calls on two functions, the SingleCarrierRoutes function and the
+         *  The CarriersForOrder function calls on two functions, the SingleCarrierRoutes function and the
          *  DoubleCarrierRoutes function to determine all available carrier routes that could satisfy an order.
          *  This function either returns just single or double carrier routes if the opposite returns null,
          *  or it returns a combination of both lists.
