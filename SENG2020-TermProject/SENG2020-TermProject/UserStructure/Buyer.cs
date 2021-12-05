@@ -10,6 +10,7 @@ using SENG2020_TermProject.Communications;
 using SENG2020_TermProject.DatabaseManagement;
 using SENG2020_TermProject.Data_Logic;
 using System;
+using System.Threading;
 
 /*
 The buyer represents an employee of OSHT who is tasked with requesting Customer contracts from the 
@@ -66,7 +67,7 @@ namespace SENG2020_TermProject.UserStructure
         }
         public Buyer()
         {
-
+            this.tms = new TMSDatabaseAccess();
         }
 
         private void DisplayAllContracts()
@@ -97,9 +98,23 @@ namespace SENG2020_TermProject.UserStructure
                 Console.WriteLine("No finished orders to process!");
             else
             {
+                int iter = 0;
                 foreach (Order order in orders)
+                {
+                    Console.WriteLine("Order #{0}", iter);
                     order.Display();
+                    iter++;
+                }
             }
+        }
+
+        //finish this later
+        private void GetDatabaseAccess()
+        {
+            if (this.tms != null) return;
+
+            Console.WriteLine("Enter the Planner TMS Database password: ");
+            tms = new DatabaseManagement.TMSDatabaseAccess("planner", GetInput());
         }
 
         //renns
@@ -136,7 +151,9 @@ namespace SENG2020_TermProject.UserStructure
                     Console.WriteLine("Insert this Order into the TMS Database? Y/N");
                     inp = GetYesNo();
                     if (tms.InsertOrder(o))
-                        Console.WriteLine("Successfully converted Marketplace Request to Order;\nDatabase insertion successful.");
+                    {
+                        Console.WriteLine("Successfully converted Marketplace Request to Order;\nDatabase insertion successful.\n");
+                    }
                     else
                     {
                         Console.WriteLine("An error has occured -- database insertion not successful");
@@ -151,17 +168,21 @@ namespace SENG2020_TermProject.UserStructure
                 {
                     DisplayFinishedOrders();
                     Order[] orders = tms.GetFinishedOrders();
-                    Console.WriteLine("Select an Order - (0 - {0})", orders.Length - 1);
-                    inp = GetInput();
 
-                    int integerInp = int.Parse(inp);
-                    Order ForInvoice = orders[integerInp];
-                    if (ForInvoice.GetIsComplete() == true)
+                    if(!(orders.Length == 0))
                     {
-                        Console.WriteLine("Invoice Generated");
-                    }
+                        Console.WriteLine("Select an Order - (0 - {0})", orders.Length - 1);
+                        inp = GetInput();
 
-                    Console.WriteLine("Invoice can be found at:\n{0}", FileAccess.CreateInvoice(ForInvoice));
+                        int integerInp = int.Parse(inp);
+                        Order ForInvoice = orders[integerInp];
+                        if (ForInvoice.GetIsComplete() == true)
+                        {
+                            Console.WriteLine("Invoice Generated");
+                        }
+
+                        Console.WriteLine("Invoice can be found at:\n{0}", FileAccess.CreateInvoice(ForInvoice));
+                    }
                 }
                 else if (inp == "5")
                 {

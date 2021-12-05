@@ -12,6 +12,7 @@
  *  within it has been written by me (Ryan Enns) exclusively.
  */
 
+//2906 lines of code as of 2021-12-04 -- 5:03pm
 
 //makes sense to define the DOxygen index stuff where main() can be found.
 /**
@@ -82,7 +83,6 @@
  * 1. Work on GetDepots function in TMSDatabaseAccess
  * 2. Allow Planner to select from carrier options
  * 3. Establish most time efficient and cost efficient carrier options
- * 4. Work on Logger class (mostly done)
  * 5. Migrate to Carrier db
  * 
  */
@@ -92,6 +92,7 @@ using SENG2020_TermProject.Communications;
 using SENG2020_TermProject.Data_Logic;
 using SENG2020_TermProject.UserStructure;
 using System;
+using System.Collections.Generic;
 
 namespace SENG2020_TermProject
 {
@@ -99,7 +100,7 @@ namespace SENG2020_TermProject
     {
         private static void AnyKeyToContinue()
         {
-            Console.WriteLine("\n\nPress enter to continue.");
+            Console.WriteLine("\nPress enter to continue.");
             Console.ReadLine();
         }
 
@@ -107,28 +108,7 @@ namespace SENG2020_TermProject
         {
             FileAccess.initInstallDirectories();
 
-            String inp = null;
-            Console.WriteLine("Select Buyer (1) or Planner (2)");
-            Console.Write(">> ");
-
-            while (inp == null)
-            {
-                inp = Console.ReadLine();
-                if (inp == "1")
-                {
-                    Buyer b = new Buyer();
-                    b.BuyerWorkFlow();
-                }
-                else if (inp == "2")
-                {
-                    Planner p = new Planner();
-                    p.PlannerWorkFlow();
-                }
-                else
-                {
-                    inp = null;
-                }
-            }
+            UserFlowHarness();
 
             AnyKeyToContinue();
             return; //and then return!
@@ -151,7 +131,7 @@ namespace SENG2020_TermProject
             {
                 foreach (City c2 in CityList.GetList())
                 {
-/*                    
+                    /*                    
                     if (CarrierList.CarriersForRoute(c1, c2) == null)
                     {
                         Console.WriteLine("Bad Test");
@@ -159,35 +139,34 @@ namespace SENG2020_TermProject
                         Console.WriteLine("Destin:\t{0}", c2.GetName());
                         Console.WriteLine();
                     }
-*/
+                    */
                 }
             }
         }
 
-        //test harness func I'd like to hold on to
-        static void PrepAndInsertOrders()
+        static void UserFlowHarness()
         {
-            TMSDatabaseAccess tms = new TMSDatabaseAccess();
+            String inp = null;
+            Console.WriteLine("Select Buyer (1) or Planner (2)");
+            Console.Write(">> ");
 
-            ContractMarketAccess cma = new ContractMarketAccess();
-            MarketplaceRequest[] mpr = cma.GetAllMarketplaceRequests();
-
-            Order[] o = new Order[mpr.Length];
-            int iter = 0;
-            foreach (MarketplaceRequest m in mpr)
+            while (inp == null)
             {
-                o[iter] = new Order(m);
-                //o[iter].PrepOrder(CarrierList.CarriersForRoute(o[iter])[0]);
-                iter++;
-            }
-
-            foreach (Order r in o)
-            {
-                r.PrepOrder();
-                //Prep the order with the first carrier returned by
-                //the CarriersForRoute function using itself as a parmater
-                r.Display();
-                //tms.InsertOrder(r);
+                inp = Console.ReadLine();
+                if (inp == "1")
+                {
+                    Buyer b = new Buyer();
+                    b.BuyerWorkFlow();
+                }
+                else if (inp == "2")
+                {
+                    Planner p = new Planner();
+                    p.PlannerWorkFlow();
+                }
+                else
+                {
+                    inp = null;
+                }
             }
         }
     }

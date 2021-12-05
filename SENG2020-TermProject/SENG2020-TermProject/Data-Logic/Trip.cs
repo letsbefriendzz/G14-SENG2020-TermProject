@@ -91,7 +91,7 @@ namespace SENG2020_TermProject.Data_Logic
          * RTRN : double
          * PARM ; int, int
          */
-        public double GetTripCost(int type, int quantity, int reefer = 0)
+        public double GetTripCost(int type, int quantity = 0, int reefer = 0)
         {
             double cost = 0.0;
             if(type == 0)

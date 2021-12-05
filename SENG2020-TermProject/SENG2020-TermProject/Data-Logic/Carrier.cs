@@ -52,9 +52,9 @@
  *  Oh Laura, if you're reading this, have pity on my measly console app solution.
  *  
  *  The true gem of the CarrierList class are the functions that set up Trip Lists that can be assigned to Orders.                          <- and ended this long lol
- *  CarriersForRoute and OneStopRoutes are the present functions that sort this out, the former calling the latter
- *  in the event that a single route solution proves impossible. Both of those functions have extensive headers of
- *  their own, so I won't bother rehashing all that info here again.
+ *  This is managed by CarriersForRoute, SingleCarrierRoutes, and DoubleCarrierRoutes. The CarriersForRoute
+ *  method combines the output of the SingleCarrierRoutes and DoubleCarrierRoutes functions to satisfy any possible
+ *  order.
  *  
  *  Aside from those two functions, which I insist are the bread and butter of this whole application, the class
  *  also has methods to retrieve a given Carrier object and a Depot instance from a Carrier object stored within
@@ -287,11 +287,10 @@ namespace SENG2020_TermProject.Data_Logic
         }
 
         /*
-         * NAME : OneStopRoutes
+         * NAME : DoubleCarrierRoutes
          * DESC :
-         *  FindIntermediaryCity takes two City objects and establishes a two-trip, two-carrier route
-         *  to satisfy the prospective route. How does it do this? I'm glad you asked...
-         *  
+         *  FindIntermediaryCity takes two City objects and collects all potential two carrier solutions.
+         *  .
          *  First, we create some local variables to shorten up the otherwise annoying nested function calls.
          *  I'm deeply regretting referencing City objects mostly by their String name as opposed to the object
          *  themselves. I don't care at this point, but I hope to polish that up a little more later.
@@ -322,10 +321,10 @@ namespace SENG2020_TermProject.Data_Logic
          *  city to the destination city using the second carrier.
          *  
          *  Ryan Enns, 2021-12-03
-         * RTRN : List<Trip>
+         * RTRN : List<List<Trip>>
          * PARM : City, City
          */
-        public static List<Trip> OneStopRoutes(City c1, City c2, int JobType, int quantity = 0)
+        public static List<List<Trip>> DoubleCarrierRoutes(City c1, City c2, int JobType, int quantity = 0)
         {
             List<List<Trip>> TripsList = new List<List<Trip>>();
             String origin = c1.GetName();
@@ -342,51 +341,53 @@ namespace SENG2020_TermProject.Data_Logic
 
             if (i1 == i2)
                 Console.WriteLine("No Intermediary Cities");
-
-            for(int i = i1; i < i2; i++)
+            else
             {
-                String CurrentCity = CityList.CityAt(i).GetName();
-
-                foreach(Carrier carrier1 in Carriers)
+                for (int i = i1; i < i2; i++)
                 {
-                    foreach(Carrier carrier2 in Carriers)
+                    String CurrentCity = CityList.CityAt(i).GetName();
+
+                    foreach (Carrier carrier1 in Carriers)
                     {
-                        if(carrier1.CarrierName != carrier2.CarrierName && CurrentCity != origin && CurrentCity != destin)
+                        foreach (Carrier carrier2 in Carriers)
                         {
-                            //if the first carrier has a depot in the origin city and the second carrier has a depot in the destination city...
-                            if (carrier1.HasDepotIn(origin) && carrier2.HasDepotIn(destin))
+                            if (carrier1.CarrierName != carrier2.CarrierName && CurrentCity != origin && CurrentCity != destin)
                             {
-                                //if both carriers have a depot in the intermediary city
-                                if (carrier1.HasDepotIn(CurrentCity) && carrier2.HasDepotIn(CurrentCity))
+                                //if the first carrier has a depot in the origin city and the second carrier has a depot in the destination city...
+                                if (carrier1.HasDepotIn(origin) && carrier2.HasDepotIn(destin))
                                 {
-                                    //if origin and intermeidary have FTL or LTL avail
-                                    //add a new trip - origin city as origin, intermediary city as destin
-
-                                    bool AddOptionFlag = false;
-
-                                    if (JobType == 0)
+                                    //if both carriers have a depot in the intermediary city
+                                    if (carrier1.HasDepotIn(CurrentCity) && carrier2.HasDepotIn(CurrentCity))
                                     {
-                                        if (carrier1.GetDepot(c1).FTLAvail > 0 && carrier2.GetDepot(CurrentCity).FTLAvail > 1)
+                                        //if origin and intermeidary have FTL or LTL avail
+                                        //add a new trip - origin city as origin, intermediary city as destin
+
+                                        bool AddOptionFlag = false;
+
+                                        if (JobType == 0)
                                         {
-                                            AddOptionFlag = true;
+                                            if (carrier1.GetDepot(c1).FTLAvail > 0 && carrier2.GetDepot(CurrentCity).FTLAvail > 1)
+                                            {
+                                                AddOptionFlag = true;
+                                            }
                                         }
-                                    }
-                                    else
-                                    {
-                                        if (carrier1.GetDepot(c1).LTLAvail > quantity && carrier2.GetDepot(CurrentCity).FTLAvail > 1)
+                                        else
                                         {
-                                            AddOptionFlag = true;
+                                            if (carrier1.GetDepot(c1).LTLAvail > quantity && carrier2.GetDepot(CurrentCity).FTLAvail > 1)
+                                            {
+                                                AddOptionFlag = true;
+                                            }
                                         }
-                                    }
 
-                                    if (AddOptionFlag)
-                                    {
-                                        List<Trip> t = new List<Trip>();
+                                        if (AddOptionFlag)
+                                        {
+                                            List<Trip> t = new List<Trip>();
 
-                                        t.Add(new Trip(c1, CityList.GetCity(CurrentCity), carrier1));
-                                        t.Add(new Trip(CityList.GetCity(CurrentCity), c2, carrier2));
+                                            t.Add(new Trip(c1, CityList.GetCity(CurrentCity), carrier1));
+                                            t.Add(new Trip(CityList.GetCity(CurrentCity), c2, carrier2));
 
-                                        TripsList.Add(t);
+                                            TripsList.Add(t);
+                                        }
                                     }
                                 }
                             }
@@ -395,27 +396,9 @@ namespace SENG2020_TermProject.Data_Logic
                 }
             }
 
-            /*
-            int iter = 0;
-            foreach(List<Trip> l in TripsList)
-            {
-                Console.WriteLine("Route #{0}", iter);
-                Console.WriteLine("================================");
-                foreach (Trip t in l)
-                {
-                    Console.WriteLine("================================");
-                    Console.WriteLine("Trip Origin:\t\t{0}", t.GetOrigin().GetName());
-                    Console.WriteLine("Trip Destination:\t{0}", t.GetDestin().GetName());
-                    Console.WriteLine("Carrier to Complete:\t{0}", t.GetCarrier().GetName());
-                }
-                Console.WriteLine();
-                iter++;
-            }
-            */
-
             if (TripsList.Count == 0)
                 return null;
-            else return TripsList[0]; //nothing fancy; return first option
+            else return TripsList; //nothing fancy; return first option
         }
 
         /**
@@ -432,78 +415,91 @@ namespace SENG2020_TermProject.Data_Logic
         /*
          * NAME : CarriersForRoute
          * DESC :
-         *  CarriersForRoute uses two separate algorithmic methods of determining if there are carriers available
-         *  to fulfill an order.
-         *  
-         *  Firstly, the CarriersForRoute function assumes that using a single carrier is the best method of action.
-         *  This is, broadly speaking, optimizing for time. If a carrier switch needs to occur, there must be time
-         *  to unload and reload in the intermediary city. Thus we test for a single carrier solution first if at
-         *  all possible.
-         *  
-         *  Secondly, if a single carrier solution is not found, we test for a two carrier solution. This algorithm
-         *  successfully covers almost every possible order. We call the FindIntermediaryCity function, which returns
-         *  a List of two Trip objects that the initial trip has now been split into.
-         *  
-         *  Thirdly, if there are multiple carrier options that can satisfy a single carrier trip, we just assume that
-         *  the one that was found first is best and return it. Maybe I'll implement an algorithm that will optimize
-         *  for cost effectiveness, but rn i have other stuff to do.
-         *  
-         *  This function effectively elminates the need for the Buyer to manually choose intermediary cities, because
-         *  this function finds out if they're needed at all in the first place. Something to consider, however, is the
-         *  methodology this function uses to determine which carrier combination to go with. There are likely many
-         *  possible carrier combinations; a data set like this could be optimized for speed or cost. I don't have time
-         *  to do this, but maybe over winter break for fun! :)
-         *  
-         *  TODO:
-         *  
-         *  If an order will take > 8h of driving (think CityList.DrivingDistance function!!!) we MUST separate into
-         *  two orders. DO THIS SHIT
-         *  
-         *  probably as easy as calling that func on o.origin and o.destin usinga  conditional just think about it
+         *  The CarriersForRoute function calls on two functions, the SingleCarrierRoutes function and the
+         *  DoubleCarrierRoutes function to determine all available carrier routes that could satisfy an order.
+         *  This function either returns just single or double carrier routes if the opposite returns null,
+         *  or it returns a combination of both lists.
          *  
          *  - Ryan Enns, 2021-12-03
          * PARM : Order
          * RTRN : Carrier
          */
-        public static List<Trip> CarriersForRoute(Order o)
+        public static List<List<Trip>> CarriersForOrder(Order o)
         {
             if (o == null) return null;
 
-            //duped code but it's better than running thru the foreach loop for no reason
-            if(CityList.DrivingTime(o.GetOrigin(), o.GetDestin()) > 8)
-            {
-                return CarrierList.OneStopRoutes(CityList.GetCity(o.GetOrigin()), CityList.GetCity(o.GetDestin()), o.mr.GetJobType(), o.mr.GetQuantity());
-            }
+            List<List<Trip>> SingleCarrierTrips = SingleCarrierRoutes(o);
+            List<List<Trip>> DoubleCarrierTrips = CarrierList.DoubleCarrierRoutes(CityList.GetCity(o.GetOrigin()), CityList.GetCity(o.GetDestin()), o.mr.GetJobType(), o.mr.GetQuantity());
 
-            List<Trip> t = new List<Trip>();
-            foreach(Carrier c in Carriers)
+            List<List<Trip>> AllRoutes = new List<List<Trip>>();
+
+            if (SingleCarrierTrips == null && DoubleCarrierTrips == null)
+                return null;
+            else if (SingleCarrierTrips == null && DoubleCarrierTrips != null)
+                return DoubleCarrierTrips;
+            else if (SingleCarrierTrips != null && DoubleCarrierTrips == null)
+                return SingleCarrierTrips;
+            else
+            {
+                foreach (List<Trip> route in SingleCarrierTrips)
+                {
+                    AllRoutes.Add(route);
+                }
+
+                foreach (List<Trip> route in DoubleCarrierTrips)
+                {
+                    AllRoutes.Add(route);
+                }
+
+                return AllRoutes;
+            }
+        }
+
+        /*
+         * NAME : SingleCarrierRoutes
+         * DESC :
+         *  This function, using an Order object as its reference point, determines if the route between
+         *  the Order's origin city and destination city can be fulfilled by a single carrier with depots
+         *  in both cities. Each potential route is added to a List of Trip Lists, and returned.
+         *  
+         *  Why return a List of Trip Lists? Well, because when we're working with the potential for multi
+         *  carrier route solutions, it's easiest to group the single carrier solutions into the same best 
+         *  format (List of Trip Lists) that's available for multi carrier routes. This allows all possible
+         *  routes to be condensed into a single List of Trip Lists that can be returned and chosen from by
+         *  the Planner.
+         * RTRN : List<List<Trip>>
+         * PARM : Order
+         */
+        public static List<List<Trip>> SingleCarrierRoutes(Order o)
+        {
+            List<List<Trip>> trips = new List<List<Trip>>();
+            foreach (Carrier c in Carriers)
             {
                 //add each potential carrier to the list of potential carriers
                 if (c.HasDepotIn(o.GetOrigin()) && c.HasDepotIn(o.GetDestin()))
                 {
                     if (o.JobType() == "FTL")
                     {
-                        if(c.GetDepot(o.GetOrigin()).HasFTLAvail(1))
+                        if (c.GetDepot(o.GetOrigin()).HasFTLAvail(1))
+                        {
+                            List<Trip> t = new List<Trip>();
                             t.Add(new Trip(o.GetOrigin(), o.GetDestin(), c));
+                            trips.Add(t);
+                        }
                     }
                     else
                     {
                         if (c.GetDepot(o.GetOrigin()).HasLTLAvail(o.LTLQty()))
+                        {
+                            List<Trip> t = new List<Trip>();
                             t.Add(new Trip(o.GetOrigin(), o.GetDestin(), c));
+                            trips.Add(t);
+                        }
                     }
                 }
             }
 
-            if(t.Count == 0)
-            {
-                return CarrierList.OneStopRoutes(CityList.GetCity(o.GetOrigin()), CityList.GetCity(o.GetDestin()), o.mr.GetJobType(), o.mr.GetQuantity());
-            }
-            else
-            {
-                List<Trip> ReturnValue = new List<Trip>();
-                ReturnValue.Add(t[0]);
-                return ReturnValue;
-            }
+            return trips;
         }
 
         /*

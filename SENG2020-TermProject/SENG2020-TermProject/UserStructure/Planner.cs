@@ -7,8 +7,9 @@
  */
 
 using System;
-using SENG2020_TermProject.DatabaseManagement;
+using SENG2020_TermProject.Communications;
 using SENG2020_TermProject.Data_Logic;
+using System.Collections.Generic;
 
 /*
 The Planner employee is responsible for furthering the order by selecting one or more registered 
@@ -17,26 +18,25 @@ time in the application, ensuring that when all Trips on an order are completed,
 marked as Completed and sent back to the Buyer for Invoice Generation. Finally, the Planner may also 
 produce reports showing aggregate activity in OSHT.
 
-4.5.2.3.1 Planner receives Orders from the Buyer.
+    4.5.2.3.1 Planner receives Orders from the Buyer.
 
--- Satisfied via TMSDatabaseAccess. Instead of passing between class instances, we pass order
-instances to the database. This enables async access of order resources, rather than creating a
-dependency on Buyer and Planner users being active simultaneously.
+    -- Satisfied via TMSDatabaseAccess. Instead of passing between class instances, we pass order
+    instances to the database. This enables async access of order resources, rather than creating a
+    dependency on Buyer and Planner users being active simultaneously.
 
-4.5.2.3.2 Planner selects Carriers from the targeted cities to complete the Order, which adds a 
-‘Trip’ to the Order for each Carrier selected
+    4.5.2.3.2 Planner selects Carriers from the targeted cities to complete the Order, which adds a 
+    ‘Trip’ to the Order for each Carrier selected
 
--- Partially satisfied -- currently the CarrierList.CarriersForRoute(Order o) function returns a
-list of Trip instances that will satisfy the order. This is the only option available to the Planner.
-To better meet requirements, return multiple available options and allow the carrier to choose - in
-spite of cost or time efficiency. Give the user choice.
+    -- Mostly satisfied. The TMS system returns a list of potential routes that can be used to fulfill
+    an order. The Planner can then select the route, which already contains nominated Carriers, to
+    fill the order. The system prioritizes single Carrier routes wherever possible.
 
-4.5.2.3.3 Carriers may be limited in their transportation capacity, thus the Planner ensures that 
-multiple Trips, if necessary are attached to the Order.
+    4.5.2.3.3 Carriers may be limited in their transportation capacity, thus the Planner ensures that 
+    multiple Trips, if necessary are attached to the Order.
 
--- This requirement is satisfied by the CarriersForRoute function. A trip is not deemd possible if the
-depot for a given carrier in a given city does not have capacity to fulfill it. Thus the Planner does
-not have to intentionally check if availability is present; the OSHT TMS system performs this automatically.
+    -- This requirement is satisfied by the CarriersForRoute function. A trip is not deemd possible if the
+    depot for a given carrier in a given city does not have capacity to fulfill it. Thus the Planner does
+    not have to intentionally check if availability is present; the OSHT TMS system performs this automatically.
 
 4.5.2.3.4 The Planner may simulate the passage of time in 1-day increments in order to mover 
 Orders and their trips to completed state
@@ -48,10 +48,10 @@ from the Buyer
 
 -- UNFINISHED
 
-4.5.2.3.6 Planner may see a summary of all active Orders in a status screen.
+    4.5.2.3.6 Planner may see a summary of all active Orders in a status screen.
 
--- Satisfied to my best understanding; all unfinished orders can be retrieved from the TMS database and
-given to the user.
+    -- Satisfied to my best understanding; all unfinished orders can be retrieved from the TMS database and
+    given to the user.
 
 4.5.2.3.7 (Optional) The status screen is highly graphical, perhaps using some kind of Google Maps 
 plugin.
@@ -61,7 +61,10 @@ latest. No chance here. Maybe if my group members had done anything at all at th
 different position.
 
 4.5.2.3.8 Planner may generate a summary report of all Invoice data for a) all time, and b) The 
-‘past 2 weeks’ of simulated time
+‘past 2 weeks’ of simulated time.
+
+-- UNFINISHED
+
  */
 namespace SENG2020_TermProject.UserStructure
 {
@@ -94,13 +97,70 @@ namespace SENG2020_TermProject.UserStructure
                 order.Display();
                 iter++;
             }
+            if (orders.Length == 0)
+                Console.WriteLine("No Orders Available!\n");
+
+        }
+
+        public List<Trip> GetRoute(Order o)
+        {
+            List<List<Trip>> routes = CarrierList.CarriersForOrder(o);
+            if (routes == null)
+            {
+                FileAccess.Log(String.Format("ERROR - No logical routes available given origin city and destination.\n{0} --> {1}", o.GetOrigin(), o.GetDestin()));
+                Console.WriteLine("No Logical Routes!");
+            }
+            else
+            {
+                int RouteIterator = 0;
+                foreach (List<Trip> l in routes)
+                {
+                    Console.WriteLine("Route #{0}", RouteIterator);
+                    Console.WriteLine("==========");
+                    int TripIterator = 0;
+                    foreach (Trip t in l)
+                    {
+                        Console.WriteLine("\tTrip #{0}", TripIterator);
+                        Console.WriteLine("\t\tFrom {0}\t-->\t{1}", t.GetOrigin().GetName(), t.GetDestin().GetName());
+                        Console.WriteLine("\t\tDistance:\t{0}km", t.GetTripDistance());
+                        Console.WriteLine("\t\tTime:\t\t{0}h", t.GetTripTime(o.mr.GetJobType()));
+                        Console.WriteLine("\t\tCost:\t\t${0}", t.GetTripCost(o.mr.GetJobType(), o.mr.GetQuantity()));
+                        Console.WriteLine("\t\tCarrier:\t{0}", t.GetCarrier().GetName());
+
+                        Console.WriteLine();
+
+                        TripIterator++;
+                    }
+                    RouteIterator++;
+                }
+
+                Console.WriteLine("Select a route to fulfill this order:");
+                int inp = GetIntBetween(routes.Count - 1, 0);
+                return routes[inp];
+            }
+
+            return null;
+        }
+
+        private void GetDatabaseAccess()
+        {
+            if (this.tms != null) return;
+
+            Console.WriteLine("Enter the Planner TMS Database password: ");
+            tms = new DatabaseManagement.TMSDatabaseAccess("planner", GetInput());
         }
 
         //renns
         public void PlannerWorkFlow() //this will actually take a value from a database based on user input ! :)
         {
             PlannerHeader();
-            if (!this.tms.ValidConnection) return; // exit the application immediately upon establishing the connection is invalid
+            GetDatabaseAccess();
+            if (!this.tms.ValidConnection)
+            {
+                Console.WriteLine("Invalid TMS Database username or password!");
+                FileAccess.Log("Invalid Login Attempt by user Planner");
+                return;
+            }// exit the application immediately upon establishing the connection is invalid
 
             Order[] orders;
             String inp = "";
@@ -108,30 +168,55 @@ namespace SENG2020_TermProject.UserStructure
             {
                 Console.WriteLine("1. View Unfilled Orders");
                 Console.WriteLine("2. Prepare and Simualte an Order");
+                Console.WriteLine("3. Generate Invoice Summary");
                 inp = GetInput();
 
                 if (inp == "1")
                 {
+                    Delay();
                     DisplayUnfilledOrders();
                 }
                 else if (inp == "2")
                 {
-                    orders = tms.GetIncompleteOrders();
+                    Delay();
                     DisplayUnfilledOrders();
+                    orders = tms.GetIncompleteOrders();
 
-                    Console.WriteLine("Select an order to fulfill - (0 - {0}).", orders.Length - 1);
-                    Order o = orders[GetIntBetween(orders.Length - 1, 0)];
-                    o.PrepOrder();
-                    o.Display();
+                    if (!(orders.Length == 0))
+                    {
+                        Console.WriteLine("Select an order to fulfill - (0 - {0}).", orders.Length - 1);
+                        Order o = orders[GetIntBetween(orders.Length - 1, 0)];
 
-                    if (tms.SetOrderComplete(o))
-                    {
-                        Console.WriteLine("Sucessfully finished Order #{0} - {1}", o.GetID(), o.mr.GetClientName());
+                        //nested a GetRoute call with o into o's prep order func.
+                        o.PrepOrder(GetRoute(o));
+                        Delay();
+                        o.Display();
+
+                        Console.WriteLine("Set this Order to finished state? Y/N");
+                        inp = GetYesNo();
+
+                        if(inp == "Y")
+                        {
+                            Delay();
+                            o.SimulateTime();
+                            if (tms.SetOrderComplete(o))
+                            {
+                                Console.WriteLine("Sucessfully finished Order #{0} - {1}", o.GetID(), o.mr.GetClientName());
+                            }
+                            else
+                            {
+                                Console.WriteLine("An error occured in TMSDatabaseAccess.cs - See Logs");
+                            }
+                        }
                     }
-                    else
-                    {
-                        Console.WriteLine("An error occured in TMSDatabaseAccess.cs - See Logs");
-                    }
+                }
+                else if(inp == "3")
+                {
+                    //FileAccess class to iterate through Logs here
+                }
+                else if (inp == "5")
+                {
+                    inp = null;
                 }
             }
         }

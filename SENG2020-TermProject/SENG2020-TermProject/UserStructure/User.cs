@@ -7,6 +7,7 @@
  */
 
 using System;
+using System.Threading;
 using SENG2020_TermProject.DatabaseManagement;
 /*
  * Various users can do various different things. The only way that these users interact is via fetching data
@@ -29,11 +30,16 @@ namespace SENG2020_TermProject.UserStructure
     class User
     {
         //renns
-        protected TMSDatabaseAccess tms = new TMSDatabaseAccess();
+        protected TMSDatabaseAccess tms;
         public static String GetInput()
         {
             Console.Write(">> ");
             return Console.ReadLine();
+        }
+
+        public static void Delay(int delay = 250)
+        {
+            Thread.Sleep(delay);
         }
 
         public static void ClearTerminal()
@@ -50,7 +56,7 @@ namespace SENG2020_TermProject.UserStructure
                 inp = "";
                 while (!int.TryParse(inp, out ReturnValue))
                 {
-                    Console.WriteLine("Enter an integer between {0} and {1}", UpperBound, LowerBound);
+                    Console.WriteLine("Enter an integer between {0} and {1}", LowerBound, UpperBound);
                     inp = GetInput();
                 }
             }

@@ -185,16 +185,14 @@ namespace SENG2020_TermProject.Data_Logic
          * RTRN : bool
          * PARM : //
          */
-        public bool PrepOrder()
+        public bool PrepOrder(List<Trip> route)
         {
             if (isprepped) throw new Exception("Order already prepared.");
             if(this.mr != null)
             {
-                this.trips = CarrierList.CarriersForRoute(this);
+                this.trips = route;
                 if(this.trips == null)
-                {
                     return false;
-                }
                 CalculateDistance();
                 CalculateTime();
                 CalculateCost();
@@ -311,18 +309,27 @@ namespace SENG2020_TermProject.Data_Logic
             }
         }
 
-        //hot garbage that needs work
         public void SimulateTime()
         {
             if (!this.isprepped) return;
 
-            foreach(Trip t in this.trips)
+            Console.WriteLine("Simulating Order #{0}", this.ID);
+            int TripIter = 1;
+            foreach (Trip t in this.trips)
             {
-                for(double hoursPassed = 0.0; hoursPassed < t.GetTripTime(this.mr.GetJobType()); hoursPassed++)
+                double hoursPassed = 0.0;
+                Console.WriteLine("Trip #{0} / {1}", TripIter, this.trips.Count);
+                for(hoursPassed = 0.0; hoursPassed < t.GetTripTime(this.mr.GetJobType()); hoursPassed++)
                 {
-                    Console.WriteLine("Currently {0} hours into a {1} hour trip.");
-                    Console.WriteLine("Continue");
+                    System.Threading.Thread.Sleep(750);
+                    Console.WriteLine("{0}h / {1}h", hoursPassed, t.GetTripTime(this.mr.GetJobType()));
                 }
+                System.Threading.Thread.Sleep(750);
+                hoursPassed = t.GetTripTime(this.mr.GetJobType());
+                Console.WriteLine("{0}h / {1}h", hoursPassed, t.GetTripTime(this.mr.GetJobType()));
+                System.Threading.Thread.Sleep(750);
+                Console.WriteLine("Trip #{0} complete!", TripIter);
+                TripIter++;
             }
         }
     }
