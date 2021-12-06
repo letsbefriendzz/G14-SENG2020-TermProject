@@ -64,7 +64,7 @@ namespace SENG2020_TermProject.UserStructure
         {
             AdminHeader();
             GetDatabaseAccess();
-
+            Console.WriteLine("\n\n");
             if (!this.tms.ValidConnection)
             {
                 Console.WriteLine("Invalid TMS Database username or password!");
@@ -185,12 +185,11 @@ namespace SENG2020_TermProject.UserStructure
                         Console.WriteLine();
                     }
                     inp = "";
-                    Console.WriteLine();
                 }
                 else if (inp == "2")
                 {
                     int LogIterator = 0;
-                    String[] LogNames = FileAccess.GetLogs();
+                    String[] LogNames = FileAccess.GetFiles("logs");
                     foreach (String s in LogNames)
                     {
                         Console.WriteLine("[{0}]\t- {1}", LogIterator, s);
@@ -230,7 +229,6 @@ namespace SENG2020_TermProject.UserStructure
                                               "Check logs for more information.");
                         }
                     }
-                    Console.WriteLine();
                 }
                 else if (inp == "4")
                 {
@@ -260,6 +258,7 @@ namespace SENG2020_TermProject.UserStructure
                 {
                     inp = null;
                 }
+                Console.WriteLine();
             }
             FileAccess.Log("Administrator logout.");
         }

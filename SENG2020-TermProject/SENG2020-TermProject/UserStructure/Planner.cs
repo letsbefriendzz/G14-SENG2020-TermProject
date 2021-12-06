@@ -172,6 +172,7 @@ namespace SENG2020_TermProject.UserStructure
         {
             PlannerHeader();
             GetDatabaseAccess();
+            Console.WriteLine("\n\n");
             if (!this.tms.ValidConnection)
             {
                 Console.WriteLine("Invalid TMS Database username or password!");
@@ -183,20 +184,21 @@ namespace SENG2020_TermProject.UserStructure
             String inp = "";
             while (inp != null)
             {
+                Console.WriteLine("Make a selection:");
                 Console.WriteLine("1. View Unfilled Orders");
                 Console.WriteLine("2. Prepare and Simulate an Order");
                 Console.WriteLine("3. Generate Invoice Summary");
                 Console.WriteLine("0. Exit");
                 inp = GetInput();
+                Console.WriteLine();
+                Delay();
 
                 if (inp == "1")
                 {
-                    Delay();
                     DisplayUnfilledOrders();
                 }
                 else if (inp == "2")
                 {
-                    Delay();
                     DisplayUnfilledOrders();
                     orders = tms.GetIncompleteOrders();
 
@@ -234,7 +236,10 @@ namespace SENG2020_TermProject.UserStructure
                 }
                 else if (inp == "3")
                 {
-                    //FileAccess class to iterate through invoices here
+                    foreach(String s in FileAccess.GetFiles("invoices"))
+                    {
+                        Console.WriteLine(s);
+                    }
                 }
                 else if (inp == "0")
                 {

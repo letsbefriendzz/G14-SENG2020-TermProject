@@ -147,8 +147,10 @@ namespace SENG2020_TermProject.UserStructure
 
                 inp = GetInput();
 
+                Delay();
                 if (inp == "1")
                 {
+                    
                     inp = "";
                     DisplayAllContracts();
                 }
@@ -163,14 +165,17 @@ namespace SENG2020_TermProject.UserStructure
                     o.Display();
                     Console.WriteLine("Insert this Order into the TMS Database? Y/N");
                     inp = GetYesNo();
-                    if (tms.InsertOrder(o))
+                    if(inp == "Y")
                     {
-                        Console.WriteLine("Successfully converted Marketplace Request to Order;\nDatabase insertion successful.\n");
-                    }
-                    else
-                    {
-                        Console.WriteLine("An error has occured -- database insertion not successful");
-                        throw new Exception("TMS Database Insertion Exception");
+                        if (tms.InsertOrder(o))
+                        {
+                            Console.WriteLine("Successfully converted Marketplace Request to Order;\nDatabase insertion successful.\n");
+                        }
+                        else
+                        {
+                            Console.WriteLine("An error has occured -- database insertion not successful");
+                            throw new Exception("TMS Database Insertion Exception");
+                        }
                     }
                 }
                 else if (inp == "3")
@@ -233,13 +238,12 @@ namespace SENG2020_TermProject.UserStructure
                             Console.WriteLine("An error occured during db insertion; please see log files for details.");
                         }
                     }
-
-                    Console.WriteLine();
                 }
                 else if (inp == "0")
                 {
                     inp = null;
                 }
+                Console.WriteLine();
             }
         }
     }

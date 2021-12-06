@@ -162,16 +162,16 @@ namespace SENG2020_TermProject.Communications
         /*
          * NAME : GetLogs
          * DESC :
-         *  This function gets all the filenames that are present in the specified installpath/logs
+         *  This function gets all the filenames that are present in the specified installpath/path
          *  folder. It returns an array of Strings that contains each filename present.
          * RTRN : String[]
          * PARM : //
          */
-        public static String[] GetLogs()
+        public static String[] GetFiles(String path)
         {
             String[] ReturnValues = null;
 
-            ReturnValues = Directory.GetFiles(InstallPath + "/logs");
+            ReturnValues = Directory.GetFiles(InstallPath + "/" + path);
 
             for (int i = 0; i < ReturnValues.Length; i++)
                 ReturnValues[i] = Path.GetFileName(ReturnValues[i]);

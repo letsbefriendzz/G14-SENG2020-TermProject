@@ -329,6 +329,14 @@ namespace SENG2020_TermProject.Data_Logic
             Carriers.Add(new Carrier("We Haul", wh));
         }
 
+        /*
+         * NAME : DecrementAvailability
+         * DESC :
+         *  This function decrements LTL or FTL availability in the local Carriers list when an order is completed.
+         *  If a valid request is made and fulfilled, true is returned. Otherwise, false is returned.
+         * RTRN : bool
+         * PARM : String, String, int, int
+         */
         public static bool DecrementAvailability(String CarrierName, String DepotLocation, int JobType, int Quantity = 0)
         {
             foreach(Carrier c in Carriers)
@@ -349,6 +357,14 @@ namespace SENG2020_TermProject.Data_Logic
             return false;
         }
 
+        /*
+         * NAME : IncrementAvailability
+         * DESC :
+         *  This function increments LTL or FTL availability in the local Carriers list when an order is completed.
+         *  If a valid request is made and fulfilled, true is returned. Otherwise, false is returned.
+         * RTRN : bool
+         * PARM : String, String, int, int
+         */
         public static bool IncrementAvailability(String CarrierName, String DepotLocation, int JobType, int Quantity = 0)
         {
             foreach (Carrier c in Carriers)
