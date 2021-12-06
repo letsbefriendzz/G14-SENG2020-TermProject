@@ -300,47 +300,5 @@ namespace SENG2020_TermProject.DatabaseManagement
             }
             return false;
         }
-
-
-        //unfinished hot garbage
-        public Depot[] GetDepots(String CarrierName)
-        {
-            Depot[] ReturnArray = null;
-            if (this.cn != null && this.ValidConnection)
-            {
-                try
-                {
-                    cn.Open();
-                    using (MySqlCommand cm = cn.CreateCommand())
-                    {
-                        cm.CommandText = "select * from depot where CarrierName=\"" + CarrierName + "\"";
-                        using (MySqlDataAdapter ada = new MySqlDataAdapter(cm))
-                        {
-                            DataTable dt = new DataTable();
-                            ada.Fill(dt);
-
-                            ReturnArray = new Depot[dt.Rows.Count];
-
-                            int i = 0;
-                            foreach(DataRow d in dt.Rows)
-                            {
-                                ReturnArray[0].CityName = d[0].ToString();
-
-                                i++;
-                            }
-                        }
-                    }
-                    cn.Close();
-                }
-                catch (MySqlException mse)
-                {
-                    FileAccess.Log("ERROR in TMSDatabaseAccess.cs :: GetDepots(String CarrierName)\n " + mse.ToString());
-
-                    return null;
-                }
-            }
-
-            return ReturnArray;
-        }
     }
 }

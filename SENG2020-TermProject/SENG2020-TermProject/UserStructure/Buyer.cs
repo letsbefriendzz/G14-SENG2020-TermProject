@@ -69,6 +69,7 @@ namespace SENG2020_TermProject.UserStructure
      */
     class Buyer : User
     {
+        //Displays a console Buyer header.
         private static void BuyerHeader()
         {
             Console.WriteLine("===================");
@@ -76,6 +77,15 @@ namespace SENG2020_TermProject.UserStructure
             Console.WriteLine("===================");
         }
 
+        /*
+         * NAME : DisplayAllContracts
+         * DESC :
+         *  Makes a request to a local ContractMarketAccess instance.
+         *  Iterates through the array of MarketplaceRequests that is
+         *  returned and displays each in the console.
+         * RTRN : //
+         * PARM : //
+         */
         private void DisplayAllContracts()
         {
             Console.WriteLine("\n\nCONTRACT MARKET PLACE CONTRACTS");
@@ -93,6 +103,13 @@ namespace SENG2020_TermProject.UserStructure
             return;
         }
 
+        /*
+         * NAME : DisplayFinishedOrders
+         * DESC :
+         *  Displays all finished orders found in the TMS Database.
+         * RTRN : //
+         * PARM : //
+         */
         private void DisplayFinishedOrders()
         {
             Order[] orders = tms.GetFinishedOrders();
@@ -114,6 +131,15 @@ namespace SENG2020_TermProject.UserStructure
             }
         }
 
+        /*
+         * NAME : GetDatabaseAccess
+         * DESC :
+         *  Prompts the user for the password for the respective db account they're
+         *  attempting to log in with. inits the local TMSDatabaseAccess instance with
+         *  the password.
+         * RTRN : //
+         * PARM : //
+         */
         private void GetDatabaseAccess()
         {
             if (this.tms != null) return;
@@ -122,7 +148,14 @@ namespace SENG2020_TermProject.UserStructure
             tms = new TMSDatabaseAccess("buyer", GetInput());
         }
 
-        //renns
+        /*
+         * NAME : BuyerWorkFlow
+         * DESC :
+         *  The main user flow of the Buyer. See requirements above for
+         *  better understanding of it.
+         * RTRN : //
+         * PARM : //
+         */
         public void BuyerWorkFlow()
         {
             BuyerHeader();

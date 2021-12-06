@@ -77,7 +77,6 @@
 
 
 using SENG2020_TermProject.Communications;
-using SENG2020_TermProject.Data_Logic;
 using SENG2020_TermProject.UserStructure;
 using System;
 
@@ -105,11 +104,10 @@ namespace SENG2020_TermProject
         {
             String inp = null;
             Console.WriteLine("Select Buyer (1), Planner (2), or Admin (3)");
-            Console.Write(">> ");
 
             while (inp == null)
             {
-                inp = Console.ReadLine();
+                inp = User.GetInput();
                 if (inp == "1")
                 {
                     Buyer b = new Buyer();

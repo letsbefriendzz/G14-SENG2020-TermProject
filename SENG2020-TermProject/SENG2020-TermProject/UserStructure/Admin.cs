@@ -45,6 +45,7 @@ namespace SENG2020_TermProject.UserStructure
      */
     class Admin : User
     {
+        //Displays an admin console header.
         private static void AdminHeader()
         {
             Console.WriteLine("===================");
@@ -52,6 +53,15 @@ namespace SENG2020_TermProject.UserStructure
             Console.WriteLine("===================");
         }
 
+        /*
+         * NAME : GetDatabaseAccess
+         * DESC :
+         *  Prompts the user for the password for the respective db account they're
+         *  attempting to log in with. inits the local TMSDatabaseAccess instance with
+         *  the password.
+         * RTRN : //
+         * PARM : //
+         */
         private void GetDatabaseAccess()
         {
             if (this.tms != null) return;
@@ -60,6 +70,13 @@ namespace SENG2020_TermProject.UserStructure
             tms = new TMSDatabaseAccess(GetInput());
         }
 
+        /*
+         * NAME : AdminWorkFlow
+         * DESC :
+         *  The main loop of admin workflow.
+         * RTRN : //
+         * PARM : //
+         */
         public void AdminWorkFlow()
         {
             AdminHeader();

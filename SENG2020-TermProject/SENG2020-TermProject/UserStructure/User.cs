@@ -41,7 +41,6 @@ namespace SENG2020_TermProject.UserStructure
             Console.Write(">> ");
             return Console.ReadLine();
         }
-
         public static void Delay(int delay = 250)
         {
             Thread.Sleep(delay);
@@ -52,6 +51,14 @@ namespace SENG2020_TermProject.UserStructure
             Console.WriteLine("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
         }
 
+        /*
+         * NAME : GetIntBetween
+         * DESC :
+         *  Takes an upper and lower bound and only accepts integer input
+         *  between those two values, inclusive. Returns the user's input.
+         * RTRN : int
+         * PARM : int, int
+         */
         public static int GetIntBetween(int UpperBound, int LowerBound = 0)
         {
             String inp = null;
@@ -69,6 +76,14 @@ namespace SENG2020_TermProject.UserStructure
             return ReturnValue;
         }
 
+        /*
+         * NAME : GetYesNo
+         * DESC :
+         *  Only accepts capital or lowercase Y or N as input; continues
+         *  to prompt until it is given. Returns either Y or N.
+         * RTRN : String
+         * PARM : //
+         */
         public static String GetYesNo()
         {
             String inp = "";
@@ -80,6 +95,14 @@ namespace SENG2020_TermProject.UserStructure
             return inp;
         }
 
+        /*
+         * NAME : GetCityName
+         * DESC :
+         *  Only accepts string input that is a name of a city found in the CityList.
+         *  Returns the City that the user inputs.
+         * RTRN : String
+         * PARM : //
+         */
         public static String GetCityName()
         {
             String inp = "";

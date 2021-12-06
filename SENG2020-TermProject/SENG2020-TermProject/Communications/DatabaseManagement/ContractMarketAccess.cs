@@ -99,6 +99,17 @@ namespace SENG2020_TermProject.DatabaseManagement
          *
          * \return  MarketplaceRequest[]
          */
+        /*
+         * NAME : 
+         * DESC :
+            * This function makes an SQL query to the Contract Marketplace for all available
+            * contracts. Once the query has been satisfied, the fuction creates an array of
+            * MarketplaceRequest objects to return to for further processing. If the local
+            * MySqlConnection instance is not instantiated, null is returned. If a MySqlException
+            * is caught, null is returned
+         * RTRN : MarketplaceRequest[]
+         * PARM : //
+         */
         public MarketplaceRequest[] GetAllMarketplaceRequests()
         {
             MarketplaceRequest[] mr = null;

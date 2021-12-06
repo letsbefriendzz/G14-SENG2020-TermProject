@@ -89,6 +89,7 @@ namespace SENG2020_TermProject.UserStructure
      */
     class Planner : User
     {
+        //Displays a Planner console header.
         private static void PlannerHeader()
         {
             Console.WriteLine("=====================");
@@ -96,6 +97,14 @@ namespace SENG2020_TermProject.UserStructure
             Console.WriteLine("=====================");
         }
 
+        /*
+         * NAME : DisplayUnfilledOrders
+         * DESC :
+         *  Displays all incomplete orders that can be found in the local
+         *  TMS database.
+         * RTRN : //
+         * PARM : //
+         */
         public void DisplayUnfilledOrders()
         {
             Console.WriteLine("\n\nTMS DATABASE - UNFINISHED ORDERS");
@@ -114,6 +123,16 @@ namespace SENG2020_TermProject.UserStructure
 
         }
 
+        /*
+         * NAME : GetRoute
+         * DESC : 
+         *  This function gets the Planner's input on what route should be used to fill an order.
+         *  The CarriersForOrder function will return a list of routes, that the Planner then chooses
+         *  from. The Return value of List<Trip> is then passed to the local Order instance in its
+         *  PrepOrder call, so that the route can be assigned to the Order's local trips instance.
+         * RTRN : Trip<List>
+         * PARM : Order
+         */
         public List<Trip> GetRoute(Order o)
         {
             List<List<Trip>> routes = CarrierList.CarriersForOrder(o);
@@ -159,6 +178,16 @@ namespace SENG2020_TermProject.UserStructure
             return null;
         }
 
+
+        /*
+         * NAME : GetDatabaseAccess
+         * DESC :
+         *  Prompts the user for the password for the respective db account they're
+         *  attempting to log in with. inits the local TMSDatabaseAccess instance with
+         *  the password.
+         * RTRN : //
+         * PARM : //
+         */
         private void GetDatabaseAccess()
         {
             if (this.tms != null) return;
@@ -167,7 +196,13 @@ namespace SENG2020_TermProject.UserStructure
             tms = new DatabaseManagement.TMSDatabaseAccess("planner", GetInput());
         }
 
-        //renns
+        /*
+         * NAME : PlannerWorkFlow
+         * DESC :
+         *  Main workflow of the planner user.
+         * RTRN : //
+         * PARM : //
+         */
         public void PlannerWorkFlow() //this will actually take a value from a database based on user input ! :)
         {
             PlannerHeader();
