@@ -55,7 +55,7 @@ namespace SENG2020_TermProject.Communications
         {
             if (!Directory.Exists(pathway)) return false;
 
-            String output = "ID,ClientName,JobType,Origin,Destination,VanType,TimeToComplete,DistanceToComplete,CostToComplete,OSHTSurcharge,IsComplete";
+            String output = "ID,ClientName,JobType,Origin,Destination,VanType,TimeToComplete,DistanceToComplete,CostToComplete,OSHTSurcharge,IsComplete\n";
             foreach (Order o in orders)
             {
                 //id-client-jobtype-origin-destination-vantype-time-distance-cost-oshtcharge-iscomplete
@@ -161,6 +161,14 @@ namespace SENG2020_TermProject.Communications
                 ReturnValues[i] = Path.GetFileName(ReturnValues[i]);
 
             return ReturnValues;
+        }
+
+        public static String GetLog(String name)
+        {
+            String path = InstallPath + "/logs/" + name;
+            if (File.Exists(path))
+                return File.ReadAllText(path);
+            else return null;
         }
 
         /*

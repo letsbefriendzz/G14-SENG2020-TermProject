@@ -13,6 +13,7 @@
 using System;
 using System.Threading;
 using SENG2020_TermProject.DatabaseManagement;
+using SENG2020_TermProject.Data_Logic;
 /*
  * Various users can do various different things. The only way that these users interact is via fetching data
  * from the TMS database. They exclusively access the end results of each other's labours through the TMS database.
@@ -76,6 +77,16 @@ namespace SENG2020_TermProject.UserStructure
                 inp = GetInput().ToUpper();
             }
 
+            return inp;
+        }
+
+        public static String GetCityName()
+        {
+            String inp = "";
+            while(!CityList.ContainsCity(inp))
+            {
+                inp = GetInput();
+            }
             return inp;
         }
     }

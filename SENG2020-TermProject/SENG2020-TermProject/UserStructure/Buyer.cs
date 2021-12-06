@@ -141,6 +141,7 @@ namespace SENG2020_TermProject.UserStructure
                 Console.WriteLine("2. Generate Order from Contract");
                 Console.WriteLine("3. View Finished Orders");
                 Console.WriteLine("4. Generate Invoice");
+                Console.WriteLine("5. Insert Customer Order");
                 Console.WriteLine("0. Exit");
 
                 inp = GetInput();
@@ -193,6 +194,36 @@ namespace SENG2020_TermProject.UserStructure
                         }
 
                         Console.WriteLine("Invoice can be found at:\n{0}", FileAccess.CreateInvoice(ForInvoice));
+                    }
+                }
+                else if(inp == "5")
+                {
+                    MarketplaceRequest mr = new MarketplaceRequest();
+                    Console.WriteLine("Client Name:");
+                    mr.SetClientName(GetInput());
+                    Console.WriteLine("Job Type (1/0):");
+                    mr.SetJobType(GetIntBetween(1,0));
+                    if(mr.GetJobType() == 1)
+                    {
+                        Console.WriteLine("Pallet Quantity: ");
+                        mr.SetQuantity(GetIntBetween(24,0));
+                    }
+                    Console.WriteLine("Origin City:");
+                    mr.SetCityOrigin(GetCityName());
+                    Console.WriteLine("Destination City:");
+                    mr.SetCityDestination(GetCityName());
+                    Console.WriteLine("Van Type (1/0):");
+                    mr.SetVanType(GetIntBetween(1,0));
+
+                    Order o = new Order(mr);
+                    o.Display();
+
+                    Console.WriteLine("Insert this order into TMS Database? (Y/N)");
+
+                    inp = GetYesNo();
+                    if(inp == "Y")
+                    {
+                        this.tms.InsertOrder(o);
                     }
                 }
                 else if (inp == "0")

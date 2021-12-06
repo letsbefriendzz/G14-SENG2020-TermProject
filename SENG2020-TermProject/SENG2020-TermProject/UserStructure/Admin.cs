@@ -152,12 +152,23 @@ namespace SENG2020_TermProject.UserStructure
                 else if (inp == "2")
                 {
                     int LogIterator = 0;
-                    foreach (String s in FileAccess.GetLogs())
+                    String[] LogNames = FileAccess.GetLogs();
+                    foreach (String s in LogNames)
                     {
                         Console.WriteLine("[{0}]\t- {1}", LogIterator, s);
                         LogIterator++;
                     }
-                    Console.WriteLine("");
+                    
+                    Console.WriteLine("Select a log to view:");
+                    inp = LogNames[GetIntBetween(LogNames.Length - 1, 0)];
+
+                    String FileContents = FileAccess.GetLog(inp);
+                    if(FileContents != null)
+                    {
+                        Console.WriteLine("\n==================================================");
+                        Console.WriteLine(FileContents);
+                        Console.WriteLine("==================================================\n");
+                    }
                 }
                 else if (inp == "3")
                 {

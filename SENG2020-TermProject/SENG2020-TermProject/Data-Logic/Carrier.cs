@@ -429,8 +429,7 @@ namespace SENG2020_TermProject.Data_Logic
                 i2 = inter;
             }
 
-            if (i1 == i2)
-                Console.WriteLine("No Intermediary Cities");
+            if (i1 == i2) return null;
             else
             {
                 for (int i = i1; i < i2; i++)
@@ -589,7 +588,9 @@ namespace SENG2020_TermProject.Data_Logic
                 }
             }
 
-            return trips;
+            if (trips.Count == 0)
+                return null;
+            else return trips;
         }
 
         /*

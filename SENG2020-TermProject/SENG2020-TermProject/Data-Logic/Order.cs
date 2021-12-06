@@ -148,7 +148,7 @@ namespace SENG2020_TermProject.Data_Logic
             return this.IsComplete;
         }
 
-        public double GetQuantity()
+        public int GetQuantity()
         {
             return this.mr.GetQuantity();
         }

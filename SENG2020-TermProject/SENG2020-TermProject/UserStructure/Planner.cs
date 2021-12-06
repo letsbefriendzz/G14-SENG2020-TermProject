@@ -123,13 +123,15 @@ namespace SENG2020_TermProject.UserStructure
             else
             {
                 int RouteIterator = 0;
-                foreach (List<Trip> l in routes)
+                foreach (List<Trip> route in routes)
                 {
+                    double RouteTotalCost = 0.0;
                     Console.WriteLine("Route #{0}", RouteIterator);
                     Console.WriteLine("==========");
                     int TripIterator = 0;
-                    foreach (Trip t in l)
+                    foreach (Trip t in route)
                     {
+                        RouteTotalCost += t.GetTripCost(o.mr.GetJobType(), o.GetQuantity(), o.GetVanType());
                         Console.WriteLine("\tTrip #{0}", TripIterator);
                         Console.WriteLine("\t\tFrom {0}\t-->\t{1}", t.GetOrigin().GetName(), t.GetDestin().GetName());
                         Console.WriteLine("\t\tDistance:\t{0}km", t.GetTripDistance());
@@ -137,10 +139,10 @@ namespace SENG2020_TermProject.UserStructure
                         Console.WriteLine("\t\tCost:\t\t${0}", t.GetTripCost(o.mr.GetJobType(), o.mr.GetQuantity()));
                         Console.WriteLine("\t\tCarrier:\t{0}", t.GetCarrier().GetName());
 
-                        Console.WriteLine();
-
                         TripIterator++;
                     }
+                    Console.WriteLine("\tTotal Route Cost:\t${0}", RouteTotalCost);
+                    Console.WriteLine();
                     RouteIterator++;
                 }
 
@@ -178,7 +180,7 @@ namespace SENG2020_TermProject.UserStructure
             while (inp != null)
             {
                 Console.WriteLine("1. View Unfilled Orders");
-                Console.WriteLine("2. Prepare and Simualte an Order");
+                Console.WriteLine("2. Prepare and Simulate an Order");
                 Console.WriteLine("3. Generate Invoice Summary");
                 Console.WriteLine("0. Exit");
                 inp = GetInput();
@@ -200,24 +202,28 @@ namespace SENG2020_TermProject.UserStructure
                         Order o = orders[GetIntBetween(orders.Length - 1, 0)];
 
                         //nested a GetRoute call with o into o's prep order func.
-                        o.PrepOrder(GetRoute(o));
-                        Delay();
-                        o.Display();
-
-                        Console.WriteLine("Set this Order to finished state? Y/N");
-                        inp = GetYesNo();
-
-                        if(inp == "Y")
+                        List<Trip> route = GetRoute(o);
+                        if(!(route == null))
                         {
+                            o.PrepOrder(route);
                             Delay();
-                            o.SimulateTime();
-                            if (tms.SetOrderComplete(o))
+                            o.Display();
+
+                            Console.WriteLine("Set this Order to finished state? Y/N");
+                            inp = GetYesNo();
+
+                            if (inp == "Y")
                             {
-                                Console.WriteLine("Sucessfully finished Order #{0} - {1}", o.GetID(), o.mr.GetClientName());
-                            }
-                            else
-                            {
-                                Console.WriteLine("An error occured in TMSDatabaseAccess.cs - See Logs");
+                                Delay();
+                                o.SimulateTime();
+                                if (tms.SetOrderComplete(o))
+                                {
+                                    Console.WriteLine("Sucessfully finished Order #{0} - {1}", o.GetID(), o.mr.GetClientName());
+                                }
+                                else
+                                {
+                                    Console.WriteLine("An error occured in TMSDatabaseAccess.cs - See Logs");
+                                }
                             }
                         }
                     }
