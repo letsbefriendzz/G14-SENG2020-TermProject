@@ -65,17 +65,6 @@
  * other data.
  */
 
-//here is the SET file header template:
-/*
- * FILE             :
- * PROJECT          :
- * PROGRAMMER       :
- * FIRST VERSION    :
- * DESCRIPTION      :
- */
-
-
-
 using SENG2020_TermProject.Communications;
 using SENG2020_TermProject.UserStructure;
 using SENG2020_TermProject.DatabaseManagement;
