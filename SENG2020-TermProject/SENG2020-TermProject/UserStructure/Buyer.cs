@@ -25,8 +25,10 @@ completed Order and generates an Invoice to the Customer.
     -- Satisfied - the Buyer can access and have displayed an array of MarketplaceRequest objects
     made from parsed SQL db values.
 
-    4.5.2.2.2 Buyer may review existing Customers and accept new Customers (from the Marketplace)
-    into the TMS system
+4.5.2.2.2 Buyer may review existing Customers and accept new Customers (from the Marketplace)
+into the TMS system
+
+N/A
 
     4.5.2.2.3 Buyer may initiate a new Order from the Marketplace requests.
 
@@ -50,8 +52,8 @@ This information is also stored in the TMS database.
  */
 
 using SENG2020_TermProject.Communications;
-using SENG2020_TermProject.DatabaseManagement;
 using SENG2020_TermProject.Data_Logic;
+using SENG2020_TermProject.DatabaseManagement;
 using System;
 
 namespace SENG2020_TermProject.UserStructure
@@ -112,7 +114,6 @@ namespace SENG2020_TermProject.UserStructure
             }
         }
 
-        //finish this later
         private void GetDatabaseAccess()
         {
             if (this.tms != null) return;
@@ -157,7 +158,7 @@ namespace SENG2020_TermProject.UserStructure
                     ContractMarketAccess cma = new ContractMarketAccess();
                     MarketplaceRequest[] mpr = cma.GetAllMarketplaceRequests();
                     Console.WriteLine("Select a Contract - (0 - {0})", mpr.Length - 1);
-                    
+
                     Order o = new Order(mpr[GetIntBetween(mpr.Length - 1, 0)]);
                     o.Display();
                     Console.WriteLine("Insert this Order into the TMS Database? Y/N");
@@ -181,7 +182,7 @@ namespace SENG2020_TermProject.UserStructure
                     DisplayFinishedOrders();
                     Order[] orders = tms.GetFinishedOrders();
 
-                    if(!(orders.Length == 0))
+                    if (!(orders.Length == 0))
                     {
                         Console.WriteLine("Select an Order - (0 - {0})", orders.Length - 1);
                         inp = GetInput();
@@ -196,24 +197,24 @@ namespace SENG2020_TermProject.UserStructure
                         Console.WriteLine("Invoice can be found at:\n{0}", FileAccess.CreateInvoice(ForInvoice));
                     }
                 }
-                else if(inp == "5")
+                else if (inp == "5")
                 {
                     MarketplaceRequest mr = new MarketplaceRequest();
                     Console.WriteLine("Client Name:");
                     mr.SetClientName(GetInput());
                     Console.WriteLine("Job Type (1/0):");
-                    mr.SetJobType(GetIntBetween(1,0));
-                    if(mr.GetJobType() == 1)
+                    mr.SetJobType(GetIntBetween(1, 0));
+                    if (mr.GetJobType() == 1)
                     {
                         Console.WriteLine("Pallet Quantity: ");
-                        mr.SetQuantity(GetIntBetween(24,0));
+                        mr.SetQuantity(GetIntBetween(24, 0));
                     }
                     Console.WriteLine("Origin City:");
                     mr.SetCityOrigin(GetCityName());
                     Console.WriteLine("Destination City:");
                     mr.SetCityDestination(GetCityName());
                     Console.WriteLine("Van Type (1/0):");
-                    mr.SetVanType(GetIntBetween(1,0));
+                    mr.SetVanType(GetIntBetween(1, 0));
 
                     Order o = new Order(mr);
                     o.Display();
@@ -221,10 +222,19 @@ namespace SENG2020_TermProject.UserStructure
                     Console.WriteLine("Insert this order into TMS Database? (Y/N)");
 
                     inp = GetYesNo();
-                    if(inp == "Y")
+                    if (inp == "Y")
                     {
-                        this.tms.InsertOrder(o);
+                        if (this.tms.InsertOrder(o))
+                        {
+                            Console.WriteLine("Successfully inserted order into DB");
+                        }
+                        else
+                        {
+                            Console.WriteLine("An error occured during db insertion; please see log files for details.");
+                        }
                     }
+
+                    Console.WriteLine();
                 }
                 else if (inp == "0")
                 {

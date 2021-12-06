@@ -11,10 +11,6 @@
  *  as the programmer, every line of code and every class, function, and file header
  *  within it has been written by me (Ryan Enns) exclusively.
  */
-
-//2906 lines as of 2021-12-04 -- 5:03pm
-
-//makes sense to define the DOxygen index stuff where main() can be found.
 /**
  * \mainpage Transportation Management System
  * 
@@ -78,17 +74,11 @@
  * DESCRIPTION      :
  */
 
-/*
- * TODO
- * 1. Work on GetDepots function in TMSDatabaseAccess
- * 2. Migrate to Carrier db
- * 
- */
+
 
 using SENG2020_TermProject.Communications;
 using SENG2020_TermProject.Data_Logic;
 using SENG2020_TermProject.UserStructure;
-using SENG2020_TermProject.DatabaseManagement;
 using System;
 
 namespace SENG2020_TermProject
@@ -104,41 +94,11 @@ namespace SENG2020_TermProject
         static void Main(string[] args)
         {
             FileAccess.initInstallDirectories();
-            
+
             UserFlowHarness();
 
             AnyKeyToContinue();
-            return; //and then return!
-        }
-
-
-
-
-
-
-
-
-        //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-        //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-        //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-        //VARIOUS TEST HARNESS FUNCTIONS
-        static void TestCities()
-        {
-            foreach (City c1 in CityList.GetList())
-            {
-                foreach (City c2 in CityList.GetList())
-                {
-                    /*                    
-                    if (CarrierList.CarriersForRoute(c1, c2) == null)
-                    {
-                        Console.WriteLine("Bad Test");
-                        Console.WriteLine("Origin:\t{0}", c1.GetName());
-                        Console.WriteLine("Destin:\t{0}", c2.GetName());
-                        Console.WriteLine();
-                    }
-                    */
-                }
-            }
+            return;
         }
 
         static void UserFlowHarness()
@@ -160,7 +120,7 @@ namespace SENG2020_TermProject
                     Planner p = new Planner();
                     p.PlannerWorkFlow();
                 }
-                else if(inp == "3")
+                else if (inp == "3")
                 {
                     Admin a = new Admin();
                     a.AdminWorkFlow();

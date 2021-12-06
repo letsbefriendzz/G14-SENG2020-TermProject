@@ -14,8 +14,6 @@
  *  stuffs from the database.
  */
 
-
-
 using System;
 
 namespace SENG2020_TermProject.Data_Logic
@@ -113,6 +111,8 @@ namespace SENG2020_TermProject.Data_Logic
             this.VanType = vt;
         }
 
+        #region MPR Accessors & Mutators
+
         public String GetClientName()
         {
             return this.ClientName;
@@ -173,6 +173,7 @@ namespace SENG2020_TermProject.Data_Logic
             this.VanType = nvt;
         }
 
+        #endregion
 
         /**
          * \brief   Dumps MarketplaceRequest object data to the consnole.. 
@@ -191,7 +192,7 @@ namespace SENG2020_TermProject.Data_Logic
             Console.WriteLine("=====================");
             Console.WriteLine("ClientName:\t{0}", ClientName);
 
-            if(JobType == 0)
+            if (JobType == 0)
                 Console.WriteLine("JobType:\tFTL");
             else
             {
@@ -202,7 +203,7 @@ namespace SENG2020_TermProject.Data_Logic
             Console.WriteLine("Origin:\t\t{0}", CityOrigin);
             Console.WriteLine("Destin:\t\t{0}", CityDestin);
 
-            if(VanType == 0)
+            if (VanType == 0)
                 Console.WriteLine("VanType:\tDry");
             else
                 Console.WriteLine("VanType:\tReefer");

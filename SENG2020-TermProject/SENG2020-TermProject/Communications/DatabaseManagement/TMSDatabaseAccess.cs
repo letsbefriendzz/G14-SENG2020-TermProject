@@ -27,10 +27,10 @@ namespace SENG2020_TermProject.DatabaseManagement
      */
     class TMSDatabaseAccess : DatabaseAccess
     {
-        public TMSDatabaseAccess()
+        public TMSDatabaseAccess(String password)
         { //LocalHostRoot99
             //please please please make another account that isn't root and also host this elsewhere
-            if (this.InitConnection("127.0.0.1", "3306", "root", "LocalHostRoot99", "tmsdatabase", "0"))
+            if (this.InitConnection("127.0.0.1", "3306", "root", password, "tmsdatabase", "0"))
                 this.ValidConnection = true; //LocalHostRoot99
         }
 
@@ -77,14 +77,22 @@ namespace SENG2020_TermProject.DatabaseManagement
 
                 }
 
-                
-                if (cm.ExecuteNonQuery() != 0)
+                try
                 {
-                    cn.Close();
-                    return true;
+                    if (cm.ExecuteNonQuery() != 0)
+                    {
+                        cn.Close();
+                        return true;
+                    }
+                    else
+                    {
+                        cn.Close();
+                        return false;
+                    }
                 }
-                else
+                catch (Exception e)
                 {
+                    FileAccess.Log("Error in TMSDatabaseAccess : InsertOrder\n" +  e.ToString());
                     cn.Close();
                     return false;
                 }
@@ -119,7 +127,7 @@ namespace SENG2020_TermProject.DatabaseManagement
         //Extension of GetOrders()
         public Order[] GetOrderByOrigin(String city)
         {
-            return GetOrders("select * from tmsorder where CityOrigin=\""+city+"\"");
+            return GetOrders("select * from tmsorder where CityOrigin=\"" + city + "\"");
         }
 
         //Extension of GetOrders()
@@ -141,7 +149,6 @@ namespace SENG2020_TermProject.DatabaseManagement
         }
 
         #endregion
-
 
         /*
          * NAME : GetOrder
@@ -328,6 +335,7 @@ namespace SENG2020_TermProject.DatabaseManagement
                 catch (MySqlException mse)
                 {
                     FileAccess.Log("ERROR in TMSDatabaseAccess.cs :: GetDepots(String CarrierName)\n " + mse.ToString());
+
                     return null;
                 }
             }

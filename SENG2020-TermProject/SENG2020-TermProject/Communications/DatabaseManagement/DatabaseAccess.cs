@@ -12,8 +12,8 @@
  *  fields and attempts to connect to a SQL database using the fields provided.
  */
 
-using SENG2020_TermProject.Communications;
 using MySql.Data.MySqlClient;
+using SENG2020_TermProject.Communications;
 using System;
 
 namespace SENG2020_TermProject.DatabaseManagement
@@ -61,7 +61,7 @@ namespace SENG2020_TermProject.DatabaseManagement
          */
         protected bool InitConnection(String server, String port, String user, String password, String database, String sslM)
         {
-            String connString = String.Format("server={0};port={1};user id={2}; password={3}; database={4}; SslMode={5}", server, port, user, password, database, sslM);
+            String connString = String.Format("server={0}; port={1}; user id={2}; password={3}; database={4}; SslMode={5}", server, port, user, password, database, sslM);
 
             try
             {
@@ -70,7 +70,7 @@ namespace SENG2020_TermProject.DatabaseManagement
                 cn.Close();
                 return true;
             }
-            catch (MySqlException mse)
+            catch (Exception mse)
             {
                 FileAccess.Log("ERROR in DatabaseAccess.cs :: InitConnection\n" + mse.ToString());
                 this.ValidConnection = false;

@@ -51,6 +51,15 @@ namespace SENG2020_TermProject.Communications
             }
         }
 
+        /*
+         * NAME : WriteorderBackup
+         * DESC :
+         *  This function, called exclusively by the Administrator, creates a file in the given pathway and writes
+         *  all Order instances in the Order array passed to it in a csv format to the file.
+         *  and writes
+         * RTRN : bool
+         * PARM : Order[], String
+         */
         public static bool WriteOrderBackup(Order[] orders, String pathway)
         {
             if (!Directory.Exists(pathway)) return false;
@@ -73,9 +82,16 @@ namespace SENG2020_TermProject.Communications
                 output += "\n";
             }
 
-            pathway = pathway + "/" + String.Format("{0}-OrderDBBackup.txt", System.DateTime.Now.ToString().Replace(":", "-").Replace(" ", "_"));
-            File.Create(pathway).Close();
-            File.WriteAllText(pathway, output);
+            pathway = pathway + "/" + String.Format("{0}-OrderDBBackup.csv", System.DateTime.Now.ToString().Replace(":", "-").Replace(" ", "_"));
+            try
+            {
+                File.Create(pathway).Close();
+                File.WriteAllText(pathway, output);
+            }
+            catch (Exception e)
+            {
+                FileAccess.Log("Failed to write DB backup\n" + e.ToString());
+            }
             return true;
         }
 
@@ -163,12 +179,28 @@ namespace SENG2020_TermProject.Communications
             return ReturnValues;
         }
 
+        
+        /*
+         * NAME : GetLog
+         * DESC :
+         *  This function accepts the name of a log that is present in the Logs folder.
+         *  It returns the contents of the file if it exists, otherwise it returns null.
+         * RTRN : String
+         * PARM : String
+         */
         public static String GetLog(String name)
         {
             String path = InstallPath + "/logs/" + name;
-            if (File.Exists(path))
-                return File.ReadAllText(path);
-            else return null;
+            try
+            {
+                if (File.Exists(path))
+                    return File.ReadAllText(path);
+            }
+            catch (Exception e)
+            {
+                FileAccess.Log("Failed to retrieve Log file.\n" + e.ToString());
+            }
+            return null;
         }
 
         /*

@@ -97,17 +97,13 @@ namespace SENG2020_TermProject.Data_Logic
             this.isprepped = true;
         }
 
+        #region Order Accessors & Mutators
 
         public int GetID()
         {
             return this.ID;
         }
-        /*
-        public String GetCarrierName()
-        {
-            return this.c.CarrierName;
-        }
-        */
+
         public String GetOrigin()
         {
             return this.mr.GetCityOrigin();
@@ -184,6 +180,8 @@ namespace SENG2020_TermProject.Data_Logic
                 return this.mr.GetQuantity();
             else return -1;
         }
+
+        #endregion
 
         /**
          * \brief       Populates Order instance fields based on information supplied by the MarketplaceRequest parmaeter.

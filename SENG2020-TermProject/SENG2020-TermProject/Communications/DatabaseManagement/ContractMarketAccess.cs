@@ -16,8 +16,8 @@
  */
 
 using MySql.Data.MySqlClient;
-using SENG2020_TermProject.Data_Logic;
 using SENG2020_TermProject.Communications;
+using SENG2020_TermProject.Data_Logic;
 using System;
 using System.Data;
 

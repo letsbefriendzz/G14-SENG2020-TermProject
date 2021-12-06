@@ -7,10 +7,11 @@
  *  This 
  */
 
-using System;
-using SENG2020_TermProject.DatabaseManagement;
 using SENG2020_TermProject.Communications;
 using SENG2020_TermProject.Data_Logic;
+using SENG2020_TermProject.DatabaseManagement;
+using System;
+using System.Net;
 /*
 4.5.2.1 Admin
 
@@ -51,16 +52,27 @@ namespace SENG2020_TermProject.UserStructure
             Console.WriteLine("===================");
         }
 
-        public Admin()
+        private void GetDatabaseAccess()
         {
-            this.tms = new TMSDatabaseAccess();
+            if (this.tms != null) return;
+
+            Console.WriteLine("Enter the Admin TMS Database password: ");
+            tms = new TMSDatabaseAccess(GetInput());
         }
 
         public void AdminWorkFlow()
         {
             AdminHeader();
+            GetDatabaseAccess();
 
-            if (!this.tms.ValidConnection) return;
+            if (!this.tms.ValidConnection)
+            {
+                Console.WriteLine("Invalid TMS Database username or password!");
+                FileAccess.Log("Invalid Login Attempt by Admin");
+                return;
+            }
+
+            FileAccess.Log("Administrator login.");
             String inp = "";
             while (inp != null)
             {
@@ -78,7 +90,7 @@ namespace SENG2020_TermProject.UserStructure
 
                 if (inp == "1")
                 {
-                    while(inp != null)
+                    while (inp != null)
                     {
                         Console.WriteLine("Contract Marketplace DB Settings:");
                         Console.WriteLine("1. Change CMDB Server IP");
@@ -96,10 +108,23 @@ namespace SENG2020_TermProject.UserStructure
                             Console.WriteLine("Current Server IP:\t\t{0}", CMDatabaseValues.server);
                             Console.WriteLine("Enter a new IP:");
                             NewValue = GetInput();
-                            Console.WriteLine("Set {0} as new CMDB IP Address? Y/N", NewValue);
-                            inp = GetYesNo();
-                            if (inp == "Y")
-                                CMDatabaseValues.server = NewValue;
+
+                            IPAddress Test;
+
+                            if (IPAddress.TryParse(NewValue, out Test))
+                            {
+                                Console.WriteLine("Set {0} as new CMDB IP Address? Y/N", NewValue);
+                                inp = GetYesNo();
+                                if (inp == "Y")
+                                {
+                                    CMDatabaseValues.server = NewValue;
+                                    FileAccess.Log(String.Format("Changed CMDB IP to {0}", NewValue));
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Invalid IP Address syntax.");
+                            }
                         }
                         else if (inp == "2")
                         {
@@ -109,7 +134,10 @@ namespace SENG2020_TermProject.UserStructure
                             Console.WriteLine("Set {0} as new CMDB Port? Y/N", NewValue);
                             inp = GetYesNo();
                             if (inp == "Y")
+                            {
                                 CMDatabaseValues.port = NewValue;
+                                FileAccess.Log(String.Format("Changed CMDB Port to {0}", NewValue));
+                            }
                         }
                         else if (inp == "3")
                         {
@@ -119,7 +147,10 @@ namespace SENG2020_TermProject.UserStructure
                             Console.WriteLine("Set {0} as new CMDB Username? Y/N", NewValue);
                             inp = GetYesNo();
                             if (inp == "Y")
+                            {
                                 CMDatabaseValues.usrnm = NewValue;
+                                FileAccess.Log(String.Format("Changed CMDB Username to {0}", NewValue));
+                            }
                         }
                         else if (inp == "4")
                         {
@@ -129,9 +160,12 @@ namespace SENG2020_TermProject.UserStructure
                             Console.WriteLine("Set {0} as new CMDB Password? Y/N", NewValue);
                             inp = GetYesNo();
                             if (inp == "Y")
+                            {
                                 CMDatabaseValues.pwd = NewValue;
+                                FileAccess.Log(String.Format("Changed CMDB Password to {0}", NewValue));
+                            }
                         }
-                        else if(inp == "5")
+                        else if (inp == "5")
                         {
                             Console.WriteLine("Current Server Default Table:\t{0}", CMDatabaseValues.table);
                             Console.WriteLine("Enter a new Default Table:");
@@ -139,12 +173,16 @@ namespace SENG2020_TermProject.UserStructure
                             Console.WriteLine("Set {0} as new CMDB Default Table? Y/N", NewValue);
                             inp = GetYesNo();
                             if (inp == "Y")
+                            {
                                 CMDatabaseValues.table = NewValue;
+                                FileAccess.Log(String.Format("Changed CMDB Default Table to {0}", NewValue));
+                            }
                         }
-                        else if(inp == "0")
+                        else if (inp == "0")
                         {
                             inp = null;
                         }
+                        Console.WriteLine();
                     }
                     inp = "";
                     Console.WriteLine();
@@ -158,12 +196,12 @@ namespace SENG2020_TermProject.UserStructure
                         Console.WriteLine("[{0}]\t- {1}", LogIterator, s);
                         LogIterator++;
                     }
-                    
+
                     Console.WriteLine("Select a log to view:");
                     inp = LogNames[GetIntBetween(LogNames.Length - 1, 0)];
 
                     String FileContents = FileAccess.GetLog(inp);
-                    if(FileContents != null)
+                    if (FileContents != null)
                     {
                         Console.WriteLine("\n==================================================");
                         Console.WriteLine(FileContents);
@@ -218,11 +256,12 @@ namespace SENG2020_TermProject.UserStructure
                         FileAccess.Log(String.Format("Failed to generate database backup at {0}\nWritten to:{1}\t", System.DateTime.Now, inp));
                     }
                 }
-                else if(inp == "0")
+                else if (inp == "0")
                 {
                     inp = null;
                 }
             }
+            FileAccess.Log("Administrator logout.");
         }
     }
 }

@@ -369,13 +369,6 @@ namespace SENG2020_TermProject.Data_Logic
             return false;
         }
 
-        //keeping this just in case, for debugging ;)
-        public static void Display()
-        {
-            foreach (Carrier c in Carriers)
-                c.Display();
-        }
-
         /*
          * NAME : DoubleCarrierRoutes
          * DESC :

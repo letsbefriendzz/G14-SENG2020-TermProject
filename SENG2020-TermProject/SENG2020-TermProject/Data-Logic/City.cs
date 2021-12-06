@@ -65,6 +65,8 @@ namespace SENG2020_TermProject.Data_Logic
         /// \brief      The time it takes to travel to the city west of CityName, in hours.
         private readonly double TimeToEastCity;
 
+        #region City Accessors & Mutators
+
         public String GetName()
         {
             return this.CityName;
@@ -84,6 +86,8 @@ namespace SENG2020_TermProject.Data_Logic
         {
             return this.TimeToEastCity;
         }
+
+        #endregion
 
         public City(String cn, String ecn, int ecd, double ttec)
         {
@@ -139,22 +143,6 @@ namespace SENG2020_TermProject.Data_Logic
             CitySequence.Add(new City("Ottawa", null, -1, -1.0));
         }
 
-        public static List<City> GetList()
-        {
-            return CitySequence;
-        }
-
-        /**
-         * \brief       Dumps list info to the console.
-         */
-        public static void DisplayList()
-        {
-            foreach (City c in CitySequence)
-            {
-                Console.WriteLine(c.GetName());
-            }
-        }
-
         /**
          * \brief       Returns the City object stored in the CitySequence at index i.
          * 
@@ -162,9 +150,17 @@ namespace SENG2020_TermProject.Data_Logic
          * 
          * \retval      Returns a City object.
          */
+        /*
+         * NAME : CityAt
+         * DESC :
+         *  This function returns the city located at index i
+         *  of the CitySequence List<T>.
+         * RTRN : Coty
+         * PARM : int
+         */
         public static City CityAt(int i)
         {
-            if (i >= 0 && i <= 7)
+            if (i >= 0 && i <= CitySequence.Count)
                 return CitySequence[i];
             else return null;
         }
@@ -175,6 +171,14 @@ namespace SENG2020_TermProject.Data_Logic
          * \details     Iterates through each City object, comparing the city name passed to it to the respective City.CityName value.
          * 
          * \retval      Returns a boolean; true if the city is found, false if not.
+         */
+        /*
+         * NAME : ContainsCity
+         * DSEC :
+         *  The ContainsCity function returns true or false depending on if a City
+         *  with the name specified exists in the CityList.
+         * RTRN : bool
+         * PARM : String
          */
         public static bool ContainsCity(String cn)
         {
@@ -189,6 +193,14 @@ namespace SENG2020_TermProject.Data_Logic
          * 
          * \retval      Returns an integer; either the index that the city name is found at in the CitySequence, or -1 if it doesn't exist.
          */
+        /*
+         * NAME : GetCityIndex
+         * DESC :
+         *  This function returns the index of a city based on the name passed to it.
+         *  If it doesn't exist, -1 is returned.
+         * RTRN : int
+         * PARM : String
+         */
         public static int GetCityIndex(String cn)
         {
             for (int i = 0; i < CitySequence.Count; i++)
@@ -199,6 +211,14 @@ namespace SENG2020_TermProject.Data_Logic
             return -1;
         }
 
+        /*
+         * NAME : GetCity
+         * DESC
+         *  The GetCity function returns a City instance that shares a CityName with the
+         *  String passed to the function as a parameter.
+         * RTRN : City
+         * PARM : String
+         */
         public static City GetCity(String city)
         {
             if (ContainsCity(city))
@@ -207,11 +227,6 @@ namespace SENG2020_TermProject.Data_Logic
                     if (c.GetName() == city) return c;
             }
             return null;
-        }
-
-        public static City GetCity(City c)
-        {
-            return GetCity(c.GetName());
         }
 
         /**
@@ -224,6 +239,17 @@ namespace SENG2020_TermProject.Data_Logic
          * 
          * \retval      Returns an integer; if the cities passed do not exist, <b>-1</b>
          *              is returned as an error value.
+         */
+        /*
+         * NAME : DrivingDistance
+         * DESC :
+         *  This function determines the total distance between two cities
+         *  as defined by the values found in the CitySequence. The origin
+         *  and destination cities are specified by city names in the form
+         *  of String objects passed as parmaeters. If one of the city names
+         *  is invalid, -1 is returned.
+         * RTRN : int
+         * PARM : String, String
          */
         public static int DrivingDistance(String c1, String c2)
         {
@@ -267,6 +293,17 @@ namespace SENG2020_TermProject.Data_Logic
          *              passed to the function doesn't exist, it returns <b>-1.0</b> as
          *              an error code.
          */
+        /*
+         * NAME : DrivingTime
+         * DESC :
+         *  The DrivingTime function, like the DrivingDistance function, accumulates
+         *  the time it takes to travel between an origin and destination city. The
+         *  cities are defined by the two String city names passed as parameters. If
+         *  either the origin or destination city doesn't exist in the CitySequence,
+         *  -1 is returned as an error code.
+         * RTRN : double
+         * PARM : String, String
+         */
         public static double DrivingTime(String c1, String c2)
         {
             if (ContainsCity(c1) && ContainsCity(c2))
@@ -300,6 +337,15 @@ namespace SENG2020_TermProject.Data_Logic
          * 
          * \retval      Returns an integer, the number of stops between a two cities. If a city
          *              passed doesn't exist, -1 is returned.
+         */
+        /*
+         * NAME : LTLStops
+         * DESC :
+         *  LTLStops takes the indices of an origin and destination city and counts
+         *  how many array entries there are between them. If either cities passed
+         *  as parameters don't exist, -1 is returned as an error code.
+         * RTRN : int
+         * PARM : String, String
          */
         public static int LTLStops(String c1, String c2)
         {

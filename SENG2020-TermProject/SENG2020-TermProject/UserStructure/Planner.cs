@@ -64,6 +64,8 @@ plugin.
 latest. No chance here. Maybe if my group members had done anything at all at this point, we'd be in a
 different position.
 
+-- Update: it's the 6th, still haven't got any code from my team members.
+
 4.5.2.3.8 Planner may generate a summary report of all Invoice data for a) all time, and b) The 
 ‘past 2 weeks’ of simulated time.
 
@@ -71,9 +73,9 @@ different position.
  */
 
 
-using System;
 using SENG2020_TermProject.Communications;
 using SENG2020_TermProject.Data_Logic;
+using System;
 using System.Collections.Generic;
 
 namespace SENG2020_TermProject.UserStructure
@@ -122,6 +124,9 @@ namespace SENG2020_TermProject.UserStructure
             }
             else
             {
+                Console.WriteLine("\n");
+                o.Display();
+                Console.WriteLine("Here are the routes TMS found to fill this order:");
                 int RouteIterator = 0;
                 foreach (List<Trip> route in routes)
                 {
@@ -167,7 +172,6 @@ namespace SENG2020_TermProject.UserStructure
         {
             PlannerHeader();
             GetDatabaseAccess();
-            Console.WriteLine("\n\n");
             if (!this.tms.ValidConnection)
             {
                 Console.WriteLine("Invalid TMS Database username or password!");
@@ -203,7 +207,7 @@ namespace SENG2020_TermProject.UserStructure
 
                         //nested a GetRoute call with o into o's prep order func.
                         List<Trip> route = GetRoute(o);
-                        if(!(route == null))
+                        if (!(route == null))
                         {
                             o.PrepOrder(route);
                             Delay();
@@ -228,7 +232,7 @@ namespace SENG2020_TermProject.UserStructure
                         }
                     }
                 }
-                else if(inp == "3")
+                else if (inp == "3")
                 {
                     //FileAccess class to iterate through invoices here
                 }
@@ -236,6 +240,7 @@ namespace SENG2020_TermProject.UserStructure
                 {
                     inp = null;
                 }
+                Console.WriteLine();
             }
         }
     }

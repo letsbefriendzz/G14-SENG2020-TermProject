@@ -61,6 +61,8 @@ namespace SENG2020_TermProject.Data_Logic
             this.Carr = c;
         }
 
+        #region Trip Accessors & Mutators
+
         public City GetOrigin()
         {
             return this.Origin;
@@ -75,6 +77,8 @@ namespace SENG2020_TermProject.Data_Logic
         {
             return this.Carr;
         }
+
+        #endregion
 
         /*
          * NAME : GetTripCost
