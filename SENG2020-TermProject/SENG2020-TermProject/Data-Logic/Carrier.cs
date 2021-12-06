@@ -63,6 +63,7 @@
 
 using System;
 using System.Collections.Generic;
+using SENG2020_TermProject.DatabaseManagement;
 
 namespace SENG2020_TermProject.Data_Logic
 {
@@ -292,8 +293,10 @@ namespace SENG2020_TermProject.Data_Logic
          *              about availabilty. Until this has been implemented (see Communications folder for
          *              progress updates), we will use these hardcoded default values for each instance.
          */
+
         static CarrierList()
         {
+            
             //Planet Express
             List<Depot> pe = new List<Depot>();
             pe.Add(new Depot("Windsor", 50, 640, 5.21, 0.3621, 0.08));
@@ -327,6 +330,32 @@ namespace SENG2020_TermProject.Data_Logic
             wh.Add(new Depot("Toronto", 11, 0, 5.2, 0, 0.065));
 
             Carriers.Add(new Carrier("We Haul", wh));
+            
+
+            //Carriers = new TMSDatabaseAccess("planner", "planner123", "depot").GetCarriers();
+        }
+
+        public static void Display()
+        {
+            foreach (Carrier c in Carriers)
+            {
+                foreach (Depot d in c.Depots)
+                {
+                    Console.Write("{0},", c.CarrierName);
+                    Console.Write("{0},", d.CityName);
+                    Console.Write("{0},", d.FTLAvail);
+                    Console.Write("{0},", d.LTLAvail);
+                    Console.Write("{0},", d.FTLRate);
+                    Console.Write("{0},", d.LTLRate);
+                    Console.Write("{0},", d.reefCharge);
+                    Console.WriteLine();
+                }
+            }
+        }
+
+        public static void AddCarrier(String CarrierName, List<Depot> Depots)
+        {
+            Carriers.Add(new Carrier(CarrierName, Depots));
         }
 
         /*

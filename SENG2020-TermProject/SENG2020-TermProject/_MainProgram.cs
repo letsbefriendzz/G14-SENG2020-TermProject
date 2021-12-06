@@ -78,6 +78,8 @@
 
 using SENG2020_TermProject.Communications;
 using SENG2020_TermProject.UserStructure;
+using SENG2020_TermProject.DatabaseManagement;
+using SENG2020_TermProject.Data_Logic;
 using System;
 
 namespace SENG2020_TermProject

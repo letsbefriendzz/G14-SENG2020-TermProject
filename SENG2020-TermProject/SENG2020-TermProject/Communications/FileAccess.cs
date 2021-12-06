@@ -203,6 +203,21 @@ namespace SENG2020_TermProject.Communications
             return null;
         }
 
+        public static String GetInvoice(String name)
+        {
+            String path = InstallPath + "/invoices/" + name;
+            try
+            {
+                if (File.Exists(path))
+                    return File.ReadAllText(path);
+            }
+            catch (Exception e)
+            {
+                FileAccess.Log("Failed to retrieve Log file.\n" + e.ToString());
+            }
+            return null;
+        }
+
         /*
          * NAME : Log
          * DESC :

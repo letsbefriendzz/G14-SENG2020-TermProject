@@ -145,7 +145,7 @@ namespace SENG2020_TermProject.UserStructure
             if (this.tms != null) return;
 
             Console.WriteLine("Enter the Buyer TMS Database password: ");
-            tms = new TMSDatabaseAccess("buyer", GetInput());
+            tms = new TMSDatabaseAccess("buyer", GetInput(), "tmsorder");
         }
 
         /*

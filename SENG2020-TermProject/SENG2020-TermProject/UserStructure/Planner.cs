@@ -193,7 +193,7 @@ namespace SENG2020_TermProject.UserStructure
             if (this.tms != null) return;
 
             Console.WriteLine("Enter the Planner TMS Database password: ");
-            tms = new DatabaseManagement.TMSDatabaseAccess("planner", GetInput());
+            tms = new DatabaseManagement.TMSDatabaseAccess("planner", GetInput(), "tmsorder");
         }
 
         /*
@@ -203,7 +203,7 @@ namespace SENG2020_TermProject.UserStructure
          * RTRN : //
          * PARM : //
          */
-        public void PlannerWorkFlow() //this will actually take a value from a database based on user input ! :)
+        public void PlannerWorkFlow()
         {
             PlannerHeader();
             GetDatabaseAccess();
@@ -271,10 +271,15 @@ namespace SENG2020_TermProject.UserStructure
                 }
                 else if (inp == "3")
                 {
-                    foreach(String s in FileAccess.GetFiles("invoices"))
+                    String[] Invoices = FileAccess.GetFiles("invoices");
+                    int InvoiceIterator = 0;
+                    foreach(String s in Invoices)
                     {
-                        Console.WriteLine(s);
+                        Console.WriteLine("[{0}]\t- {1}", InvoiceIterator, s);
+                        InvoiceIterator++;
                     }
+                    Console.WriteLine();
+                    Console.WriteLine(FileAccess.GetInvoice(Invoices[GetIntBetween(Invoices.Length - 1, 0)]));
                 }
                 else if (inp == "0")
                 {

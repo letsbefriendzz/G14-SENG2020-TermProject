@@ -14,6 +14,7 @@
 
 using System;
 using System.Data;
+using System.Collections.Generic;
 using SENG2020_TermProject.Data_Logic;
 using SENG2020_TermProject.Communications;
 using MySql.Data.MySqlClient;
@@ -35,7 +36,7 @@ namespace SENG2020_TermProject.DatabaseManagement
         }
 
         //Constructor that uses a usr and pwd string for user and password.
-        public TMSDatabaseAccess(String usr, String pwd)
+        public TMSDatabaseAccess(String usr, String pwd, String table)
         {
             if (this.InitConnection("127.0.0.1", "3306", usr, pwd, "tmsdatabase", "0"))
                 this.ValidConnection = true;
@@ -299,6 +300,81 @@ namespace SENG2020_TermProject.DatabaseManagement
                 }
             }
             return false;
+        }
+
+
+        /*
+         * NAME : GetCarriers
+         * DESC :
+         *  This function is used to populate the CarrierList from a local TMS database instance.
+         *  It's beautiful. I'm so happy I ported it to SQL DB instead of flatfile.
+         * RTRN : List<Carrier>
+         * PARM : // 
+         */
+        public List<Carrier> GetCarriers()
+        {
+            List<Carrier> Carriers = new List<Carrier>();
+            if (this.cn != null && this.ValidConnection)
+            {
+                try
+                {
+                    cn.Open();
+                    using (MySqlCommand cm = cn.CreateCommand())
+                    {
+                        cm.CommandText = "select * from depot";
+                        using (MySqlDataAdapter ada = new MySqlDataAdapter(cm))
+                        {
+                            List<String> CarrierNames = new List<string>();
+                            DataTable dt = new DataTable();
+                            ada.Fill(dt);
+
+                            foreach(DataRow r in dt.Rows)
+                            {
+                                if (!(CarrierNames.Contains(r[0].ToString())))
+                                {
+                                    CarrierNames.Add(r[0].ToString());
+                                }
+                            }
+
+                            if (CarrierNames.Count == 0) return null;
+
+                            foreach(DataRow r in dt.Rows)
+                            {
+                                String nCarrierName = r[0].ToString();
+                                String nDepotCity = r[1].ToString();
+                                int nFTLAvail = int.Parse(r[2].ToString());
+                                int nLTLAvail = int.Parse(r[3].ToString());
+                                double nFTLRate = (double)r[4];
+                                double nLTLRate = (double)r[5];
+                                double nReeferCharger = (double)r[6];
+                                bool FoundCarrierFlag = false;
+
+                                foreach(Carrier c in Carriers)
+                                {
+                                    if(c.CarrierName == nCarrierName)
+                                    {
+                                        c.Depots.Add(new Depot(nDepotCity, nFTLAvail, nLTLAvail, nFTLRate, nLTLRate, nReeferCharger));
+                                        FoundCarrierFlag = true;
+                                    }
+                                }
+
+                                if(!FoundCarrierFlag)
+                                {
+                                    List<Depot> NewCarrierDepots = new List<Depot>();
+                                    NewCarrierDepots.Add(new Depot(nDepotCity, nFTLAvail, nLTLAvail, nFTLRate, nLTLRate, nReeferCharger));
+                                    Carriers.Add(new Carrier(nCarrierName, NewCarrierDepots));
+                                }
+                            }
+                        }
+                    }
+                    cn.Close();
+                }
+                catch(Exception e)
+                {
+                    FileAccess.Log("Error in TMSDatabaseAccess : GetCarriers\n" + e.ToString());
+                }
+            }
+            return Carriers;
         }
     }
 }

@@ -72,7 +72,7 @@ namespace SENG2020_TermProject.DatabaseManagement
             }
             catch (Exception mse)
             {
-                FileAccess.Log("ERROR in DatabaseAccess.cs :: InitConnection\n" + mse.ToString());
+                FileAccess.Log("ERROR in DatabaseAccess.cs : InitConnection\n" + mse.ToString());
                 this.ValidConnection = false;
                 cn = null;
                 return false;
